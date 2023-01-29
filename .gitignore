@@ -1,0 +1,7 @@
+venv
+ngrok
+postgres/data
+doc
+.env
+.env.prod
+__pycache__

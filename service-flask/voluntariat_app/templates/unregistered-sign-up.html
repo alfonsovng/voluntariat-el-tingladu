@@ -1,0 +1,73 @@
+{% extends '_unregistered.html' %}
+
+{% block content %}
+
+<div class="row justify-content-md-center">
+  <div class="col-md-8 col-lg-7 col-xl-6">
+    <h3>{% block title %}Registra't{% endblock %}</h3>
+    <form role="form" method='POST'>
+      {{ form.csrf_token }}
+      <div class="form-group">
+        {{ form.name.label }}
+        {{ form.name(placeholder='com et dius',class='form-control') }}
+        {% for error in form.name.errors %}
+          <p class="form-error">{{ error }}</p>
+        {% endfor %}
+      </div>
+      <div class="form-group">
+        {{ form.surname.label }}
+        {{ form.surname(placeholder='primer cognom i segon cognom',class='form-control') }}
+        {% for error in form.surname.errors %}
+          <p class="form-error">{{ error }}</p>
+        {% endfor %}
+      </div>
+      <div class="form-group">
+        {{ form.email.label }}
+        {{ form.email(placeholder='una@adreça.email',class='form-control') }}
+        {% for error in form.email.errors %}
+          <p class="form-error">{{ error }}</p>
+        {% endfor %}
+      </div>
+      <div class="form-group">
+        {{ form.phone.label }}
+        {{ form.phone(placeholder='opcional, per tal millorar la comunicació',class='form-control') }}
+        {% for error in form.phone.errors %}
+          <p class="form-error">{{ error }}</p>
+        {% endfor %}
+      </div>
+      <div class="form-group">
+        <div class="d-flex justify-content-start">
+          <div>{{ form.adult() }}</div>
+          <div>
+            {{ form.adult.label }}
+            <label class="small font-italic d-block" for="adult">{{form.adult.description}}</label>
+          </div>
+        </div>
+        {% for error in form.adult.errors %}
+          <p class="form-error">{{ error }}</p>
+        {% endfor %}
+      </div>      
+      <div class="form-group">
+        <div class="d-flex justify-content-start">
+          <div>{{ form.store_email() }}</div>
+          <div>
+            {{ form.store_email.label }}
+            <label class="small font-italic d-block" for="store_email">{{form.store_email.description}}</label>
+          </div>
+        </div>
+        {% for error in form.store_email.errors %}
+          <p class="form-error">{{ error }}</p>
+        {% endfor %}
+      </div>
+      {{ form.submit(class='btn btn-lg btn-success') }}
+    </form>
+    <p>
+      <br />
+      Ja tens un compte? <a href="/login">Entra</a>
+      <br />
+      Problemes, dubtes? <a href="/contact">Contacta amb nosaltres</a>
+    </p>
+  </div>
+</div>
+   
+{% endblock %}

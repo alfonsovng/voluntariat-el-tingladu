@@ -1,0 +1,38 @@
+{% extends '_registered.html' %}
+
+<!--
+{% block admin_css %}
+<link href="/static/css/voluntariat_app_admin.css" rel="stylesheet">
+{% endblock %}
+-->
+
+{% block content %}
+<div class="row justify-content-md-center">
+    <div class="col-md-8 col-lg-7 col-xl-6">
+        <h3>Administració</h3>
+        <h3><small class="text-muted">{% block title %}Tasques{% endblock %}</small></h3>
+        <div class="table-responsive">
+            <table class="table table-light table-striped table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th>NOM</th>
+                        <th>DESCRIPCIÓ</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in tasks %}
+                    <tr>
+                        <td><a href='/admin/tasks/{{t.id}}'>{{t.name}}</a></td>
+                        <td><a href='/admin/tasks/{{t.id}}'>{{t.description}}</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <br />
+        <div class="btn-group">
+            <a class="btn btn-secondary" href="/admin"> &#x3c;&#x3c; Torna enrera</a>
+        </div>
+    </div>
+</div>  
+{% endblock %}

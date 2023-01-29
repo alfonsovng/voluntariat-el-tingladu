@@ -1,0 +1,30 @@
+{% extends '_registered.html' %}
+
+<!--
+{% block admin_css %}
+{% if user.id != volunteer.id %}
+<link href="/static/css/voluntariat_app_admin.css" rel="stylesheet">
+{% endif %}
+{% endblock %}
+-->
+
+{% block content %}
+<div class="row justify-content-md-center">
+  <div class="col-md-8 col-lg-7 col-xl-6">
+    <h3>{% block title %}Tasques{% endblock %}</h3>
+    <h3><small class="text-muted">{{ volunteer.full_name }}</small></h3>
+    <div class="list-group">
+      {% for t,n in tasks_and_number_of_shifts %}
+        <a href="/v/{{ volunteer.hashid }}/tasks/{{t.id}}" 
+          class="list-group-item {% if n>0 %}list-group-item-success {% endif %}">
+          <h4>{{t.name}}</h4> 
+          <h4><small>{{t.description}}</small></h4>
+          <h4><span class="badge badge-info">torns seleccionats: {{n}}</span></h4>
+        </a>
+      {% endfor %}
+    </div>
+    <br />
+    <a class="btn btn-secondary" href="/v/{{ volunteer.hashid }}"> &#x3c;&#x3c; Torna enrera</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends '_registered.html' %}
+
+<!--
+{% block admin_css %}
+<link href="/static/css/voluntariat_app_admin.css" rel="stylesheet">
+{% endblock %}
+-->
+
+{% block content %}
+<div class="row justify-content-md-center">
+    <div class="col-md-8 col-lg-7 col-xl-6">
+        <h3>{% block title %}Administració{% endblock %}</h3>
+        <h3><small class="text-muted">Consulta i exportació de dades</small></h3>
+        <div class="table-responsive">
+            <table class="table table-light table-striped table-hover table-bordered">
+                <tbody>
+                    <tr>
+                        <th>Voluntariat</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>Consulta les dades del voluntariat i fes exportacions a excel</p>
+                            <a class="btn btn-dark bg-profile" href="/admin/volunteers">
+                                Administra el voluntariat
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Tasques i torns</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>Consulta les dades organitzades per les tasques i els seus torns i fes exportacions a excel</p>
+                            <a class="btn btn-dark bg-task" href="/admin/tasks">
+                                Administra les tasques i els torns
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Àpats i opcions de dieta</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>Consulta les dades organitzades pels àpats i les opcions de dieta</p>
+                            <a class="btn btn-dark bg-meal" href="/admin/meals">
+                                Administra els àpats i les opcions de dieta
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Recompenses</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <p>Consulta les dades organitzades per les recompenses assignades i/o triades</p>
+                            <a class="btn btn-dark bg-reward" href="/admin/rewards">
+                                Administra les recompenses
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Enllaç d'invitació</th>
+                    </tr>
+                    <tr>
+                        <td>                                  
+                            <small><a href="#" data-toggle="tooltip" title="Fes click per copiar-ho" onclick="return copy_to_clipboard(this);">
+                                {{invitation_url}}
+                            </a></small>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Modificacions bloquejades</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            {% if allow_modifications %}                          
+                            Les persones voluntàries <span class="badge badge-success">poden modificar les dades</span> de tasques, torns, àpats, etc.
+                            {% else %}
+                            Les persones voluntàries <span class="badge badge-danger">no poden modificar les dades</span> de tasques, torns, àpats, etc.
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Tasques amb contrasenya</th>
+                    </tr>
+                    <tr>
+                        <td>
+                        {% for t in password_tasks %}
+                            {{t.name}}: 
+                            <a href="#" data-toggle="tooltip" title="Fes click per copiar-ho" onclick="return copy_to_clipboard(this)">
+                            {{t.password}}
+                            </a>
+                            <br />
+                        {% endfor %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <a class="btn btn-secondary" href="/dashboard"> &#x3c;&#x3c; Torna enrera</a>
+    </div>
+</div>  
+{% endblock %}

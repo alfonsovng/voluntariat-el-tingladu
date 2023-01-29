@@ -1,0 +1,135 @@
+body {
+    background-color: #fffdc0;
+}
+
+/* mida del logo a la barra de navegació */
+.navbar-brand img {
+    height: 2em;
+}
+
+/* color de fons corporatiu de les capçaleres de les taules */
+th {
+    background-color: #ffdd00;
+}
+
+.text-admin {
+    color: #FFC0C4;
+}
+
+.bg-admin {
+    background-color: #FFC0C4;
+}
+
+.bg-profile {
+    background-color: #006C7D;
+}
+
+.bg-profile-light {
+    background-color: #009BB3;
+}
+
+.text-profile {
+    color: #006C7D;
+}
+
+.bg-task {
+    background-color: #C13470;
+}
+
+.text-task {
+    color: #C13470;
+}
+
+.bg-meal {
+    background-color: #22AB90;
+}
+
+.text-meal {
+    color: #22AB90;
+}
+
+.bg-reward {
+    background-color: #8073AE;
+}
+
+.text-reward {
+    color: #8073AE;
+}
+
+input[type='checkbox'] {
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    appearance: none;
+    vertical-align: middle;
+    outline: none;
+    font-size: inherit;
+    cursor: pointer;
+    width: 1.0em;
+    height: 1.0em;
+    background: white;
+    border-radius: 0.25em;
+    border: 0.125em solid #555;
+    position: relative;
+    margin-right: 0.5em;
+}
+  
+input[type='checkbox']:checked {
+    background: #ffdd00;
+}
+
+input[type='checkbox']:checked:after {
+    content: "✔";
+    position: absolute;
+    font-size: 90%;
+    left: 0.0625em;
+    top: -0.25em;
+}
+
+.form-error {
+    background-color: #e45563;
+    text-align: center;
+    padding: 0.3em;
+    margin-left: 0.2em;
+    margin-right: 0.2em;
+    color:white;
+}
+
+.checkbox-user-comments {
+    display: none;
+}
+
+.checkbox-with-user-comments:has(input[type='checkbox']:checked) .checkbox-user-comments {
+    display: block;
+}
+
+.alert {
+    border-radius: 0;
+    margin-bottom: 0;
+}
+
+.alert-warning {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+
+.alert-error {
+    color: #FAEAEC;
+    background-color: #DD3C49;
+    border-color: #410B11;
+}
+
+.truncate {
+    min-width: 40ch;
+    max-width: 40ch;
+}
+.truncate:hover {
+    text-decoration: underline;
+    text-decoration-color: grey;  
+    cursor: pointer;
+}
+.truncate-yes {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

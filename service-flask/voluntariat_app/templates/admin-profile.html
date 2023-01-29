@@ -1,0 +1,106 @@
+{% extends '_registered.html' %}
+
+<!--
+{% block admin_css %}
+<link href="/static/css/voluntariat_app_admin.css" rel="stylesheet">
+{% endblock %}
+-->
+
+{% block content %}
+<div class="row justify-content-md-center">
+    <div class="col-md-8 col-lg-7 col-xl-6">
+        <h3>{% block title %}Persona voluntària{% endblock %}</h3>
+        <h3><small class="text-muted">{{ volunteer.full_name }}</small></h3>
+        <div class="table-responsive">
+            <table class="table table-light table-striped table-hover table-bordered">
+                <tbody>
+                    <tr>
+                        <th>EMAIL</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="d-xl-flex justify-content-between">
+                                <p>
+                                    <a href="#" data-toggle="tooltip" title="Fes click per copiar-ho" onclick="return copy_to_clipboard(this)">{{volunteer.email}}</a>
+                                </p>
+                                <div class="btn-group">
+                                    <a class="btn btn-dark bg-profile-light" href="mailto:{{volunteer.email}}">Envia un email</a>
+                                    <a class="btn btn-dark bg-profile" href="/admin/volunteers/{{volunteer.hashid}}/message">Contacta via formulari</a>   
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>MÒBIL</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="d-xl-flex justify-content-between">
+                                {% if volunteer.phone %}
+                                <p>
+                                    <a href="#" data-toggle="tooltip" title="Fes click per copiar-ho" onclick="return copy_to_clipboard(this)">{{volunteer.phone}}</a>
+                                </p>
+                                <div class="btn-group">
+                                    <a class="btn btn-dark bg-profile-light" href="tel:{{volunteer.phone}}"">Truca al mòbil</a>
+                                    <a class="btn btn-dark bg-profile" target="_blank" href="https://wa.me/{{volunteer.phone}}">Envia un Whatsapp</a> 
+                                </div>
+                                {% else %}
+                                <p class="text-secondary">Mòbil no proporcionat</p>
+                                <div class="btn-group">
+                                    <a class="btn btn-secondary bg-profile disabled" href="#">Truca al mòbil</a>
+                                    <a class="btn btn-secondary bg-profile disabled" href="#">Envia un Whatsapp</a>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>DADES INTRODUÏDES</th>
+                    </tr>
+                    <tr>
+                        <td class="text-xl-right">
+                            <div class="btn-group">
+                                <a class="btn btn-dark bg-task text-white" href="/v/{{volunteer.hashid}}/tasks">Les seves tasques i torns</a>
+                                <a class="btn btn-dark bg-meal text-white" href="/v/{{volunteer.hashid}}/meals">Els seus àpats i la seva dieta</a>
+                                <a class="btn btn-dark bg-reward text-white" href="/v/{{volunteer.hashid}}/rewards">Les seves recompenses</a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>ENTRADES ADQUIRIDES</th>
+                    </tr>
+                    <tr>
+                        <td class="text-monospace text-xl-right">
+                            {% if volunteer.ticket1 %}
+                            <a href="#" data-toggle="tooltip" title="Fes click per copiar-ho" onclick="return copy_to_clipboard(this)">
+                                {{volunteer.ticket1}}
+                            </a>
+                            <br />
+                            {% endif %}
+                            {% if volunteer.ticket2 %}
+                            <a href="#" data-toggle="tooltip" title="Fes click per copiar-ho" onclick="return copy_to_clipboard(this)">
+                                {{volunteer.ticket2}}
+                            </a>
+                            <br />
+                            {% endif %}
+                            {% if volunteer.ticket3 %}
+                            <a href="#" data-toggle="tooltip" title="Fes click per copiar-ho" onclick="return copy_to_clipboard(this)">
+                                {{volunteer.ticket3}}
+                            </a>
+                            <br />
+                            {% endif %}
+                            {% if volunteer.ticket4 %}
+                            <a href="#" data-toggle="tooltip" title="Fes click per copiar-ho" onclick="return copy_to_clipboard(this)">
+                                {{volunteer.ticket4}}
+                            </a>
+                            <br />
+                            {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <a class="btn btn-secondary" href="/admin/volunteers"> &#x3c;&#x3c; Torna enrera</a>
+    </div>
+</div>
+{% endblock %}
