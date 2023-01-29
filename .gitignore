@@ -3,5 +3,6 @@ ngrok
 postgres/data
 doc
 .env
-.env.prod
+.env.http
+.env.https
 __pycache__
