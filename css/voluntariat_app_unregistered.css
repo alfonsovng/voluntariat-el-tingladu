@@ -11,3 +11,10 @@ body a {
 body a:hover {
     color: #fffdc0;
 }
+
+.subtitle {
+    color: #fffdc0;
+    font-size: 1.25rem;
+    font-weight: 300;
+    font-style: italic;
+}
