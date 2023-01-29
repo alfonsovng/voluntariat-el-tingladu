@@ -1,0 +1,50 @@
+{% extends '_registered.html' %}
+
+<!--
+{% block admin_css %}
+<link href="/static/css/voluntariat_app_admin.css" rel="stylesheet">
+{% endblock %}
+-->
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-12">
+        <h3>Administració</h3>
+        <h3><small class="text-muted">{% block title %}Torns{% endblock %}</small></h3>
+        <div class="table-responsive">
+            <table class="table table-light table-striped table-hover table-bordered table-sm">
+                <thead>
+                    <tr>
+                        <th colspan="5">
+                            {{task.name}}: {{task.description}}
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>NOM</th>
+                        <th>DESCRIPCIÓ</th>
+                        <th>LLOCS OCUPATS</th>
+                        <th>LLOCS TOTALS</th>
+                        <th>EXCEL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s,n in shifts_and_occupied %}
+                    <tr>
+                        <td><a href='/admin/tasks/{{s.task_id}}/{{s.id}}'>{{s.name}}</a></td>
+                        <td><a href='/admin/tasks/{{s.task_id}}/{{s.id}}'>{{s.description}}</a></td>
+                        <td><a href='/admin/tasks/{{s.task_id}}/{{s.id}}'>{{n if n is not none else 0}}</a></td>
+                        <td><a href='/admin/tasks/{{s.task_id}}/{{s.id}}'>{{s.slots if s.slots > 0}}</a></td>
+                        <td><a href='/admin/tasks/{{s.task_id}}/{{s.id}}?excel=1'><img src="/static/img/excel-icon.png" alt="Excel"/></a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <br />
+        <div class="btn-group">
+            <a class="btn btn-secondary" href="/admin/tasks"> &#x3c;&#x3c; Torna enrera</a>
+            <a class="btn btn-primary" href="?excel=1">Descarrega en format Excel</a>
+        </div>
+    </div>
+</div>  
+{% endblock %}

@@ -1,0 +1,10 @@
+Hola {{name}},
+
+per tal de finalitzar el registre, accedeix a l'adreça següent:
+
+{{url}}
+
+Atentament,
+
+VOLUNTARIAT EL TINGLADU
+{{app_url}}

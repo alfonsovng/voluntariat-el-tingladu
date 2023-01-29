@@ -1,0 +1,13 @@
+task_id,nom,descripció,limit
+1,DIJOUS TARDA,Atendre les barres dijous de 16:00 a 20:00,10
+1,DIJOUS VESPRE,Atendre les barres dijous de 20:00 a 22:00,10
+1,DIVENDRES TARDA,Atendre les barres divendres de 16:00 a 20:00,10
+1,DIVENDRES VESPRE,Atendre les barres divendres de 20:00 a 22:00,10
+2,DIJOUS TARDA,Fer la beguda dijous tarda,1
+2,DIJOUS VESPRE,Fer la beguda dijous vespre,2
+2,DIVENDRES TARDA,Fer la beguda divendres tarda,1
+2,DIVENDRES VESPRE,Fer la beguda divendres vespre,2
+3,DIJOUS,Entrades i sortides,20
+3,DIVENDRES,Entrades i sortides,25
+4,DIMECRES,Molta feina a fer,0
+4,DILLUNS,Molta feina a fer,0

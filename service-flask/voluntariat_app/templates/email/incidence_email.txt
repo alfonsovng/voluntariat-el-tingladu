@@ -1,0 +1,16 @@
+Hola,
+
+s'ha notificat l'incidència següent:
+
+-----------------------------
+NOM: {{incidence_user.full_name}}
+EMAIL: {{incidence_user.email}}
+MÒBIL: {{incidence_user.phone}}
+TIPUS D'INCIDÊNCIA: {{incidence_type}}
+DESCRIPCIÓ: {{incidence_description}}
+-----------------------------
+
+Atentament,
+
+VOLUNTARIAT EL TINGLADU
+{{app_url}}

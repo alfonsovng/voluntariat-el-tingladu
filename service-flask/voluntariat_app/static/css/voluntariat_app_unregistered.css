@@ -1,0 +1,13 @@
+body {
+    background-color: #343a40;
+    color: white;
+}
+
+body a {
+    color: #ffdd00;
+    font-weight: bold;
+}
+
+body a:hover {
+    color: #fffdc0;
+}
