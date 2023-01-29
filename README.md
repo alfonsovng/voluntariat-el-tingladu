@@ -104,6 +104,8 @@ docker compose -f docker-compose-prod.yml up
 
 * Sending Emails Using Python and Gmail: https://leimao.github.io/blog/Python-Send-Gmail/
 
+* Send mail from your Gmail account using Python: https://www.geeksforgeeks.org/send-mail-gmail-account-using-python/
+
 * Running Flask in production with Docker: https://smirnov-am.github.io/running-flask-in-production-with-docker/
 
 * ngrok Step-by-Step Guide: Easily Share Your Local Server: https://www.sitepoint.com/use-ngrok-test-local-site/
