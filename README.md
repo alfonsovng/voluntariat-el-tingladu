@@ -97,6 +97,7 @@ Open a browser to `http://127.0.0.1:8080/`
 ## Launch the application in Test
 
 The application is launched with HTTP:
+
 ```
 docker compose -f docker-compose-http.yml up
 ```
@@ -104,11 +105,22 @@ docker compose -f docker-compose-http.yml up
 Open a browser to the port `80` of the test server.
 
 
-## Production
+## Launch the application in Production
+
+Run script [certbot.sh](./service-nginx/certbot.sh) to obtain or renew a certificate for the domain(s):
+
+```
+bash ./service-nginx/certbot.sh certonly
+```
+
+Launch the application with HTTPS:
 
 ```
 docker compose -f docker-compose-https.yml up
 ```
+
+Open a browser to the port `443` of the production server.
+
 
 ## Useful links
 
