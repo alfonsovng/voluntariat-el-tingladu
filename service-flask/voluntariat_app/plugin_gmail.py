@@ -17,44 +17,39 @@ class GmailManager:
             self.init_app(app)
 
     def init_app(self, app):
-        sender_name = "Voluntariat El Tingladu"
+        sender_name = "NO RESPONGUEU - Voluntariat El Tingladu"
         self.sender_email = app.config.get('GMAIL_ACCOUNT')
         self.sender_email_with_name = formataddr((sender_name, self.sender_email))
 
         self.password = app.config.get('GMAIL_PASSWORD')
 
-        self.cc_incidences = app.config.get('GMAIL_CC_INCIDENCES')
+        self.incidences_mailboxes = app.config.get('GMAIL_INCIDENCES_MAILBOXES')
 
-    def send(self, receiver_email, cc_emails, subject, content):
+    def send(self, receiver_emails, subject, content):
         msg = EmailMessage()
         msg.set_content(content)
         msg['Subject'] = self.subject_prefix + subject
         msg['From'] = self.sender_email_with_name
-        msg['To'] = receiver_email
-        msg['Cc'] = ','.join(cc_emails)
-
-        to_addrs = [receiver_email] + cc_emails
+        msg['To'] = ','.join(receiver_emails)
 
         server = smtplib.SMTP(self.smtp_server, self.port)
         server.starttls()
         server.login(self.sender_email, self.password)
-        server.send_message(msg, from_addr=self.sender_email, to_addrs=to_addrs)
+        server.send_message(msg, from_addr=self.sender_email, to_addrs=receiver_emails)
 
     
 from .helper import Task
 class TaskEmail(Task):
-    def __init__(self, receiver_email, subject, content, cc_emails = []):
+    def __init__(self, receiver_emails, subject, content):
         super().__init__()
-        self.receiver_email = receiver_email
-        self.cc_emails = cc_emails
+        self.receiver_emails = receiver_emails
         self.subject = subject
         self.content = content
         
     def do_it(self):
         from . import gmail_manager
         gmail_manager.send(
-            receiver_email = self.receiver_email,
-            cc_emails = self.cc_emails,
+            receiver_emails = self.receiver_emails,
             subject = self.subject, 
             content = self.content
         )
@@ -73,9 +68,9 @@ class TaskSignUpEmail(TaskEmail):
         )
 
         super().__init__(
-            receiver_email=email,
-            subject=subject,
-            content=content
+            receiver_emails = [email],
+            subject = subject,
+            content = content
         )
 
 
@@ -92,9 +87,9 @@ class TaskResetPasswordEmail(TaskEmail):
         )
 
         super().__init__(
-            receiver_email=email,
-            subject=subject,
-            content=content
+            receiver_emails = [email],
+            subject = subject,
+            content = content
         )
 
 
@@ -109,9 +104,9 @@ class TaskConfirmPasswordChangeEmail(TaskEmail):
         )
 
         super().__init__(
-            receiver_email=email,
-            subject=subject,
-            content=content
+            receiver_emails = [email],
+            subject = subject,
+            content = content
         )
 
 
@@ -129,10 +124,9 @@ class TaskIncidenceEmail(TaskEmail):
         )
 
         super().__init__(
-            receiver_email=email,
-            cc_emails=gmail_manager.cc_incidences,
-            subject=subject,
-            content=content
+            receiver_emails = gmail_manager.incidences_mailboxes,
+            subject = subject,
+            content = content
         )
 
 
@@ -148,7 +142,7 @@ class TaskMessageEmail(TaskEmail):
         )
 
         super().__init__(
-            receiver_email=email,
-            subject=subject,
-            content=content
+            receiver_emails = [email],
+            subject = subject,
+            content = content
         )
