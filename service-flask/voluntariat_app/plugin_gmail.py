@@ -1,4 +1,4 @@
-import smtplib, ssl
+import smtplib
 from flask import url_for, render_template
 from email.message import EmailMessage
 from email.utils import formataddr
@@ -7,7 +7,7 @@ from email.utils import formataddr
 class GmailManager:
 
     def __init__(self, app=None):
-        self.port = 465  # For SSL
+        self.port = 587  # For TLS
         self.smtp_server = "smtp.gmail.com"
         self.sender_email = None
         self.password = None
@@ -35,11 +35,12 @@ class GmailManager:
 
         to_addrs = [receiver_email] + cc_emails
 
-        context = ssl.create_default_context()
-        with smtplib.SMTP_SSL(self.smtp_server, self.port, context=context) as server:
-            server.login(self.sender_email, self.password)
-            server.send_message(msg, from_addr=self.sender_email, to_addrs=to_addrs)
-            
+        server = smtplib.SMTP(self.smtp_server, self.port)
+        server.starttls()
+        server.login(self.sender_email, self.password)
+        server.send_message(msg, from_addr=self.sender_email, to_addrs=to_addrs)
+
+    
 from .helper import Task
 class TaskEmail(Task):
     def __init__(self, receiver_email, subject, content, cc_emails = []):
