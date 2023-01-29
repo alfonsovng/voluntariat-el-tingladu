@@ -78,7 +78,7 @@ The original CSS and JS files can be found here:
 
 Check the file [1_users-demo.sql](./service-postgres/sql/1_users_demo.sql). Password of both users is **demo**.
 
-## Launch the application in development
+## Launch the application in Development
 
 First launch the database:
 
@@ -92,12 +92,22 @@ Enter in the `service-flask` folder and run the flask app:
 flask run
 ```
 
-Open a browser to http://127.0.0.1:8080/
+Open a browser to `http://127.0.0.1:8080/`
+
+## Launch the application in Test
+
+The application is launched with HTTP:
+```
+docker compose -f docker-compose-http.yml up
+```
+
+Open a browser to the port `80` of the test server.
+
 
 ## Production
 
 ```
-docker compose -f docker-compose-prod.yml up
+docker compose -f docker-compose-https.yml up
 ```
 
 ## Useful links
