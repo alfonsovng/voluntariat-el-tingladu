@@ -33,5 +33,6 @@ services:
     volumes:
       - ./service-nginx/https:/etc/nginx/conf.d
       - ./service-flask/voluntariat_app/static:/usr/src/app/voluntariat_app/static
+      - ./service-nginx/etc_letsencrypt:/etc/letsencrypt
     depends_on:
       - flask
