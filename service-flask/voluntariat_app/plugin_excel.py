@@ -1,5 +1,4 @@
 from openpyxl import load_workbook
-from openpyxl.styles import Alignment
 from copy import copy
 
 import os

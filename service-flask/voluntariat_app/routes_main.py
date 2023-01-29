@@ -43,9 +43,7 @@ def contact():
     if current_user.is_authenticated:
         return redirect(url_for("main_bp.incidence"))
     else:
-        from flask import current_app
-        contact_email = current_app.config.get("GMAIL_ACCOUNT", None)
-        return render_template('unregistered-contact.html', contact_email=contact_email)
+        return render_template('unregistered-contact.html')
 
 @main_bp.route("/logout")
 @login_required

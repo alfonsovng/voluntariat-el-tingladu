@@ -18,7 +18,7 @@ class Config:
     # plugin_gmail
     GMAIL_ACCOUNT = environ.get("GMAIL_ACCOUNT")
     GMAIL_PASSWORD = environ.get("GMAIL_PASSWORD")
-    GMAIL_CC_INCIDENCES = environ.get("GMAIL_CC_INCIDENCES").split(',')
+    GMAIL_INCIDENCES_MAILBOXES = environ.get("GMAIL_INCIDENCES_MAILBOXES").split(',')
 
     # plugin_tasks
     TASKS_PAUSE = int(environ.get("TASKS_PAUSE"))
