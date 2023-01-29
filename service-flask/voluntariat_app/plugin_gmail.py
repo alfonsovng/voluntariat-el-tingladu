@@ -113,9 +113,13 @@ class TaskConfirmPasswordChangeEmail(TaskEmail):
 class TaskIncidenceEmail(TaskEmail):
     def __init__(self, incidence_user, incidence_type, incidence_description):
         from . import gmail_manager, params_manager
-        
+        from datetime import datetime
+        import time
+
         email = gmail_manager.sender_email
-        subject = 'Incidència'
+        str_date_time = datetime.fromtimestamp(time.time()).strftime("%Y%m%d%H%M%S")
+
+        subject = f'Incidència {str_date_time}-{incidence_user.id}'
         content = render_template("email/incidence_email.txt",
             incidence_user = incidence_user,
             incidence_type = incidence_type,
