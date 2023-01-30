@@ -19,8 +19,11 @@ excel_manager = ExcelManager()
 def create_app():
     """Construct the core app object."""
     app = Flask(__name__, instance_relative_config=False)
+
     app.url_map.strict_slashes = False #https://stackoverflow.com/a/33285603
     app.config.from_object("config.Config")
+
+    app.logger.info("Voluntariat APP is starting!")
 
     # Initialize Plugins
     db.init_app(app)

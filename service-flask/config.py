@@ -18,7 +18,7 @@ class Config:
     # plugin_gmail
     GMAIL_ACCOUNT = environ.get("GMAIL_ACCOUNT")
     GMAIL_PASSWORD = environ.get("GMAIL_PASSWORD")
-    GMAIL_INCIDENCES_MAILBOXES = environ.get("GMAIL_INCIDENCES_MAILBOXES").split(',')
+    GMAIL_ADMIN_MAILBOXES = environ.get("GMAIL_ADMIN_MAILBOXES").split(',')
 
     # plugin_tasks
     TASKS_PAUSE = int(environ.get("TASKS_PAUSE"))
@@ -35,7 +35,7 @@ class Config:
     # Flask-SQLAlchemy
     SQLALCHEMY_DATABASE_URI = environ.get("SQLALCHEMY_DATABASE_URI")
     SQLALCHEMY_ECHO = True
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SQLALCHEMY_TRACK_MODIFICATIONS = True
 
     # Static Assets
     STATIC_FOLDER = "static"

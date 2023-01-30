@@ -1,4 +1,17 @@
 #
+# Logger
+# 
+def __create_logger():
+    import logging
+    from flask.logging import default_handler
+    logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
+    logger.addHandler(default_handler)
+    return logger
+
+logger = __create_logger()
+
+#
 # Task interface
 # totes les tasques que volem fer de manera asíncrona, com enviar un email,
 # s'han definir implementant aquesta interfície i fent servir el plugin_tasks

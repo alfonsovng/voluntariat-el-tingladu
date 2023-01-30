@@ -2,8 +2,8 @@ import smtplib
 from flask import url_for, render_template
 from email.message import EmailMessage
 from email.utils import formataddr
+from .helper import logger
 
-# https://leimao.github.io/blog/Python-Send-Gmail/
 class GmailManager:
 
     def __init__(self, app=None):
@@ -23,14 +23,16 @@ class GmailManager:
 
         self.password = app.config.get('GMAIL_PASSWORD')
 
-        self.incidences_mailboxes = app.config.get('GMAIL_INCIDENCES_MAILBOXES')
+        self.admin_mailboxes = app.config.get('GMAIL_ADMIN_MAILBOXES')
 
     def send(self, receiver_emails, subject, content):
         msg = EmailMessage()
         msg.set_content(content)
         msg['Subject'] = self.subject_prefix + subject
         msg['From'] = self.sender_email_with_name
-        msg['To'] = ','.join(receiver_emails)
+        to = ','.join(receiver_emails)
+        msg['To'] = to
+        logger.info(f"Mail [{subject}] enviat a {to}")
 
         server = smtplib.SMTP(self.smtp_server, self.port)
         server.starttls()
@@ -128,7 +130,7 @@ class TaskIncidenceEmail(TaskEmail):
         )
 
         super().__init__(
-            receiver_emails = gmail_manager.incidences_mailboxes,
+            receiver_emails = gmail_manager.admin_mailboxes,
             subject = subject,
             content = content
         )
