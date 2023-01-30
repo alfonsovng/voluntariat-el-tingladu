@@ -2,38 +2,37 @@ import threading
 import queue
 import time
 
+from .helper import logger
+
 class TaskManager:
-
-    run_worker = True
-    pause_between_tasks = 30
-    task_queue = queue.SimpleQueue()
-
+    
     def __init__(self, app=None):
         self.hashids_generator = None
+        self.task_queue = queue.SimpleQueue()
+        self.pause_between_tasks = 30
         if app is not None:
             self.init_app(app)
 
-    def init_app(self, app):     
-        pause_between_tasks = app.config.get('TASKS_PAUSE', TaskManager.pause_between_tasks)
-        TaskManager.pause_between_tasks = pause_between_tasks
+    def init_app(self, app):
+        pause_between_tasks = app.config.get('TASKS_PAUSE', self.pause_between_tasks)
+        self.pause_between_tasks = pause_between_tasks
 
-        # Turn-on the worker thread.
-        threading.Thread(target=TaskManager.worker, name='TaskManagerThread', daemon=True).start()
+        # Turn-on the worker thread
+        threading.Thread(target=self.worker, name='TaskManagerThread', daemon=True).start()
 
     def add_task(self, task):
-        TaskManager.task_queue.put_nowait(task)
-        print(f'Tasks in task_queue: {TaskManager.task_queue.qsize()}')
+        self.task_queue.put_nowait(task)
+        logger.info(f"Afegida una nova tasca, ara n'hi ha {self.task_queue.qsize()}")
 
-    def worker():
+    def worker(self):
         while True:
             try:
-                task = TaskManager.task_queue.get_nowait()
+                task = self.task_queue.get_nowait()
                 try:
                     if task is not None:
+                        logger.info("Executant una tasca...")
                         task.do_it()
                 except Exception as e:
-                    print(f'Task error! {e}')
+                    logger.warning(f'Tasca amb error: {e}')
             except:
-                print(f'No task to do... waiting {TaskManager.pause_between_tasks}')
-                time.sleep(TaskManager.pause_between_tasks)
-
+                time.sleep(self.pause_between_tasks)

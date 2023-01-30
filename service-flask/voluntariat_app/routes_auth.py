@@ -5,7 +5,7 @@ from . import login_manager, db, hashid_manager, task_manager, params_manager
 from .forms_auth import LoginForm, SignUpForm, ForgottenPasswordForm, ResetPasswordForm
 from .models import User, UserRole, UserDiet
 from .plugin_gmail import TaskSignUpEmail, TaskResetPasswordEmail, TaskConfirmPasswordChangeEmail
-from .helper import flash_info, flash_warning, flash_error
+from .helper import flash_info, flash_warning, flash_error, logger
 
 # Blueprint Configuration
 auth_bp = Blueprint(
@@ -34,6 +34,8 @@ def signup(invitation_token):
     if form.validate_on_submit():
         existing_user = User.query.filter_by(email=form.email.data).first()
         if existing_user is None:
+
+            logger.info(f"Nou voluntari: {form.email.data}")
 
             user = User(
                 name=form.name.data,
@@ -135,6 +137,8 @@ def login():
         existing_user = User.query.filter_by(email=form.email.data).first()
         if existing_user and existing_user.check_password(password=form.password.data):
             
+            logger.info(f"Login: {form.email.data}")
+
             existing_user.change_password_token = None
             db.session.commit() # remove any existing token
 
