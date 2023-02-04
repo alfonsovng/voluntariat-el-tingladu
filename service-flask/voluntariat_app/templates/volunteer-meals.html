@@ -13,7 +13,89 @@
   <div class="col-md-8 col-lg-7 col-xl-6">
     <h3>{% block title %}Àpats i dieta{% endblock %}</h3>
     <h3><small class="text-muted">{{ volunteer.full_name }}</small></h3>
-    <p>TODO</p>
+    <hr />
+    <h4>La teva dieta</h4>
+    <p class="small font-italic">Notifica les característiques de la teva dieta, indicant al·lèrgies, intol·leràncies i/o d'altres dades importants.</p>
+    <form role="form" method='POST' class="{{'text-secondary' if read_only }}">
+      {{ form.csrf_token }}
+      <div class="form-group">
+        <div class="d-flex justify-content-start">
+          <div>{{ form.vegan(disabled=read_only) }}</div>
+          <div>
+            {{ form.vegan.label }}
+          </div>
+        </div>
+        {% for error in form.vegan.errors %}
+          <p class="form-error">{{ error }}</p>
+        {% endfor %}
+      </div>
+      <div class="form-group">
+        <div class="d-flex justify-content-start">
+          <div>{{ form.vegetarian(disabled=read_only) }}</div>
+          <div>
+            {{ form.vegetarian.label }}
+          </div>
+        </div>
+        {% for error in form.vegetarian.errors %}
+          <p class="form-error">{{ error }}</p>
+        {% endfor %}
+      </div>
+      <div class="form-group">
+        <div class="d-flex justify-content-start">
+          <div>{{ form.no_gluten(disabled=read_only) }}</div>
+          <div>
+            {{ form.no_gluten.label }}
+          </div>
+        </div>
+        {% for error in form.no_gluten.errors %}
+          <p class="form-error">{{ error }}</p>
+        {% endfor %}
+      </div>
+      <div class="form-group">
+        <div class="d-flex justify-content-start">
+          <div>{{ form.no_lactose(disabled=read_only) }}</div>
+          <div>
+            {{ form.no_lactose.label }}
+          </div>
+        </div>
+        {% for error in form.no_lactose.errors %}
+          <p class="form-error">{{ error }}</p>
+        {% endfor %}
+      </div>
+      <div class="form-group">
+        {{ form.user_comments.label }}
+        {{ form.user_comments(class='form-control',disabled=read_only, rows=2) }}
+        {% for error in form.user_comments.errors %}
+          <p class="form-error">{{ error }}</p>
+        {% endfor %}
+      </div>
+      <div class="form-group">
+        <div class="d-flex justify-content-start">
+          <div>{{ form.accept_conditions(disabled=read_only) }}</div>
+          <div>
+            {{ form.accept_conditions.label }}
+            <label class="small font-italic d-block" for="accept_conditions">
+              Us demanem que:
+              <br>
+              - Si marques vegetarià o vegà, quan demaneu el sopar ho recordeu al voluntariat de cuina. 
+              <br>
+              - Si no has marcat vegetarià o vegà, no t'acullis a aquesta oferta el dia.
+              <br>
+              - Si tens alguna al·lèrgia o intolerància, confirmis amb el voluntariat de cuina que el plat que menges no conté aquest(s) ingredient(s). 
+            </label>
+          </div>
+        </div>
+        {% for error in form.accept_conditions.errors %}
+          <p class="form-error">{{ error }}</p>
+        {% endfor %}
+      </div>
+      {% if not read_only %}
+      {{ form.submit(class='btn btn-success') }}
+      {% endif %}
+    </form>
+    <hr />
+    <h4>Els teus àpats</h4>
+    <!-- <p>Si aquest dia no soparàs de la cuina d'El Tingladu, desmarca la casella del sopar del dia per evitar el malbaratament alimentari.</p> -->
     <a class="btn btn-secondary" href="/v/{{ volunteer.hashid }}"> &#x3c;&#x3c; Torna enrera</a>
   </div>
 </div>

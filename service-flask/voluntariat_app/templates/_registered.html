@@ -28,7 +28,7 @@
 				<a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink"
 					data-toggle="dropdown">Hola <span class="font-weight-bold">{{user.name}}</span></a>
 				<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
-					{% if user.is_admin() %}
+					{% if user.is_admin %}
 					<a class="lead dropdown-item" href="/admin"><span class="badge badge-ligth bg-admin">Administració</span></a>
 					<div class="dropdown-divider"></div>
 					{% endif %}
@@ -36,8 +36,13 @@
 					<div class="dropdown-divider"></div>
 					<a class="dropdown-item" href="/v/{{user.hashid}}/profile">Dades personals</a>
 					<a class="dropdown-item" href="/v/{{user.hashid}}/tasks">Tasques i torns</a>
+					{% if user.has_shifts %}
 					<a class="dropdown-item" href="/v/{{user.hashid}}/meals">Àpats i dieta</a>
 					<a class="dropdown-item" href="/v/{{user.hashid}}/rewards">Recompenses</a>
+					{% else %}
+					<a class="dropdown-item disabled" href="#">Àpats i dieta</a>
+					<a class="dropdown-item disabled" href="#">Recompenses</a>
+					{% endif %}
 					<a class="dropdown-item" href="/incidence">Incidència</a>
 					<div class="dropdown-divider"></div>
 					<a class="dropdown-item text-danger" href="/logout">Sortir</a>
