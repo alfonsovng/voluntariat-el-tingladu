@@ -15,7 +15,7 @@ admin_bp = Blueprint(
 @admin_bp.route('/admin')
 @login_required
 def dashboard():
-    if not current_user.is_admin():
+    if not current_user.is_admin:
         flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
         return redirect(url_for('volunteer_bp.dashboard'))
 
@@ -32,7 +32,7 @@ def dashboard():
 @admin_bp.route('/admin/volunteers')
 @login_required
 def people():
-    if not current_user.is_admin():
+    if not current_user.is_admin:
         flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
         return redirect(url_for('volunteer_bp.dashboard'))
 
@@ -56,7 +56,7 @@ def people():
 @admin_bp.route("/admin/volunteers/<volunteer_hashid>", methods=["GET"])
 @login_required
 def profile(volunteer_hashid):
-    if not current_user.is_admin():
+    if not current_user.is_admin:
         flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
         return redirect(url_for('volunteer_bp.dashboard'))
 
@@ -70,7 +70,7 @@ def profile(volunteer_hashid):
 @admin_bp.route('/admin/volunteers/<volunteer_hashid>/message', methods=["GET", "POST"])
 @login_required
 def message(volunteer_hashid):
-    if not current_user.is_admin():
+    if not current_user.is_admin:
         flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
         return redirect(url_for('volunteer_bp.dashboard'))
 
@@ -97,7 +97,7 @@ def message(volunteer_hashid):
 @admin_bp.route('/admin/tasks')
 @login_required
 def tasks():
-    if not current_user.is_admin():
+    if not current_user.is_admin:
         flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
         return redirect(url_for('volunteer_bp.dashboard'))
 
@@ -108,7 +108,7 @@ def tasks():
 @admin_bp.route('/admin/tasks/<int:task_id>')
 @login_required
 def shifts(task_id):
-    if not current_user.is_admin():
+    if not current_user.is_admin:
         flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
         return redirect(url_for('volunteer_bp.dashboard'))
 
@@ -159,7 +159,7 @@ def shifts(task_id):
 @admin_bp.route('/admin/tasks/<int:task_id>/<int:shift_id>', methods=["GET", "POST"])
 @login_required
 def shift_detail(task_id, shift_id):
-    if not current_user.is_admin():
+    if not current_user.is_admin:
         flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
         return redirect(url_for('volunteer_bp.dashboard'))
 
@@ -203,7 +203,7 @@ def shift_detail(task_id, shift_id):
 @admin_bp.route('/admin/meals')
 @login_required
 def meals():
-    if not current_user.is_admin():
+    if not current_user.is_admin:
         flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
         return redirect(url_for('volunteer_bp.dashboard'))
 
@@ -212,7 +212,7 @@ def meals():
 @admin_bp.route('/admin/rewards')
 @login_required
 def rewards():
-    if not current_user.is_admin():
+    if not current_user.is_admin:
         flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
         return redirect(url_for('volunteer_bp.dashboard'))
 
@@ -233,7 +233,7 @@ def generate_excel(select, file_name):
 @admin_bp.route('/excel/<file_name>')
 @login_required
 def download_excel(file_name):
-    if not current_user.is_admin() or not file_name.endswith(".xlsx"):
+    if not current_user.is_admin or not file_name.endswith(".xlsx"):
         abort(404) 
 
     return Response(

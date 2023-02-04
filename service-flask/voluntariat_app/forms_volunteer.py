@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField
+from wtforms import StringField, SubmitField, PasswordField, BooleanField, TextAreaField
 from wtforms.validators import DataRequired, Length, EqualTo
 from .helper import trim
 
@@ -45,3 +45,18 @@ class ShiftsFormWithPassword(FlaskForm):
         "Contrasenya per apuntar-se a aquests torns",
         validators=[DataRequired()]
     )
+
+class DietForm(FlaskForm):
+    vegan = BooleanField("Dieta vegana")
+    vegetarian = BooleanField("Dieta vegetariana")
+    no_gluten = BooleanField("Dieta sense gluten")
+    no_lactose = BooleanField("Dieta sense lactosa")
+    user_comments = TextAreaField(
+        "Altres intoleràncies o al·lèrgies, o observacions que vulguis afegir", 
+        filters = [trim]
+    )
+    accept_conditions = BooleanField(
+        "Entenc que la cuina d'El Tingladu tindrà en compte les vostres especificitats alimentàries, però no podem garantir una adaptació completa a cada dieta",
+        validators=[DataRequired()]
+    )
+    submit = SubmitField("Actualitza la teva dieta")

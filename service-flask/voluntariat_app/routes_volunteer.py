@@ -2,9 +2,9 @@ from flask import Blueprint, redirect, render_template, url_for, request
 from flask_login import current_user, login_required
 from .helper import flash_error, flash_info, load_volunteer, flash_warning, trim
 from . import db, task_manager, params_manager
-from .forms_volunteer import ProfileForm, ChangePasswordForm, ShiftsForm, ShiftsFormWithPassword
+from .forms_volunteer import ProfileForm, ChangePasswordForm, ShiftsForm, ShiftsFormWithPassword, DietForm
 from .plugin_gmail import TaskConfirmPasswordChangeEmail
-from .models import Task, Shift, UserShift
+from .models import Task, Shift, UserShift, UserDiet
 import sqlalchemy
 
 # Blueprint Configuration
@@ -15,7 +15,7 @@ volunteer_bp = Blueprint(
 @volunteer_bp.route("/v/<volunteer_hashid>", methods=["GET"])
 @login_required
 def volunteer(volunteer_hashid):
-    if not current_user.is_admin() or volunteer_hashid == current_user.hashid:
+    if not current_user.is_admin or volunteer_hashid == current_user.hashid:
         return redirect(url_for('volunteer_bp.dashboard'))
 
     return redirect(url_for('admin_bp.profile', volunteer_hashid = volunteer_hashid))
@@ -23,10 +23,7 @@ def volunteer(volunteer_hashid):
 @volunteer_bp.route('/dashboard')
 @login_required
 def dashboard():
-    allow_meals = has_meals(current_user.id)
-    allow_rewards = has_rewards(current_user.id)
-
-    return render_template('volunteer-dashboard.html',allow_meals=allow_meals,allow_rewards=allow_rewards,user=current_user)
+    return render_template('volunteer-dashboard.html',user=current_user)
 
 @volunteer_bp.route('/v/<volunteer_hashid>/profile', methods=["GET", "POST"])
 @login_required
@@ -34,7 +31,7 @@ def profile(volunteer_hashid):
     # you can't change personal data of another person
     volunteer = load_volunteer(current_user,volunteer_hashid,allow_all_admins=False)
     if volunteer is None:
-        if current_user.is_admin():
+        if current_user.is_admin:
             return redirect(url_for('admin_bp.volunteer',volunteer_hashid=volunteer_hashid))
 
         flash_error("Adreça incorrecta")
@@ -55,7 +52,7 @@ def password(volunteer_hashid):
     # you can't change personal data of another person
     volunteer = load_volunteer(current_user,volunteer_hashid,allow_all_admins=False)
     if volunteer is None:
-        if current_user.is_admin():
+        if current_user.is_admin:
             return redirect(url_for('admin_bp.volunteer',volunteer_hashid=volunteer_hashid))
 
         flash_error("Adreça incorrecta")
@@ -120,10 +117,10 @@ def shifts(volunteer_hashid, task_id):
         flash_error("Adreça incorrecta")
         return redirect(url_for('main_bp.init'))
     
-    read_only = not params_manager.allow_modifications and not current_user.is_admin()
+    read_only = not params_manager.allow_modifications and not current_user.is_admin
 
     # els admins no necessiten password
-    if task.password and not current_user.is_admin() and not read_only:
+    if task.password and not current_user.is_admin and not read_only:
         form = ShiftsFormWithPassword()
     else:
         form = ShiftsForm()
@@ -131,7 +128,7 @@ def shifts(volunteer_hashid, task_id):
     if not read_only and form.validate_on_submit():
 
         # els admins no necessiten password
-        if not current_user.is_admin() and task.password and task.password != form.password.data:
+        if not current_user.is_admin and task.password and task.password != form.password.data:
             flash_warning("Contrasenya per apuntar-se a aquests torns incorrecta")
         else:
             # esborro tots els user_shifts d'aquest
@@ -192,14 +189,6 @@ def shifts(volunteer_hashid, task_id):
             volunteer=volunteer,user=current_user
         )
 
-def has_meals(volunteer_id):
-    n = db.session.execute(f"select count(*) from user_meals where user_id = {volunteer_id}").scalar()
-    return n > 0
-
-def has_rewards(volunteer_id):
-    n = db.session.execute(f"select count(*) from user_rewards where user_id = {volunteer_id}").scalar()
-    return n > 0
-
 @volunteer_bp.route('/v/<volunteer_hashid>/meals', methods=["GET", "POST"])
 @login_required
 def meals(volunteer_hashid):
@@ -208,10 +197,15 @@ def meals(volunteer_hashid):
         flash_error("Adreça incorrecta")
         return redirect(url_for('main_bp.init'))
 
-    if not has_meals(volunteer.id) and not current_user.is_admin():
-        flash_warning("Abans d'accedir a aquesta secció has de completar les Tasques i Torns")
+    read_only = not params_manager.allow_modifications and not current_user.is_admin
+    if not volunteer.has_shifts:
+        flash_warning("Abans d'accedir a aquesta secció s'han de completar les Tasques i Torns")
+        read_only = True
 
-    return render_template('volunteer-meals.html',volunteer=volunteer,user=current_user)
+    diet = UserDiet.query.filter_by(user_id = volunteer.id).first()
+    form = DietForm(obj = diet)
+
+    return render_template('volunteer-meals.html',read_only=read_only,form=form,volunteer=volunteer,user=current_user)
 
 @volunteer_bp.route('/v/<volunteer_hashid>/rewards', methods=["GET", "POST"])
 @login_required
@@ -221,7 +215,7 @@ def rewards(volunteer_hashid):
         flash_error("Adreça incorrecta")
         return redirect(url_for('main_bp.init'))
 
-    if not has_rewards(volunteer.id) and not current_user.is_admin():
-        flash_warning("Abans d'accedir a aquesta secció has de completar les Tasques i Torns")
+    if not volunteer.has_shifts:
+        flash_warning("Abans d'accedir a aquesta secció s'han de completar les Tasques i Torns")
 
     return render_template('volunteer-rewards.html',volunteer=volunteer,user=current_user)

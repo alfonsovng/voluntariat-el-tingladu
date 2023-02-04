@@ -3,12 +3,19 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import enum
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.dialects.postgresql import ARRAY
-from sqlalchemy import text
+from sqlalchemy import text, exists
 from . import db, hashid_manager
 
 class UserRole(enum.Enum):
     admin = 1
     volunteer = 2
+
+class UserShift(db.Model):
+    __tablename__ = "user_shifts"
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
+    shift_id = db.Column(db.Integer, db.ForeignKey("shifts.id"), primary_key=True)
+    user_comments = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
+    admin_comments = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
 
 class User(UserMixin, db.Model):
     __tablename__ = "users"
@@ -24,6 +31,7 @@ class User(UserMixin, db.Model):
     ticket4 = db.Column(db.String, nullable=False, server_default='')  #'' es un possible valor
     role = db.Column(db.Enum(UserRole, name='users_role'), nullable=False)
     change_password_token = db.Column(db.String)
+    has_shifts = db.column_property(exists().where(UserShift.user_id==id))
 
     @hybrid_property
     def hashid(self):
@@ -33,6 +41,10 @@ class User(UserMixin, db.Model):
     def full_name(self):
         return f"{self.name} {self.surname}"
 
+    @hybrid_property
+    def is_admin(self):
+        return self.role == UserRole.admin
+
     def set_password(self, password):
         """Assigna un password amb la funció hash aplicada"""
         self.password = generate_password_hash(password, method="sha256")
@@ -40,9 +52,6 @@ class User(UserMixin, db.Model):
     def check_password(self, password):
         """Comprova si el password és igual"""
         return check_password_hash(self.password, password)
-
-    def is_admin(self):
-        return self.role == UserRole.admin
 
     def __repr__(self):
         return "<User {}>".format(self.id)
@@ -61,13 +70,6 @@ class Shift(db.Model):
     name = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
     slots = db.Column(db.Integer, nullable=False, server_default=text("0")) # 0 significa sense límits
-
-class UserShift(db.Model):
-    __tablename__ = "user_shifts"
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
-    shift_id = db.Column(db.Integer, db.ForeignKey("shifts.id"), primary_key=True)
-    user_comments = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
-    admin_comments = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
 
 class UserDiet(db.Model):
     __tablename__ = "user_diets"

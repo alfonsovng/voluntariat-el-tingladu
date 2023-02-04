@@ -52,7 +52,7 @@ def load_volunteer(current_user,volunteer_hashid,allow_all_admins=True):
         volunteer = None
     elif current_user.id == volunteer_id:
         volunteer = current_user
-    elif allow_all_admins and current_user.is_admin():
+    elif allow_all_admins and current_user.is_admin:
         from .models import User
 
         # if admin, can see other volunteers data
