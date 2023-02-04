@@ -14,8 +14,8 @@
     <h3>{% block title %}Àpats i dieta{% endblock %}</h3>
     <h3><small class="text-muted">{{ volunteer.full_name }}</small></h3>
     <hr />
-    <h4>La teva dieta</h4>
-    <p class="small font-italic">Notifica les característiques de la teva dieta, indicant al·lèrgies, intol·leràncies i/o d'altres dades importants.</p>
+    <h5>La teva dieta</h5>
+    <h5><small class="text-muted">Notifica les característiques de la teva dieta, indicant al·lèrgies, intol·leràncies i/o d'altres dades importants.</small></h5>
     <form role="form" method='POST' class="{{'text-secondary' if read_only }}">
       {{ form.csrf_token }}
       <div class="form-group">
@@ -94,8 +94,9 @@
       {% endif %}
     </form>
     <hr />
-    <h4>Els teus àpats</h4>
-    <!-- <p>Si aquest dia no soparàs de la cuina d'El Tingladu, desmarca la casella del sopar del dia per evitar el malbaratament alimentari.</p> -->
+    <h5>Els teus àpats</h5>
+    <h5><small class="text-muted">Si aquest dia no soparàs de la cuina d'El Tingladu, desmarca la casella del sopar del dia per evitar el malbaratament alimentari.</small></h5>
+    <hr />
     <a class="btn btn-secondary" href="/v/{{ volunteer.hashid }}"> &#x3c;&#x3c; Torna enrera</a>
   </div>
 </div>
