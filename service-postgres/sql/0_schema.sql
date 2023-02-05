@@ -198,7 +198,6 @@ ALTER TABLE public.user_diets OWNER TO postgres;
 CREATE TABLE public.user_meals (
     id bigint NOT NULL,
     user_id integer NOT NULL,
-    shift_id integer NOT NULL,
     options integer[] NOT NULL,
     selected integer DEFAULT 0 NOT NULL,
     user_comments character varying DEFAULT ''::character varying NOT NULL,
@@ -236,7 +235,6 @@ ALTER SEQUENCE public.user_meals_id_seq OWNED BY public.user_meals.id;
 CREATE TABLE public.user_rewards (
     id bigint NOT NULL,
     user_id integer NOT NULL,
-    shift_id integer NOT NULL,
     options integer[] NOT NULL,
     selected integer DEFAULT 0 NOT NULL,
     user_comments character varying DEFAULT ''::character varying NOT NULL,
@@ -471,27 +469,11 @@ ALTER TABLE ONLY public.user_diets
 
 
 --
--- Name: user_meals user_meals_shift_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.user_meals
-    ADD CONSTRAINT user_meals_shift_id_fkey FOREIGN KEY (shift_id) REFERENCES public.shifts(id);
-
-
---
 -- Name: user_meals user_meals_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.user_meals
     ADD CONSTRAINT user_meals_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
-
-
---
--- Name: user_rewards user_rewards_shift_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.user_rewards
-    ADD CONSTRAINT user_rewards_shift_id_fkey FOREIGN KEY (shift_id) REFERENCES public.shifts(id);
 
 
 --
