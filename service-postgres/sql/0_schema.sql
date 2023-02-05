@@ -196,10 +196,11 @@ ALTER TABLE public.user_diets OWNER TO postgres;
 --
 
 CREATE TABLE public.user_meals (
-    id integer NOT NULL,
+    id bigint NOT NULL,
     user_id integer NOT NULL,
-    meal_options integer[] NOT NULL,
-    meal_selected integer DEFAULT 0 NOT NULL,
+    shift_id integer NOT NULL,
+    options integer[] NOT NULL,
+    selected integer DEFAULT 0 NOT NULL,
     user_comments character varying DEFAULT ''::character varying NOT NULL,
     admin_comments character varying DEFAULT ''::character varying NOT NULL
 );
@@ -212,7 +213,6 @@ ALTER TABLE public.user_meals OWNER TO postgres;
 --
 
 CREATE SEQUENCE public.user_meals_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -234,10 +234,11 @@ ALTER SEQUENCE public.user_meals_id_seq OWNED BY public.user_meals.id;
 --
 
 CREATE TABLE public.user_rewards (
-    id integer NOT NULL,
+    id bigint NOT NULL,
     user_id integer NOT NULL,
-    reward_options integer[] NOT NULL,
-    reward_selected integer DEFAULT 0 NOT NULL,
+    shift_id integer NOT NULL,
+    options integer[] NOT NULL,
+    selected integer DEFAULT 0 NOT NULL,
     user_comments character varying DEFAULT ''::character varying NOT NULL,
     admin_comments character varying DEFAULT ''::character varying NOT NULL
 );
@@ -250,7 +251,6 @@ ALTER TABLE public.user_rewards OWNER TO postgres;
 --
 
 CREATE SEQUENCE public.user_rewards_id_seq
-    AS integer
     START WITH 1
     INCREMENT BY 1
     NO MINVALUE
@@ -471,11 +471,27 @@ ALTER TABLE ONLY public.user_diets
 
 
 --
+-- Name: user_meals user_meals_shift_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_meals
+    ADD CONSTRAINT user_meals_shift_id_fkey FOREIGN KEY (shift_id) REFERENCES public.shifts(id);
+
+
+--
 -- Name: user_meals user_meals_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.user_meals
     ADD CONSTRAINT user_meals_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: user_rewards user_rewards_shift_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_rewards
+    ADD CONSTRAINT user_rewards_shift_id_fkey FOREIGN KEY (shift_id) REFERENCES public.shifts(id);
 
 
 --

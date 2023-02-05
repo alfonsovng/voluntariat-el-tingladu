@@ -88,10 +88,11 @@ class Meal(db.Model):
 
 class UserMeal(db.Model):
     __tablename__ = "user_meals"
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.BigInteger, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    meal_options = db.Column(ARRAY(db.Integer), nullable=False) # zero pot ser un valor
-    meal_selected = db.Column(db.Integer, nullable=False, server_default=text("0")) # zero pot ser un valor
+    shift_id = db.Column(db.Integer, db.ForeignKey("shifts.id"), nullable=False)
+    options = db.Column(ARRAY(db.Integer), nullable=False) # zero pot ser un valor
+    selected = db.Column(db.Integer, nullable=False, server_default=text("0")) # zero pot ser un valor
     user_comments = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
     admin_comments = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
 
@@ -103,9 +104,10 @@ class Reward(db.Model):
 
 class UserReward(db.Model):
     __tablename__ = "user_rewards"
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.BigInteger, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    reward_options = db.Column(ARRAY(db.Integer), nullable=False) # zero pot ser un valor
-    reward_selected = db.Column(db.Integer, nullable=False, server_default=text("0")) # zero pot ser un valor
+    shift_id = db.Column(db.Integer, db.ForeignKey("shifts.id"), nullable=False)
+    options = db.Column(ARRAY(db.Integer), nullable=False) # zero pot ser un valor
+    selected = db.Column(db.Integer, nullable=False, server_default=text("0")) # zero pot ser un valor
     user_comments = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
     admin_comments = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
