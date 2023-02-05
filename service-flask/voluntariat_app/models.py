@@ -90,7 +90,6 @@ class UserMeal(db.Model):
     __tablename__ = "user_meals"
     id = db.Column(db.BigInteger, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    shift_id = db.Column(db.Integer, db.ForeignKey("shifts.id"), nullable=False)
     options = db.Column(ARRAY(db.Integer), nullable=False) # zero pot ser un valor
     selected = db.Column(db.Integer, nullable=False, server_default=text("0")) # zero pot ser un valor
     user_comments = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
@@ -106,7 +105,6 @@ class UserReward(db.Model):
     __tablename__ = "user_rewards"
     id = db.Column(db.BigInteger, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    shift_id = db.Column(db.Integer, db.ForeignKey("shifts.id"), nullable=False)
     options = db.Column(ARRAY(db.Integer), nullable=False) # zero pot ser un valor
     selected = db.Column(db.Integer, nullable=False, server_default=text("0")) # zero pot ser un valor
     user_comments = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor

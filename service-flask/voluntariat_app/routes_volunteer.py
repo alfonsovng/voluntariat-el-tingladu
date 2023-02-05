@@ -1,7 +1,7 @@
 from flask import Blueprint, redirect, render_template, url_for, request
 from flask_login import current_user, login_required
 from .helper import flash_error, flash_info, load_volunteer, flash_warning, trim
-from . import db, task_manager, params_manager
+from . import db, task_manager, params_manager, usher_manager
 from .forms_volunteer import ProfileForm, ChangePasswordForm, ShiftsForm, ShiftsFormWithPassword, DietForm
 from .plugin_gmail import TaskConfirmPasswordChangeEmail
 from .models import Task, Shift, UserShift, UserDiet
@@ -154,6 +154,18 @@ def shifts(volunteer_hashid, task_id):
                     db.session.add(user_shift)
                 else:
                     flash_warning(f"No s'ha pogut registrar el torn: {shift.name}")
+
+            current_shifts = UserShift.query.filter_by(user_id = volunteer.id).all()
+
+            usher_manager.update_rewards(
+                user_id = volunteer.id,
+                current_shifts = current_shifts
+            )
+
+            usher_manager.update_meals(
+                user_id = volunteer.id,
+                current_shifts = current_shifts
+            )
 
             db.session.commit()
 
