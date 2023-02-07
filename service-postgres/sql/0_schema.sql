@@ -38,6 +38,7 @@ SET default_table_access_method = heap;
 
 CREATE TABLE public.meals (
     id integer NOT NULL,
+    code character varying NOT NULL,
     name character varying NOT NULL,
     description character varying DEFAULT ''::character varying NOT NULL
 );
@@ -73,6 +74,7 @@ ALTER SEQUENCE public.meals_id_seq OWNED BY public.meals.id;
 
 CREATE TABLE public.rewards (
     id integer NOT NULL,
+    code character varying NOT NULL,
     name character varying NOT NULL,
     description character varying NOT NULL
 );
@@ -373,11 +375,27 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
+-- Name: meals meals_code_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.meals
+    ADD CONSTRAINT meals_code_key UNIQUE (code);
+
+
+--
 -- Name: meals meals_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.meals
     ADD CONSTRAINT meals_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: rewards rewards_code_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.rewards
+    ADD CONSTRAINT rewards_code_key UNIQUE (code);
 
 
 --

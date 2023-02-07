@@ -34,7 +34,7 @@ def create_app():
     task_manager.init_app(app)
     gmail_manager.init_app(app)
     excel_manager.init_app(app)
-    usher_manager.init_app(app)
+    usher_manager.init_app(app, db)
 
     with app.app_context():
         from . import routes_main, routes_auth, routes_admin, routes_volunteer
