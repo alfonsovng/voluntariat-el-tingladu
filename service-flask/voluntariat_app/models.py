@@ -83,6 +83,7 @@ class UserDiet(db.Model):
 class Meal(db.Model):
     __tablename__ = "meals"
     id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String, unique=True, nullable=False)
     name = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
 
@@ -98,6 +99,7 @@ class UserMeal(db.Model):
 class Reward(db.Model):
     __tablename__ = "rewards"
     id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String, unique=True, nullable=False)
     name = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False) #'' es un possible valor
 
