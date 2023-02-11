@@ -1,25 +1,15 @@
 {% extends '_registered.html' %}
 
+{% from "_form_macros.html" import select, textarea with context %}
+
 {% block content %}
 <div class="row justify-content-md-center">
     <div class="col-md-8 col-lg-7 col-xl-6">
       <h3>{% block title %}Incidencia{% endblock %}</h3>
       <form role="form" method='POST'>
         {{ form.csrf_token }}
-        <div class="form-group">
-          {{ form.type.label }}
-          {{ form.type(class='form-control') }}
-          {% for error in form.type.errors %}
-            <p class="form-error">{{ error }}</p>
-          {% endfor %}
-        </div>
-        <div class="form-group">
-          {{ form.description.label }}
-          {{ form.description(class='form-control', rows=8) }}
-          {% for error in form.description.errors %}
-            <p class="form-error">{{ error }}</p>
-          {% endfor %}
-        </div>
+        {{ select(form.type) }}
+        {{ textarea(form.description, rows=8) }}
         <div class="btn-group">
           <a class="btn btn-secondary" href="/dashboard"> &#x3c;&#x3c; Torna enrera</a>
           {{ form.submit(class='btn btn-success') }}

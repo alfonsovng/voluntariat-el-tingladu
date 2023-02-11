@@ -20,11 +20,11 @@
           <h4>{{task.name}}</h4>
           <h4><small>{{ task.description }}</small></h4>
         </li>
-        {% for shift,taked,selected,user_comments in shifts_and_selected %}
+        {% for shift,taked,selected,comments in shifts_and_selected %}
           {% set disponibles = (shift.slots - taked) if shift.slots > 0 else 1 %}
           {% set no_accessible = disponibles <= 0 and not selected %}
         <li class="list-group-item {{'list-group-item-light' if no_accessible }}">
-          <label for="{{shift.id}}-id" class="d-flex justify-content-start checkbox-with-user-comments">
+          <label for="{{shift.id}}-id" class="d-flex justify-content-start checkbox-with-hidden-texarea">
             <div>
               {% if no_accessible %}
                 <input id="{{shift.id}}-id-disabled" type="checkbox" disabled>
@@ -34,9 +34,7 @@
             </div>
             <div class="flex-grow-1">
               <h5>{{shift.name}}</h6>
-              <h5><small class="font-italic d-block">
-                {{shift.description}}
-              </small></h5>
+              <h5><small class="font-italic d-block">{{shift.description}}</small></h5>
               <h5>
                 {% if shift.slots > 0 %}
                 <span class="badge badge-info">llocs totals: {{shift.slots}}</span>
@@ -49,10 +47,10 @@
                   {% endif %}
                 {% endif %}
               </h5>
-              <div class="form-group checkbox-user-comments text-right font-italic">
+              <div class="form-group hidden-texarea text-right font-italic">
                 <label for="user-comments-{{shift.id}}">Observacions sobre aquest torn</label>
                 <textarea class="form-control" id="user-comments-{{shift.id}}" 
-                  name="user-comments-{{shift.id}}" rows="2" {{'disabled' if read_only}}>{{ user_comments if user_comments is not none }}</textarea>
+                  name="user-comments-{{shift.id}}" rows="2" {{'disabled' if read_only}}>{{ comments if comments is not none }}</textarea>
               </div>
             </div>
           </label>
@@ -64,7 +62,7 @@
       {% if form.password %}
         <div class="form-group">
           {{ form.password.label }}
-          {{ form.password(placeholder='Aquesta tasca requereix una contrasenya',class='form-control',autocomplete='one-time-code') }}
+          {{ form.password(placeholder='Aquesta tasca requereix una contrasenya',class='form-control') }}
           {% for error in form.password.errors %}
             <p class="form-error">{{ error }}</p>
           {% endfor %}

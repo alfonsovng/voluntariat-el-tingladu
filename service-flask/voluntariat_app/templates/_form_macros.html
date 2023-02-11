@@ -1,0 +1,89 @@
+{% macro checkbox(field, read_only=False) %}
+<div class="form-group">
+  <div class="d-flex justify-content-start">
+    <div>{{ field(disabled=read_only) }}</div>
+    <div>
+      {{ field.label }}
+      {% if field.description %}
+      <label class="small font-italic d-block" for="{{field.name}}">{{field.description}}</label>
+      {% endif %}
+    </div>
+  </div>
+  {% for error in field.errors %}
+    <p class="form-error">{{ error }}</p>
+  {% endfor %}
+</div> 
+{% endmacro %}
+
+{% macro checkbox_with_hidden_textarea(checkbox_field, textarea_field, read_only=False) %}
+<div class="form-group checkbox-with-hidden-texarea">
+  <div class="d-flex justify-content-start">
+    <div>{{ checkbox_field(disabled=read_only) }}</div>
+    <div>
+      {{ checkbox_field.label }}
+      {% if checkbox_field.description %}
+      <label class="small font-italic d-block" for="{{checkbox_field.name}}">{{checkbox_field.description}}</label>
+      {% endif %}
+    </div>
+    {% for error in checkbox_field.errors %}
+      <p class="form-error">{{ error }}</p>
+    {% endfor %}
+  </div>
+  <div class="hidden-texarea text-right font-italic">
+    {{ textarea_field.label }}
+    {{ textarea_field(class='form-control', disabled=read_only, rows=2) }}
+    {% for error in textarea_field.errors %}
+      <p class="form-error">{{ error }}</p>
+    {% endfor %}
+  </div>
+</div>
+{% endmacro %}
+
+
+
+{% macro checkbox2(field, description=None, read_only=False) %}
+<div class="form-group">
+  <div class="d-flex justify-content-start">
+    <div>{{ field(disabled=read_only) }}</div>
+    <div>
+      {{ field.label }}
+      {% if description %}
+      <label class="small font-italic d-block" for="{{field.name}}">{{description|safe}}</label>
+      {% endif %}
+    </div>
+  </div>
+  {% for error in field.errors %}
+    <p class="form-error">{{ error }}</p>
+  {% endfor %}
+</div> 
+{% endmacro %}
+
+{% macro text(field, placeholder="") %}
+<div class="form-group">
+  {{ field.label }}
+  {{ field(class='form-control', placeholder=placeholder) }}
+  {% for error in field.errors %}
+    <p class="form-error">{{ error }}</p>
+  {% endfor %}
+</div>
+{% endmacro %}
+
+{% macro select(field) %}
+<div class="form-group">
+  {{ field.label }}
+  {{ field(class='form-control') }}
+  {% for error in form.type.errors %}
+    <p class="form-error">{{ error }}</p>
+  {% endfor %}
+</div>
+{% endmacro %}
+
+{% macro textarea(field, rows=4, read_only=False) %}
+<div class="form-group">
+  {{ field.label }}
+  {{ field(class='form-control', disabled=read_only, rows=rows) }}
+  {% for error in field.errors %}
+    <p class="form-error">{{ error }}</p>
+  {% endfor %}
+</div>
+{% endmacro %}

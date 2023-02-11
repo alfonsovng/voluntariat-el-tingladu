@@ -25,7 +25,7 @@ class IncidenceForm(FlaskForm):
     submit = SubmitField("Envia l'incidència")
 
 class EmailForm(FlaskForm):
-    subject = StringField("Assumpte", validators=[DataRequired()])
+    subject = StringField("Assumpte", validators=[DataRequired()], filters = [trim])
     body = TextAreaField(
         "Contingut del missatge", 
         validators=[

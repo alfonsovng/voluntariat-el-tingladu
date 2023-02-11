@@ -34,7 +34,7 @@ class Rewards15Anniversary(RewardsImpl):
         # No es pot renunciar.
         ticket = UserTicket(
             user_id = user_id,
-            options = [self.entrada_15_aniversari_id],
+            ticket_options = [self.entrada_15_aniversari_id],
             selected = self.entrada_15_aniversari_id
         )
 
@@ -50,8 +50,8 @@ class Rewards15Anniversary(RewardsImpl):
         # Es pot renunciar. No surt seleccionat per defecte
         meal = UserMeal(
             user_id = user_id,
-            options = [0,self.sopar_15_aniversari_id],
-            selected = 0
+            meal_id = self.sopar_15_aniversari_id,
+            selected = False
         )
 
         return [meal]
@@ -77,13 +77,17 @@ class RewardsManager:
             current_shifts = current_shifts
         )
 
-        merged_tickets = self.merge(
+        merged_tickets = self.merge_tickets(
             current_stuff = current_tickets,
             new_stuff = new_tickets
         )
 
         UserTicket.query.filter(UserTicket.user_id == user_id).delete()
         db.session.add_all(merged_tickets)
+
+    def merge_tickets(self, current_stuff, new_stuff):
+        # TODO
+        return new_stuff
 
     def update_meals(self, user_id, current_shifts):
         from .models import UserMeal
@@ -95,13 +99,13 @@ class RewardsManager:
             current_shifts = current_shifts
         )
 
-        merged_meals = self.merge(
+        merged_meals = self.merge_meals(
             current_stuff = current_meals,
             new_stuff = new_meals
         )
         UserMeal.query.filter(UserMeal.user_id == user_id).delete()
         db.session.add_all(merged_meals)
 
-    def merge(self, current_stuff, new_stuff):
+    def merge_meals(self, current_stuff, new_stuff):
         # TODO
         return new_stuff

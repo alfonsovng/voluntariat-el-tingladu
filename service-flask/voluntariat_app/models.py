@@ -15,8 +15,7 @@ class UserShift(db.Model):
     __tablename__ = "user_shifts"
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
     shift_id = db.Column(db.Integer, db.ForeignKey("shifts.id"), primary_key=True)
-    user_comments = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
-    admin_comments = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
+    comments = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
 
 class User(UserMixin, db.Model):
     __tablename__ = "users"
@@ -33,7 +32,7 @@ class User(UserMixin, db.Model):
     role = db.Column(db.Enum(UserRole, name='users_role'), nullable=False)
     change_password_token = db.Column(db.String)
     # aliased pq quan fem join de user amb user_shifts no doni problemes
-    has_shifts = db.column_property(exists().where(aliased(UserShift).user_id==id))
+    has_shifts = db.column_property(exists().where(aliased(UserShift,name="user_shifts_to_count_them").user_id==id))
 
     @hybrid_property
     def hashid(self):
@@ -80,7 +79,7 @@ class UserDiet(db.Model):
     vegetarian = db.Column(db.Boolean, nullable=False, default=False, server_default=text("FALSE"))
     no_gluten = db.Column(db.Boolean, nullable=False, default=False, server_default=text("FALSE"))
     no_lactose = db.Column(db.Boolean, nullable=False, default=False, server_default=text("FALSE"))
-    user_comments = db.Column(db.String, nullable=False, default='', server_default='') #'' es un possible valor
+    comments = db.Column(db.String, nullable=False, default='', server_default='') #'' es un possible valor
 
 class Meal(db.Model):
     __tablename__ = "meals"
@@ -93,10 +92,9 @@ class UserMeal(db.Model):
     __tablename__ = "user_meals"
     id = db.Column(db.BigInteger, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    options = db.Column(ARRAY(db.Integer), nullable=False) # zero pot ser un valor
-    selected = db.Column(db.Integer, nullable=False, server_default=text("0")) # zero pot ser un valor
-    user_comments = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
-    admin_comments = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
+    meal_id = db.Column(db.Integer, db.ForeignKey("meals.id"), nullable=False)
+    selected = db.Column(db.Boolean, nullable=False, default=False, server_default=text("FALSE"))
+    comments = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
 
 class Ticket(db.Model):
     __tablename__ = "tickets"
@@ -109,7 +107,6 @@ class UserTicket(db.Model):
     __tablename__ = "user_tickets"
     id = db.Column(db.BigInteger, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    options = db.Column(ARRAY(db.Integer), nullable=False) # zero pot ser un valor
+    ticket_options = db.Column(ARRAY(db.Integer), nullable=False) # zero pot ser un valor
     selected = db.Column(db.Integer, nullable=False, server_default=text("0")) # zero pot ser un valor
-    user_comments = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
-    admin_comments = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
+    comments = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor

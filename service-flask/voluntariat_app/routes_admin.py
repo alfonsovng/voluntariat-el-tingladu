@@ -1,8 +1,8 @@
 from flask import Blueprint, redirect, render_template, url_for, request, Response, abort, stream_with_context
 from flask_login import current_user, login_required
 from .forms_message import EmailForm
-from .helper import flash_error, flash_info, load_volunteer, logger
-from .models import User, Task, Shift, UserShift
+from .helper import flash_error, flash_info, load_volunteer
+from .models import User, Task, Shift, UserShift, Meal
 from . import db, hashid_manager, excel_manager, task_manager, params_manager
 from .plugin_gmail import TaskMessageEmail
 import sqlalchemy
@@ -116,7 +116,7 @@ def shifts(task_id):
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
         select = f"""select t.name as tasca, s.name as torn,
-            u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil, us.user_comments as observacions 
+            u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil, us.comments as observacions 
             from users as u 
             join user_shifts as us on u.id = us.user_id
             join shifts as s on s.id = us.shift_id
@@ -167,7 +167,7 @@ def shift_detail(task_id, shift_id):
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
         select = f"""select t.name as tasca, s.name as torn,
-            u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil, us.user_comments as observacions 
+            u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil, us.comments as observacions 
             from users as u 
             join user_shifts as us on u.id = us.user_id
             join shifts as s on s.id = us.shift_id
@@ -197,7 +197,7 @@ def shift_detail(task_id, shift_id):
         UserShift.shift_id == shift_id
     ).order_by(User.surname.asc(), User.name.asc()).all()
 
-    return render_template('admin-shift-volunteers.html',
+    return render_template('admin-shift-detail.html',
         task=task,shift=shift,users_with_shifts=users_with_shifts,
         user=current_user
     )
@@ -209,7 +209,70 @@ def meals():
         flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
         return redirect(url_for('volunteer_bp.dashboard'))
 
-    return render_template('admin-meals.html',user=current_user)
+    excel = request.args.get('excel', default=False, type=bool)
+    if excel:
+        #TODO... afegir alergies
+
+        select = f"""select m.name as àpat,
+            u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil, um.comments as observacions 
+            from users as u 
+            join user_meals as um on u.id = um.user_id
+            join meals as m on m.id = um.meal_id where um.selected
+            order by m.id asc, cognoms asc, nom asc"""
+
+        file_name = hashid_manager.create_unique_file_name(
+            id = current_user.id,
+            name = "MEALS",
+            extension = ".xlsx"
+        )
+        return generate_excel(
+            select=select,
+            file_name=file_name
+        )
+    meals = Meal.query.order_by(Meal.id.asc()).all()
+
+    return render_template('admin-meals.html',meals=meals,user=current_user)
+
+@admin_bp.route('/admin/meals/<int:meal_id>')
+@login_required
+def meal_detail(meal_id):
+    if not current_user.is_admin:
+        flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
+        return redirect(url_for('volunteer_bp.dashboard'))
+
+    excel = request.args.get('excel', default=False, type=bool)
+    if excel:
+        #TODO... afegir alergies
+        
+        select = f"""select m.name as àpat,
+            u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil, um.comments as observacions 
+            from users as u 
+            join user_meals as um on u.id = um.user_id
+            join meals as m on m.id = um.meal_id
+            where m.id={meal_id} and um.selected
+            order by cognoms asc, nom asc"""
+
+        file_name = hashid_manager.create_unique_file_name(
+            id = current_user.id,
+            name = f"MEAL {meal_id}",
+            extension = ".xlsx"
+        )
+        return generate_excel(
+            select=select,
+            file_name=file_name
+        )
+
+    meal = Meal.query.filter_by(id = meal_id).first()
+    if meal is None:
+        flash_error("Adreça incorrecta")
+        return redirect(url_for('main_bp.init'))
+
+    users_with_meals = [] 
+
+    return render_template('admin-meal-detail.html',
+        meal=meal,users_with_meals=users_with_meals,
+        user=current_user
+    )
 
 @admin_bp.route('/admin/tickets')
 @login_required
