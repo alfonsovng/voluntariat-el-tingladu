@@ -1,5 +1,7 @@
 {% extends '_unregistered.html' %}
 
+{% from "_form_macros.html" import checkbox, text with context %}
+
 {% block content %}
 
 <div class="row justify-content-md-center">
@@ -7,58 +9,12 @@
     <h1>{% block title %}Registra't{% endblock %}</h1>
     <form role="form" method='POST'>
       {{ form.csrf_token }}
-      <div class="form-group">
-        {{ form.name.label }}
-        {{ form.name(placeholder='com et dius',class='form-control') }}
-        {% for error in form.name.errors %}
-          <p class="form-error">{{ error }}</p>
-        {% endfor %}
-      </div>
-      <div class="form-group">
-        {{ form.surname.label }}
-        {{ form.surname(placeholder='primer cognom i segon cognom',class='form-control') }}
-        {% for error in form.surname.errors %}
-          <p class="form-error">{{ error }}</p>
-        {% endfor %}
-      </div>
-      <div class="form-group">
-        {{ form.email.label }}
-        {{ form.email(placeholder='una@adreça.email',class='form-control') }}
-        {% for error in form.email.errors %}
-          <p class="form-error">{{ error }}</p>
-        {% endfor %}
-      </div>
-      <div class="form-group">
-        {{ form.phone.label }}
-        {{ form.phone(placeholder='opcional, per tal millorar la comunicació',class='form-control') }}
-        {% for error in form.phone.errors %}
-          <p class="form-error">{{ error }}</p>
-        {% endfor %}
-      </div>
-      <div class="form-group">
-        <div class="d-flex justify-content-start">
-          <div>{{ form.adult() }}</div>
-          <div>
-            {{ form.adult.label }}
-            <label class="small font-italic d-block" for="adult">{{form.adult.description}}</label>
-          </div>
-        </div>
-        {% for error in form.adult.errors %}
-          <p class="form-error">{{ error }}</p>
-        {% endfor %}
-      </div>      
-      <div class="form-group">
-        <div class="d-flex justify-content-start">
-          <div>{{ form.store_email() }}</div>
-          <div>
-            {{ form.store_email.label }}
-            <label class="small font-italic d-block" for="store_email">{{form.store_email.description}}</label>
-          </div>
-        </div>
-        {% for error in form.store_email.errors %}
-          <p class="form-error">{{ error }}</p>
-        {% endfor %}
-      </div>
+      {{ text(form.name, placeholder="el teu nom") }}
+      {{ text(form.surname, placeholder="primer cognom i segon cognom") }}
+      {{ text(form.email, placeholder="el@teu.email") }}
+      {{ text(form.phone, placeholder="opcional, per tal millorar la comunicaci") }}
+      {{ checkbox(form.adult) }}
+      {{ checkbox(form.store_email) }}
       {{ form.submit(class='btn btn-lg btn-success') }}
     </form>
     <p>

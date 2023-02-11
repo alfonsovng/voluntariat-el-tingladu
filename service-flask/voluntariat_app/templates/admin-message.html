@@ -6,6 +6,8 @@
 {% endblock %}
 -->
 
+{% from "_form_macros.html" import text, textarea with context %}
+
 {% block content %}
 <div class="row justify-content-md-center">
   <div class="col-md-8 col-lg-7 col-xl-6">
@@ -13,20 +15,8 @@
     <h3><small class="text-muted">{{ volunteer.full_name }}</small></h3>
     <form role="form" method='POST'>
       {{ form.csrf_token }}
-      <div class="form-group">
-        {{ form.subject.label }}
-        {{ form.subject(class='form-control') }}
-        {% for error in form.subject.errors %}
-          <p class="form-error">{{ error }}</p>
-        {% endfor %}
-      </div>
-      <div class="form-group">
-        {{ form.body.label }}
-        {{ form.body(class='form-control', rows=8) }}
-        {% for error in form.body.errors %}
-          <p class="form-error">{{ error }}</p>
-        {% endfor %}
-      </div>
+      {{ text(form.subject) }}
+      {{ textarea(form.body, rows=8) }}
       <div class="btn-group">
         <a class="btn btn-secondary" href="/v/{{ volunteer.hashid }}"> &#x3c;&#x3c; Torna enrera</a>
         {{ form.submit(class='btn btn-success') }}

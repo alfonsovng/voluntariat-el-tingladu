@@ -1,0 +1,55 @@
+{% extends '_registered.html' %}
+
+<!--
+{% block admin_css %}
+<link href="/static/css/voluntariat_app_admin.css" rel="stylesheet">
+{% endblock %}
+-->
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-12">
+        <h3>Administració</h3>
+        <h3><small class="text-muted">{% block title %}Torn{% endblock %}</small></h3>
+        <div class="table-responsive">
+            <table class="table table-light table-striped table-hover table-bordered table-sm">
+                <thead>
+                    <tr>
+                        <th colspan="5">
+                            {{task.name}}: {{task.description}}
+                        </th>
+                    </tr>
+                    <tr>
+                        <th colspan="5">
+                            {{shift.name}}: {{shift.description}}
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>COGNOMS</th>
+                        <th>NOM</th>
+                        <th>EMAIL</th>
+                        <th>MÒBIL</th>
+                        <th>OBSERVACIONS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for (u,us) in users_with_shifts %}
+                        <tr>
+                            <td>{{u.surname}}</td>
+                            <td>{{u.name}}</td>
+                            <td>{{u.email}}</td>
+                            <td>{{u.phone}}</td>
+                            <td>{{us.comments}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <br />
+        <div class="btn-group">
+            <a class="btn btn-secondary" href="/admin/tasks/{{task.id}}"> &#x3c;&#x3c; Torna enrera</a>
+            <a class="btn btn-primary" href="?excel=1">Descarrega en format Excel</a>
+        </div>
+    </div>
+</div>  
+{% endblock %}

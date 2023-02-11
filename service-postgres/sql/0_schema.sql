@@ -187,7 +187,7 @@ CREATE TABLE public.user_diets (
     vegetarian boolean DEFAULT false NOT NULL,
     no_gluten boolean DEFAULT false NOT NULL,
     no_lactose boolean DEFAULT false NOT NULL,
-    user_comments character varying DEFAULT ''::character varying NOT NULL
+    comments character varying DEFAULT ''::character varying NOT NULL
 );
 
 
@@ -200,10 +200,9 @@ ALTER TABLE public.user_diets OWNER TO postgres;
 CREATE TABLE public.user_meals (
     id bigint NOT NULL,
     user_id integer NOT NULL,
-    options integer[] NOT NULL,
-    selected integer DEFAULT 0 NOT NULL,
-    user_comments character varying DEFAULT ''::character varying NOT NULL,
-    admin_comments character varying DEFAULT ''::character varying NOT NULL
+    meal_id integer NOT NULL,
+    selected boolean DEFAULT false NOT NULL,
+    comments character varying DEFAULT ''::character varying NOT NULL
 );
 
 
@@ -237,8 +236,7 @@ ALTER SEQUENCE public.user_meals_id_seq OWNED BY public.user_meals.id;
 CREATE TABLE public.user_shifts (
     user_id integer NOT NULL,
     shift_id integer NOT NULL,
-    user_comments character varying DEFAULT ''::character varying NOT NULL,
-    admin_comments character varying DEFAULT ''::character varying NOT NULL
+    comments character varying DEFAULT ''::character varying NOT NULL
 );
 
 
@@ -251,10 +249,9 @@ ALTER TABLE public.user_shifts OWNER TO postgres;
 CREATE TABLE public.user_tickets (
     id bigint NOT NULL,
     user_id integer NOT NULL,
-    options integer[] NOT NULL,
+    ticket_options integer[] NOT NULL,
     selected integer DEFAULT 0 NOT NULL,
-    user_comments character varying DEFAULT ''::character varying NOT NULL,
-    admin_comments character varying DEFAULT ''::character varying NOT NULL
+    comments character varying DEFAULT ''::character varying NOT NULL
 );
 
 
@@ -484,6 +481,14 @@ ALTER TABLE ONLY public.shifts
 
 ALTER TABLE ONLY public.user_diets
     ADD CONSTRAINT user_diets_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: user_meals user_meals_meal_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_meals
+    ADD CONSTRAINT user_meals_meal_id_fkey FOREIGN KEY (meal_id) REFERENCES public.meals(id);
 
 
 --

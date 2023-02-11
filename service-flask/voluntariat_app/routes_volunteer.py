@@ -2,9 +2,9 @@ from flask import Blueprint, redirect, render_template, url_for, request
 from flask_login import current_user, login_required
 from .helper import flash_error, flash_info, load_volunteer, flash_warning, trim
 from . import db, task_manager, params_manager, rewards_manager
-from .forms_volunteer import ProfileForm, ChangePasswordForm, ShiftsForm, ShiftsFormWithPassword, DietForm
+from .forms_volunteer import ProfileForm, ChangePasswordForm, ShiftsForm, ShiftsFormWithPassword, DietForm, MealsForm
 from .plugin_gmail import TaskConfirmPasswordChangeEmail
-from .models import Task, Shift, UserShift, UserDiet
+from .models import Task, Shift, UserShift, UserDiet, UserMeal, Meal
 import sqlalchemy
 
 # Blueprint Configuration
@@ -117,7 +117,7 @@ def shifts(volunteer_hashid, task_id):
         flash_error("Adreça incorrecta")
         return redirect(url_for('main_bp.init'))
     
-    read_only = not params_manager.allow_modifications and not current_user.is_admin
+    read_only = __is_read_only(current_user)
 
     # els admins no necessiten password
     if task.password and not current_user.is_admin and not read_only:
@@ -126,80 +126,91 @@ def shifts(volunteer_hashid, task_id):
         form = ShiftsForm()
 
     if not read_only and form.validate_on_submit():
-
         # els admins no necessiten password
         if not current_user.is_admin and task.password and task.password != form.password.data:
             flash_warning("Contrasenya per apuntar-se a aquests torns incorrecta")
         else:
-            # esborro tots els user_shifts d'aquest
-            db.session.execute(f"""
-                delete from user_shifts where user_id = {volunteer.id} 
-                and shift_id in (select id from shifts where task_id = {task_id})
-            """)        
-
-            # afegeixo els torns
-            for shift_id in request.form.getlist("shifts"):
-
-                taked = db.session.execute(f"select count(*) from user_shifts where shift_id = {shift_id}").scalar()
-                shift = Shift.query.filter_by(id = shift_id).first()
-
-                # hi ha espai lliure!
-                if shift is not None and (shift.slots <= 0 or shift.slots > taked):
-                    user_comments = trim(request.form.get(f"user-comments-{shift_id}"))
-                    user_shift = UserShift(
-                        user_id = volunteer.id,
-                        shift_id = int(shift_id),
-                        user_comments = user_comments
-                    )
-                    db.session.add(user_shift)
-                else:
-                    flash_warning(f"No s'ha pogut registrar el torn: {shift.name}")
-
-            current_shifts = UserShift.query.filter_by(user_id = volunteer.id).all()
-
-            rewards_manager.update_tickets(
-                user_id = volunteer.id,
-                current_shifts = current_shifts
+            __update_shifts(
+                volunteer = volunteer,
+                task_id = task_id,
+                form = request.form
             )
-
-            rewards_manager.update_meals(
-                user_id = volunteer.id,
-                current_shifts = current_shifts
-            )
-
-            db.session.commit()
-
             flash_info("S'han registrat els torns")
 
         return redirect(url_for('volunteer_bp.shifts',volunteer_hashid=volunteer_hashid,task_id=task_id))
     else:
-        # subquery que calcula, donat un usuari i una tasca, si ha seleccionat el torn (t/f) i les possibles observacions que ha posat
-        selected_shifts_subquery = sqlalchemy.text(f"""
-            select s.id as shift_id, COALESCE(c.taked,0) as taked, user_id is not null as selected, u.user_comments as user_comments 
-            from shifts as s left join 
-                (select shift_id, user_id, user_comments from user_shifts where user_id = {volunteer.id}) as u 
-            on s.id = u.shift_id left join 
-                (select shift_id, count(*) as taked from user_shifts group by shift_id) as c 
-            on s.id = c.shift_id
-            where s.task_id = {task_id}
-        """).columns(shift_id=db.Integer,taked=db.Integer,selected=db.Boolean, user_comments=db.String).subquery("selected_shifts_subquery")
-
-        shifts_and_selected = db.session.query(
-            Shift, selected_shifts_subquery.c.taked, selected_shifts_subquery.c.selected, selected_shifts_subquery.c.user_comments, 
-        ).join(
-            selected_shifts_subquery, Shift.id == selected_shifts_subquery.c.shift_id
-        ).order_by(
-            Shift.id.asc()
-        )
+        shifts_and_selected = __select_shifts_and_selected(volunteer_id=volunteer.id, task_id=task_id)
 
         if read_only:
             flash_info("S'ha bloquejat la modificació d'aquestes dades. Si hi ha algun problema, notifica una incidència.")
         
-        return render_template('volunteer-shifts.html',form=form,
+        return render_template('volunteer-shifts.html',
+            form=form,
             read_only=read_only,
-            task=task,shifts_and_selected=shifts_and_selected,
-            volunteer=volunteer,user=current_user
+            task=task,
+            shifts_and_selected=shifts_and_selected,
+            volunteer=volunteer,
+            user=current_user
         )
+
+def __update_shifts(volunteer, task_id, form):
+    # esborro tots els user_shifts d'aquest
+    db.session.execute(f"""
+        delete from user_shifts where user_id = {volunteer.id} 
+        and shift_id in (select id from shifts where task_id = {task_id})
+    """)        
+
+    # afegeixo els torns
+    for shift_id in form.getlist("shifts"):
+
+        taked = db.session.execute(f"select count(*) from user_shifts where shift_id = {shift_id}").scalar()
+        shift = Shift.query.filter_by(id = shift_id).first()
+
+        # hi ha espai lliure!
+        if shift is not None and (shift.slots <= 0 or shift.slots > taked):
+            comments = trim(form.get(f"user-comments-{shift_id}"))
+            user_shift = UserShift(
+                user_id = volunteer.id,
+                shift_id = int(shift_id),
+                comments = comments
+            )
+            db.session.add(user_shift)
+        else:
+            flash_warning(f"No s'ha pogut registrar el torn: {shift.name}")
+
+    current_shifts = UserShift.query.filter_by(user_id = volunteer.id).all()
+
+    rewards_manager.update_tickets(
+        user_id = volunteer.id,
+        current_shifts = current_shifts
+    )
+
+    rewards_manager.update_meals(
+        user_id = volunteer.id,
+        current_shifts = current_shifts
+    )
+
+    db.session.commit()
+
+def __select_shifts_and_selected(volunteer_id, task_id):
+    # subquery que calcula, donat un usuari i una tasca, si ha seleccionat el torn (t/f) i les possibles observacions que ha posat
+    selected_shifts_subquery = sqlalchemy.text(f"""
+        select s.id as shift_id, COALESCE(c.taked,0) as taked, user_id is not null as selected, u.comments as comments 
+        from shifts as s left join 
+            (select shift_id, user_id, comments from user_shifts where user_id = {volunteer_id}) as u 
+        on s.id = u.shift_id left join 
+            (select shift_id, count(*) as taked from user_shifts group by shift_id) as c 
+        on s.id = c.shift_id
+        where s.task_id = {task_id}
+    """).columns(shift_id=db.Integer,taked=db.Integer,selected=db.Boolean, comments=db.String).subquery("selected_shifts_subquery")
+
+    return db.session.query(
+        Shift, selected_shifts_subquery.c.taked, selected_shifts_subquery.c.selected, selected_shifts_subquery.c.comments, 
+    ).join(
+        selected_shifts_subquery, Shift.id == selected_shifts_subquery.c.shift_id
+    ).order_by(
+        Shift.id.asc()
+    )
 
 @volunteer_bp.route('/v/<volunteer_hashid>/meals', methods=["GET", "POST"])
 @login_required
@@ -209,15 +220,71 @@ def meals(volunteer_hashid):
         flash_error("Adreça incorrecta")
         return redirect(url_for('main_bp.init'))
 
-    read_only = not params_manager.allow_modifications and not current_user.is_admin
+    read_only = __is_read_only(current_user)
     if not volunteer.has_shifts:
         flash_warning("Abans d'accedir a aquesta secció s'han de completar les Tasques i Torns")
         read_only = True
 
     diet = UserDiet.query.filter_by(user_id = volunteer.id).first()
-    form = DietForm(obj = diet)
+    diet_form = DietForm(obj = diet)
 
-    return render_template('volunteer-meals.html',read_only=read_only,form=form,volunteer=volunteer,user=current_user)
+    meals = Meal.query.all()
+    user_meals = UserMeal.query.filter_by(user_id = volunteer.id).order_by(UserMeal.id.asc()).all()
+    meals_form = __create_meals_form(meals = meals, user_meals = user_meals)
+
+    if not read_only:
+        if diet_form.validate_on_submit():
+            # update de diet
+            diet_form.populate_obj(diet)
+            db.session.commit()
+            flash_info("S'han registrat els canvis en la teva dieta")
+            return redirect(url_for('volunteer_bp.meals',volunteer_hashid=volunteer_hashid))
+
+        elif meals_form.validate_on_submit():
+            # update de meals
+            for um in user_meals:
+                um.selected = meals_form[f"selected-{um.id}"].data
+                if um.selected:
+                    um.comments = meals_form[f"comments-{um.id}"].data
+                else:
+                    um.comments = ""
+
+            db.session.commit()
+            flash_info("S'han registrat els canvis en els teus àpats")
+            return redirect(url_for('volunteer_bp.meals',volunteer_hashid=volunteer_hashid))
+
+    return render_template('volunteer-meals.html',read_only=read_only,
+        diet_form=diet_form,meals_form=meals_form,
+        volunteer=volunteer,user=current_user
+    )
+
+def __create_meals_form(meals, user_meals):
+    from wtforms import BooleanField, TextAreaField
+
+    if not user_meals:
+        return MealsForm()
+
+    meals_dict = {}
+    for m in meals:
+        meals_dict[m.id] = m.name
+
+    class F(MealsForm):
+        pass
+    
+    setattr(F, "ids", [str(um.id) for um in user_meals])
+
+    for um in user_meals:
+        boolean_field = BooleanField(meals_dict[um.meal_id], default = um.selected)
+        setattr(F, f"selected-{um.id}", boolean_field)
+
+        text_area_field = TextAreaField(
+            "Comentaris", 
+            filters = [trim],
+            default = um.comments
+        )
+        setattr(F, f"comments-{um.id}", text_area_field)
+
+    return F()
 
 @volunteer_bp.route('/v/<volunteer_hashid>/tickets', methods=["GET", "POST"])
 @login_required
@@ -231,3 +298,6 @@ def tickets(volunteer_hashid):
         flash_warning("Abans d'accedir a aquesta secció s'han de completar les Tasques i Torns")
 
     return render_template('volunteer-tickets.html',volunteer=volunteer,user=current_user)
+
+def __is_read_only(current_user):
+    return not params_manager.allow_modifications and not current_user.is_admin

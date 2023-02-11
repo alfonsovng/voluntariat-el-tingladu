@@ -94,11 +94,11 @@ input[type='checkbox']:checked:after {
     color:white;
 }
 
-.checkbox-user-comments {
+.hidden-texarea {
     display: none;
 }
 
-.checkbox-with-user-comments:has(input[type='checkbox']:checked) .checkbox-user-comments {
+.checkbox-with-hidden-texarea:has(input[type='checkbox']:checked) .hidden-texarea {
     display: block;
 }
 
