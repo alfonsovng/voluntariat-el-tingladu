@@ -1,7 +1,7 @@
 from flask import Blueprint, redirect, render_template, url_for, request
 from flask_login import current_user, login_required
 from .helper import flash_error, flash_info, load_volunteer, flash_warning, trim
-from . import db, task_manager, params_manager, usher_manager
+from . import db, task_manager, params_manager, rewards_manager
 from .forms_volunteer import ProfileForm, ChangePasswordForm, ShiftsForm, ShiftsFormWithPassword, DietForm
 from .plugin_gmail import TaskConfirmPasswordChangeEmail
 from .models import Task, Shift, UserShift, UserDiet
@@ -157,12 +157,12 @@ def shifts(volunteer_hashid, task_id):
 
             current_shifts = UserShift.query.filter_by(user_id = volunteer.id).all()
 
-            usher_manager.update_rewards(
+            rewards_manager.update_tickets(
                 user_id = volunteer.id,
                 current_shifts = current_shifts
             )
 
-            usher_manager.update_meals(
+            rewards_manager.update_meals(
                 user_id = volunteer.id,
                 current_shifts = current_shifts
             )
@@ -219,9 +219,9 @@ def meals(volunteer_hashid):
 
     return render_template('volunteer-meals.html',read_only=read_only,form=form,volunteer=volunteer,user=current_user)
 
-@volunteer_bp.route('/v/<volunteer_hashid>/rewards', methods=["GET", "POST"])
+@volunteer_bp.route('/v/<volunteer_hashid>/tickets', methods=["GET", "POST"])
 @login_required
-def rewards(volunteer_hashid):
+def tickets(volunteer_hashid):
     volunteer = load_volunteer(current_user,volunteer_hashid)
     if volunteer is None:
         flash_error("Adreça incorrecta")
@@ -230,4 +230,4 @@ def rewards(volunteer_hashid):
     if not volunteer.has_shifts:
         flash_warning("Abans d'accedir a aquesta secció s'han de completar les Tasques i Torns")
 
-    return render_template('volunteer-rewards.html',volunteer=volunteer,user=current_user)
+    return render_template('volunteer-tickets.html',volunteer=volunteer,user=current_user)

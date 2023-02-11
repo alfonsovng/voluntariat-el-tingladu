@@ -62,7 +62,7 @@
                             <div class="btn-group">
                                 <a class="btn btn-dark bg-task text-white" href="/v/{{volunteer.hashid}}/tasks">Les seves tasques i torns</a>
                                 <a class="btn btn-dark bg-meal text-white" href="/v/{{volunteer.hashid}}/meals">Els seus àpats i la seva dieta</a>
-                                <a class="btn btn-dark bg-reward text-white" href="/v/{{volunteer.hashid}}/rewards">Les seves recompenses</a>
+                                <a class="btn btn-dark bg-ticket text-white" href="/v/{{volunteer.hashid}}/tickets">Les seves entrades</a>
                             </div>
                         </td>
                     </tr>
@@ -71,27 +71,27 @@
                     </tr>
                     <tr>
                         <td class="text-monospace text-xl-right">
-                            {% if volunteer.ticket1 %}
+                            {% if volunteer.purchased_ticket1 %}
                             <a href="#" data-toggle="tooltip" title="Fes click per copiar-ho" onclick="return copy_to_clipboard(this)">
-                                {{volunteer.ticket1}}
+                                {{volunteer.purchased_ticket1}}
                             </a>
                             <br />
                             {% endif %}
-                            {% if volunteer.ticket2 %}
+                            {% if volunteer.purchased_ticket2 %}
                             <a href="#" data-toggle="tooltip" title="Fes click per copiar-ho" onclick="return copy_to_clipboard(this)">
-                                {{volunteer.ticket2}}
+                                {{volunteer.purchased_ticket2}}
                             </a>
                             <br />
                             {% endif %}
-                            {% if volunteer.ticket3 %}
+                            {% if volunteer.purchased_ticket3 %}
                             <a href="#" data-toggle="tooltip" title="Fes click per copiar-ho" onclick="return copy_to_clipboard(this)">
-                                {{volunteer.ticket3}}
+                                {{volunteer.purchased_ticket3}}
                             </a>
                             <br />
                             {% endif %}
-                            {% if volunteer.ticket4 %}
+                            {% if volunteer.purchased_ticket4 %}
                             <a href="#" data-toggle="tooltip" title="Fes click per copiar-ho" onclick="return copy_to_clipboard(this)">
-                                {{volunteer.ticket4}}
+                                {{volunteer.purchased_ticket4}}
                             </a>
                             <br />
                             {% endif %}
