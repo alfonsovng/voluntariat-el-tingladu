@@ -6,7 +6,7 @@ from .plugin_tasks import TaskManager
 from .plugin_gmail import GmailManager
 from .plugin_excel import ExcelManager
 from .plugin_params import ParamsManager
-from .plugin_usher import UsherManager
+from .plugin_rewards import RewardsManager
 
 db = SQLAlchemy()
 login_manager = LoginManager()
@@ -15,7 +15,7 @@ hashid_manager = HashidManager()
 task_manager = TaskManager()
 gmail_manager = GmailManager()
 excel_manager = ExcelManager()
-usher_manager = UsherManager()
+rewards_manager = RewardsManager()
 
 def create_app():
     """Construct the core app object."""
@@ -28,13 +28,14 @@ def create_app():
 
     # Initialize Plugins
     db.init_app(app)
+    
     params_manager.init_app(app)
     login_manager.init_app(app)
     hashid_manager.init_app(app)
     task_manager.init_app(app)
     gmail_manager.init_app(app)
     excel_manager.init_app(app)
-    usher_manager.init_app(app, db)
+    rewards_manager.init_app(app, db)
 
     with app.app_context():
         from . import routes_main, routes_auth, routes_admin, routes_volunteer
@@ -45,7 +46,7 @@ def create_app():
         app.register_blueprint(routes_admin.admin_bp)
         app.register_blueprint(routes_volunteer.volunteer_bp)
 
-        # Create Database Models
-        db.create_all()
+        # # Create Database Models
+        # db.create_all()
 
         return app

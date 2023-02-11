@@ -1,42 +1,44 @@
 from .helper import logger
 
-class UsherImpl:
-    def calculate_rewards(self, user_id, current_shifts):
+class RewardsImpl:
+    def calculate_tickets(self, user_id, current_shifts):
         raise NotImplementedError
 
     def calculate_meals(self, user_id, current_shifts):
         raise NotImplementedError
 
     def _get_meal_id(self, db, code):
-        return db.session.execute(f"select id from meals where code = '{code}'").one()
+        id = db.session.execute(f"select id from meals where code = '{code}'").one()[0] #it's a tuple
+        logger.info(f"{self.__class__.__name__} - meal:{code} = {id}")
+        return id
 
-    def _get_reward_id(self, db, code):
-        return db.session.execute(f"select id from rewards where code = '{code}'").one()
+    def _get_ticket_id(self, db, code):
+        id =  db.session.execute(f"select id from tickets where code = '{code}'").one()[0] #it's a tuple
+        logger.info(f"{self.__class__.__name__} - ticket:{code} = {id}")
+        return id
 
-class Usher15Anniversary(UsherImpl):
+class Rewards15Anniversary(RewardsImpl):
 
     def __init__(self, app, db):
         with app.app_context():
             self.sopar_15_aniversari_id = self._get_meal_id(db, "sopar_15_aniversari")
-            self.entrada_15_aniversari_id = self._get_reward_id(db, "entrada_15_aniversari")
+            self.entrada_15_aniversari_id = self._get_ticket_id(db, "entrada_15_aniversari")
 
-        logger.info(f"15è aniversari del Tingladu el 13 de maig de 2023: sopar_15_aniversari_id={self.sopar_15_aniversari_id}, entrada_15_aniversari_id={self.entrada_15_aniversari_id}")
-
-    def calculate_rewards(self, user_id, current_shifts):
-        from .models import UserReward
+    def calculate_tickets(self, user_id, current_shifts):
+        from .models import UserTicket
 
         if len(current_shifts) == 0:
             return []
 
         # Entrada del dia per qualsevol que faci tasques aquest dia.
         # No es pot renunciar.
-        reward = UserReward(
+        ticket = UserTicket(
             user_id = user_id,
             options = [self.entrada_15_aniversari_id],
             selected = self.entrada_15_aniversari_id
         )
 
-        return [reward]
+        return [ticket]
 
     def calculate_meals(self, user_id, current_shifts):
         from .models import UserMeal
@@ -54,41 +56,41 @@ class Usher15Anniversary(UsherImpl):
 
         return [meal]
 
-class UsherManager:
+class RewardsManager:
     
     def __init__(self, app=None):
         if app is not None:
             self.init_app(app)
 
     def init_app(self, app, db):
-        dynamic_class_name = app.config.get('USHER_CLASS')
-        logger.info(f"USHER_CLASS = {dynamic_class_name}")
-        self.usher_instance =  globals()[dynamic_class_name](app, db)
+        dynamic_class_name = app.config.get('REWARDS_CLASS')
+        logger.info(f"REWARDS_CLASS = {dynamic_class_name}")
+        self.rewards_instance =  globals()[dynamic_class_name](app, db)
 
-    def update_rewards(self, user_id, current_shifts):
-        from .models import UserReward
+    def update_tickets(self, user_id, current_shifts):
+        from .models import UserTicket
         from . import db
 
-        current_rewards = UserReward.query.filter(UserReward.user_id == user_id).all()
-        new_rewards = self.usher_instance.calculate_rewards(
+        current_tickets = UserTicket.query.filter(UserTicket.user_id == user_id).all()
+        new_tickets = self.rewards_instance.calculate_tickets(
             user_id = user_id,
             current_shifts = current_shifts
         )
 
-        merged_rewards = self.merge(
-            current_stuff = current_rewards,
-            new_stuff = new_rewards
+        merged_tickets = self.merge(
+            current_stuff = current_tickets,
+            new_stuff = new_tickets
         )
 
-        UserReward.query.filter(UserReward.user_id == user_id).delete()
-        db.session.add_all(merged_rewards)
+        UserTicket.query.filter(UserTicket.user_id == user_id).delete()
+        db.session.add_all(merged_tickets)
 
     def update_meals(self, user_id, current_shifts):
         from .models import UserMeal
         from . import db
 
         current_meals = UserMeal.query.filter(UserMeal.user_id == user_id).all()
-        new_meals = self.usher_instance.calculate_meals(
+        new_meals = self.rewards_instance.calculate_meals(
             user_id = user_id,
             current_shifts = current_shifts
         )

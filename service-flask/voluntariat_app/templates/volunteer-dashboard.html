@@ -47,17 +47,17 @@
         </div>
         <div class="card">
             {% if user.has_shifts %}
-                <div class="card-body bg-reward text-white">
-                    <h3 class="card-title">Recompenses disponibles</h3>
-                    <p class="card-text">Visualitza les recompenses assignades segons les teves tasques i torns.</p>
-                    <a class="btn btn-lg btn-light text-reward" href="/v/{{user.hashid}}/rewards">Les teves recompenses</a>
+                <div class="card-body bg-ticket text-white">
+                    <h3 class="card-title">Entrades disponibles</h3>
+                    <p class="card-text">Visualitza les entrades assignades segons les teves tasques i torns.</p>
+                    <a class="btn btn-lg btn-light text-ticket" href="/v/{{user.hashid}}/tickets">Les teves entrades</a>
                 </div>
             {% else %}
-                <div class="card-body bg-reward text-white-50" data-toggle="tooltip" 
+                <div class="card-body bg-ticket text-white-50" data-toggle="tooltip" 
                 title="Abans d'accedir a aquesta secció has de completar les Tasques i Torns">
-                    <h3 class="card-title">Recompenses disponibles</h3>
-                    <p class="card-text">Visualitza les recompenses assignades segons les teves tasques i torns.</p>
-                    <a class="btn btn-lg btn-light text-black-50 disabled" href="/v/{{user.hashid}}/rewards">Les teves recompenses</a>
+                    <h3 class="card-title">Entrades disponibles</h3>
+                    <p class="card-text">Visualitza les entrades assignades segons les teves tasques i torns.</p>
+                    <a class="btn btn-lg btn-light text-black-50 disabled" href="#">Les teves entrades</a>
                 </div>
             {% endif %}
         </div>

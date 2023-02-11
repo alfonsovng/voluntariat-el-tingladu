@@ -32,8 +32,8 @@ class Config:
     PARAM_INVITATION_TOKEN = environ.get("PARAM_INVITATION_TOKEN")
     PARAM_ALLOW_MODIFICATIONS = environ.get("PARAM_ALLOW_MODIFICATIONS").lower() == "true"
 
-    # plugin usher
-    USHER_CLASS = environ.get("USHER_CLASS")
+    # plugin rewards
+    REWARDS_CLASS = environ.get("REWARDS_CLASS")
 
     # Flask-SQLAlchemy
     SQLALCHEMY_DATABASE_URI = environ.get("SQLALCHEMY_DATABASE_URI")

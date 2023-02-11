@@ -39,21 +39,21 @@
           <p class="text-right"><a href="/v/{{ volunteer.hashid }}/password">Per canviar la teva contrasenya fes click aquí</a></p>
         </div>
         <div class="form-group">
-          {{ form.ticket1.label }}
-          {{ form.ticket1(class='form-control', placeholder="localitzador de l'entrada 1 comprada") }}
-          {% for error in form.ticket1.errors %}
+          {{ form.purchased_ticket1.label }}
+          {{ form.purchased_ticket1(class='form-control', placeholder="localitzador de l'entrada 1 comprada") }}
+          {% for error in form.purchased_ticket1.errors %}
             <p class="form-error">{{ error }}</p>
           {% endfor %}
-          {{ form.ticket2(class='form-control', placeholder="localitzador de l'entrada 2 comprada") }}
-          {% for error in form.ticket2.errors %}
+          {{ form.purchased_ticket2(class='form-control', placeholder="localitzador de l'entrada 2 comprada") }}
+          {% for error in form.purchased_ticket2.errors %}
             <p class="form-error">{{ error }}</p>
           {% endfor %}
-          {{ form.ticket3(class='form-control', placeholder="localitzador de l'entrada 3 comprada") }}
-          {% for error in form.ticket3.errors %}
+          {{ form.purchased_ticket3(class='form-control', placeholder="localitzador de l'entrada 3 comprada") }}
+          {% for error in form.purchased_ticket3.errors %}
             <p class="form-error">{{ error }}</p>
           {% endfor %}
-          {{ form.ticket4(class='form-control', placeholder="localitzador de l'entrada 4 comprada") }}
-          {% for error in form.ticket4.errors %}
+          {{ form.purchased_ticket4(class='form-control', placeholder="localitzador de l'entrada 4 comprada") }}
+          {% for error in form.purchased_ticket4.errors %}
           <p class="form-error">{{ error }}</p>
           {% endfor %}
         </div>

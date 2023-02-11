@@ -1,7 +1,7 @@
 from flask import Blueprint, redirect, render_template, url_for, request, Response, abort, stream_with_context
 from flask_login import current_user, login_required
 from .forms_message import EmailForm
-from .helper import flash_error, flash_info, load_volunteer
+from .helper import flash_error, flash_info, load_volunteer, logger
 from .models import User, Task, Shift, UserShift
 from . import db, hashid_manager, excel_manager, task_manager, params_manager
 from .plugin_gmail import TaskMessageEmail
@@ -44,7 +44,8 @@ def people():
             extension = ".xlsx"
         )
         select = """
-            select surname as cognoms, name as nom, email, phone as mòbil, role as rol, ticket1, ticket2, ticket3, ticket4
+            select surname as cognoms, name as nom, email, phone as mòbil, role as rol, 
+            purchased_ticket1 as ticket1, purchased_ticket2 as ticket2, purchased_ticket3 as ticket3, purchased_ticket4 as ticket4
             from users order by cognoms asc, nom asc
         """
         return generate_excel(select = select, file_name = file_name)
@@ -191,6 +192,7 @@ def shift_detail(task_id, shift_id):
 
     task = task_and_shift[0]
     shift = task_and_shift[1]
+
     users_with_shifts = db.session.query(User,UserShift).join(UserShift).filter(
         UserShift.shift_id == shift_id
     ).order_by(User.surname.asc(), User.name.asc()).all()
@@ -209,14 +211,14 @@ def meals():
 
     return render_template('admin-meals.html',user=current_user)
 
-@admin_bp.route('/admin/rewards')
+@admin_bp.route('/admin/tickets')
 @login_required
-def rewards():
+def tickets():
     if not current_user.is_admin:
         flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
         return redirect(url_for('volunteer_bp.dashboard'))
 
-    return render_template('admin-rewards.html',user=current_user)
+    return render_template('admin-tickets.html',user=current_user)
 
 def generate_excel(select, file_name):
     with excel_manager.create_excel(file_name) as excel:

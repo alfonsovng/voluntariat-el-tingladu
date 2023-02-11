@@ -7,10 +7,10 @@ class ProfileForm(FlaskForm):
     name = StringField("Nom", filters = [trim], validators=[DataRequired()])
     surname = StringField("Cognoms", filters = [trim], validators=[DataRequired()])
     phone = StringField("Mòbil", filters = [trim])
-    ticket1 = StringField("Si ja tens l'entrada comprada, indica'ns el localitzador", filters = [trim])
-    ticket2 = StringField("Si ja tens l'entrada comprada, indica'ns el localitzador", filters = [trim])
-    ticket3 = StringField("Si ja tens l'entrada comprada, indica'ns el localitzador", filters = [trim])
-    ticket4 = StringField("Si ja tens l'entrada comprada, indica'ns el localitzador", filters = [trim])
+    purchased_ticket1 = StringField("Si ja tens l'entrada comprada, indica'ns el localitzador", filters = [trim])
+    purchased_ticket2 = StringField("Si ja tens l'entrada comprada, indica'ns el localitzador", filters = [trim])
+    purchased_ticket3 = StringField("Si ja tens l'entrada comprada, indica'ns el localitzador", filters = [trim])
+    purchased_ticket4 = StringField("Si ja tens l'entrada comprada, indica'ns el localitzador", filters = [trim])
     submit = SubmitField("Actualiza les dades")
 
 class ChangePasswordForm(FlaskForm):

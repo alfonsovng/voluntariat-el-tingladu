@@ -3,6 +3,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import enum
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.orm import aliased
 from sqlalchemy import text, exists
 from . import db, hashid_manager
 
@@ -25,13 +26,14 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String, unique=True, nullable=False)
     password = db.Column(db.String, nullable=False)
     phone = db.Column(db.String, nullable=False, server_default='')    #'' es un possible valor
-    ticket1 = db.Column(db.String, nullable=False, server_default='')  #'' es un possible valor
-    ticket2 = db.Column(db.String, nullable=False, server_default='')  #'' es un possible valor
-    ticket3 = db.Column(db.String, nullable=False, server_default='')  #'' es un possible valor
-    ticket4 = db.Column(db.String, nullable=False, server_default='')  #'' es un possible valor
+    purchased_ticket1 = db.Column(db.String, nullable=False, server_default='')  #'' es un possible valor
+    purchased_ticket2 = db.Column(db.String, nullable=False, server_default='')  #'' es un possible valor
+    purchased_ticket3 = db.Column(db.String, nullable=False, server_default='')  #'' es un possible valor
+    purchased_ticket4 = db.Column(db.String, nullable=False, server_default='')  #'' es un possible valor
     role = db.Column(db.Enum(UserRole, name='users_role'), nullable=False)
     change_password_token = db.Column(db.String)
-    has_shifts = db.column_property(exists().where(UserShift.user_id==id))
+    # aliased pq quan fem join de user amb user_shifts no doni problemes
+    has_shifts = db.column_property(exists().where(aliased(UserShift).user_id==id))
 
     @hybrid_property
     def hashid(self):
@@ -96,15 +98,15 @@ class UserMeal(db.Model):
     user_comments = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
     admin_comments = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
 
-class Reward(db.Model):
-    __tablename__ = "rewards"
+class Ticket(db.Model):
+    __tablename__ = "tickets"
     id = db.Column(db.Integer, primary_key=True)
     code = db.Column(db.String, unique=True, nullable=False)
     name = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False) #'' es un possible valor
 
-class UserReward(db.Model):
-    __tablename__ = "user_rewards"
+class UserTicket(db.Model):
+    __tablename__ = "user_tickets"
     id = db.Column(db.BigInteger, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     options = db.Column(ARRAY(db.Integer), nullable=False) # zero pot ser un valor

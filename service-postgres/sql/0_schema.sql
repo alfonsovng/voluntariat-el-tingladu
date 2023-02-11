@@ -69,42 +69,6 @@ ALTER SEQUENCE public.meals_id_seq OWNED BY public.meals.id;
 
 
 --
--- Name: rewards; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.rewards (
-    id integer NOT NULL,
-    code character varying NOT NULL,
-    name character varying NOT NULL,
-    description character varying NOT NULL
-);
-
-
-ALTER TABLE public.rewards OWNER TO postgres;
-
---
--- Name: rewards_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.rewards_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.rewards_id_seq OWNER TO postgres;
-
---
--- Name: rewards_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.rewards_id_seq OWNED BY public.rewards.id;
-
-
---
 -- Name: shifts; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -178,6 +142,42 @@ ALTER SEQUENCE public.tasks_id_seq OWNED BY public.tasks.id;
 
 
 --
+-- Name: tickets; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.tickets (
+    id integer NOT NULL,
+    code character varying NOT NULL,
+    name character varying NOT NULL,
+    description character varying NOT NULL
+);
+
+
+ALTER TABLE public.tickets OWNER TO postgres;
+
+--
+-- Name: tickets_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.tickets_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.tickets_id_seq OWNER TO postgres;
+
+--
+-- Name: tickets_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.tickets_id_seq OWNED BY public.tickets.id;
+
+
+--
 -- Name: user_diets; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -231,43 +231,6 @@ ALTER SEQUENCE public.user_meals_id_seq OWNED BY public.user_meals.id;
 
 
 --
--- Name: user_rewards; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.user_rewards (
-    id bigint NOT NULL,
-    user_id integer NOT NULL,
-    options integer[] NOT NULL,
-    selected integer DEFAULT 0 NOT NULL,
-    user_comments character varying DEFAULT ''::character varying NOT NULL,
-    admin_comments character varying DEFAULT ''::character varying NOT NULL
-);
-
-
-ALTER TABLE public.user_rewards OWNER TO postgres;
-
---
--- Name: user_rewards_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.user_rewards_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.user_rewards_id_seq OWNER TO postgres;
-
---
--- Name: user_rewards_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.user_rewards_id_seq OWNED BY public.user_rewards.id;
-
-
---
 -- Name: user_shifts; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -282,6 +245,43 @@ CREATE TABLE public.user_shifts (
 ALTER TABLE public.user_shifts OWNER TO postgres;
 
 --
+-- Name: user_tickets; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.user_tickets (
+    id bigint NOT NULL,
+    user_id integer NOT NULL,
+    options integer[] NOT NULL,
+    selected integer DEFAULT 0 NOT NULL,
+    user_comments character varying DEFAULT ''::character varying NOT NULL,
+    admin_comments character varying DEFAULT ''::character varying NOT NULL
+);
+
+
+ALTER TABLE public.user_tickets OWNER TO postgres;
+
+--
+-- Name: user_tickets_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.user_tickets_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.user_tickets_id_seq OWNER TO postgres;
+
+--
+-- Name: user_tickets_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.user_tickets_id_seq OWNED BY public.user_tickets.id;
+
+
+--
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -292,10 +292,10 @@ CREATE TABLE public.users (
     email character varying NOT NULL,
     password character varying NOT NULL,
     phone character varying DEFAULT ''::character varying NOT NULL,
-    ticket1 character varying DEFAULT ''::character varying NOT NULL,
-    ticket2 character varying DEFAULT ''::character varying NOT NULL,
-    ticket3 character varying DEFAULT ''::character varying NOT NULL,
-    ticket4 character varying DEFAULT ''::character varying NOT NULL,
+    purchased_ticket1 character varying DEFAULT ''::character varying NOT NULL,
+    purchased_ticket2 character varying DEFAULT ''::character varying NOT NULL,
+    purchased_ticket3 character varying DEFAULT ''::character varying NOT NULL,
+    purchased_ticket4 character varying DEFAULT ''::character varying NOT NULL,
     role public.users_role NOT NULL,
     change_password_token character varying
 );
@@ -333,13 +333,6 @@ ALTER TABLE ONLY public.meals ALTER COLUMN id SET DEFAULT nextval('public.meals_
 
 
 --
--- Name: rewards id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.rewards ALTER COLUMN id SET DEFAULT nextval('public.rewards_id_seq'::regclass);
-
-
---
 -- Name: shifts id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -354,6 +347,13 @@ ALTER TABLE ONLY public.tasks ALTER COLUMN id SET DEFAULT nextval('public.tasks_
 
 
 --
+-- Name: tickets id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tickets ALTER COLUMN id SET DEFAULT nextval('public.tickets_id_seq'::regclass);
+
+
+--
 -- Name: user_meals id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -361,10 +361,10 @@ ALTER TABLE ONLY public.user_meals ALTER COLUMN id SET DEFAULT nextval('public.u
 
 
 --
--- Name: user_rewards id; Type: DEFAULT; Schema: public; Owner: postgres
+-- Name: user_tickets id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
-ALTER TABLE ONLY public.user_rewards ALTER COLUMN id SET DEFAULT nextval('public.user_rewards_id_seq'::regclass);
+ALTER TABLE ONLY public.user_tickets ALTER COLUMN id SET DEFAULT nextval('public.user_tickets_id_seq'::regclass);
 
 
 --
@@ -391,22 +391,6 @@ ALTER TABLE ONLY public.meals
 
 
 --
--- Name: rewards rewards_code_key; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.rewards
-    ADD CONSTRAINT rewards_code_key UNIQUE (code);
-
-
---
--- Name: rewards rewards_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.rewards
-    ADD CONSTRAINT rewards_pkey PRIMARY KEY (id);
-
-
---
 -- Name: shifts shifts_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -420,6 +404,22 @@ ALTER TABLE ONLY public.shifts
 
 ALTER TABLE ONLY public.tasks
     ADD CONSTRAINT tasks_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: tickets tickets_code_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tickets
+    ADD CONSTRAINT tickets_code_key UNIQUE (code);
+
+
+--
+-- Name: tickets tickets_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tickets
+    ADD CONSTRAINT tickets_pkey PRIMARY KEY (id);
 
 
 --
@@ -439,19 +439,19 @@ ALTER TABLE ONLY public.user_meals
 
 
 --
--- Name: user_rewards user_rewards_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.user_rewards
-    ADD CONSTRAINT user_rewards_pkey PRIMARY KEY (id);
-
-
---
 -- Name: user_shifts user_shifts_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.user_shifts
     ADD CONSTRAINT user_shifts_pkey PRIMARY KEY (user_id, shift_id);
+
+
+--
+-- Name: user_tickets user_tickets_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_tickets
+    ADD CONSTRAINT user_tickets_pkey PRIMARY KEY (id);
 
 
 --
@@ -495,14 +495,6 @@ ALTER TABLE ONLY public.user_meals
 
 
 --
--- Name: user_rewards user_rewards_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.user_rewards
-    ADD CONSTRAINT user_rewards_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
-
-
---
 -- Name: user_shifts user_shifts_shift_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -516,6 +508,14 @@ ALTER TABLE ONLY public.user_shifts
 
 ALTER TABLE ONLY public.user_shifts
     ADD CONSTRAINT user_shifts_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: user_tickets user_tickets_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_tickets
+    ADD CONSTRAINT user_tickets_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
 --
