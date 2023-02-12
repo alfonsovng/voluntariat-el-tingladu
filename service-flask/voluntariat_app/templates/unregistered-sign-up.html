@@ -12,9 +12,12 @@
       {{ text(form.name, placeholder="el teu nom") }}
       {{ text(form.surname, placeholder="primer cognom i segon cognom") }}
       {{ text(form.email, placeholder="el@teu.email") }}
-      {{ text(form.phone, placeholder="opcional, per tal millorar la comunicaci") }}
+      {{ text(form.phone, placeholder="opcional, per tal millorar la comunicació") }}
       {{ checkbox(form.adult, description="Has de confirmar que ets major d'edat per a poder col·laborar amb El Tingladu") }}
       {{ checkbox(form.store_email, description = "Necessari per a col·laborar com a voluntariat amb els esdeveniments organitzats per El Tingladu. Tota la resta de dades personals (nom, cognoms i telèfon) s'esborran en acabar aquest esdeveniment") }}
+      {{ text(form.dni, placeholder="DNI obligatori per a validar el contracte de voluntariat") }}
+      <p><a href="/static/pdf/ACORD_VOLUNTARIAT_CANPISTRAUS_REVISAT_23.pdf">Contracte de voluntariat</a></p>
+      {{ checkbox(form.contract, description = "És necessari el teu DNI perquè tingui validesa el contracte de Voluntariat") }}
       {{ form.submit(class='btn btn-lg btn-success') }}
     </form>
     <p>

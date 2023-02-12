@@ -23,6 +23,7 @@ class User(UserMixin, db.Model):
     name = db.Column(db.String, nullable=False)
     surname = db.Column(db.String, nullable=False)
     email = db.Column(db.String, unique=True, nullable=False)
+    dni = db.Column(db.String, nullable=False)
     password = db.Column(db.String, nullable=False)
     phone = db.Column(db.String, nullable=False, server_default='')    #'' es un possible valor
     purchased_ticket1 = db.Column(db.String, nullable=False, server_default='')  #'' es un possible valor
