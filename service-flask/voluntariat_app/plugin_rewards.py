@@ -21,6 +21,7 @@ class Rewards15Anniversary(RewardsImpl):
 
     def __init__(self, app, db):
         with app.app_context():
+            self.dinar_15_aniversari_id = self._get_meal_id(db, "dinar_15_aniversari")
             self.sopar_15_aniversari_id = self._get_meal_id(db, "sopar_15_aniversari")
             self.entrada_15_aniversari_id = self._get_ticket_id(db, "entrada_15_aniversari")
 
@@ -34,8 +35,8 @@ class Rewards15Anniversary(RewardsImpl):
         # No es pot renunciar.
         ticket = UserTicket(
             user_id = user_id,
-            ticket_options = [self.entrada_15_aniversari_id],
-            selected = self.entrada_15_aniversari_id
+            ticket_id = self.entrada_15_aniversari_id,
+            selected = True
         )
 
         return [ticket]

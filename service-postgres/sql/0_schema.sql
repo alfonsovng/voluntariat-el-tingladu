@@ -249,8 +249,8 @@ ALTER TABLE public.user_shifts OWNER TO postgres;
 CREATE TABLE public.user_tickets (
     id bigint NOT NULL,
     user_id integer NOT NULL,
-    ticket_options integer[] NOT NULL,
-    selected integer DEFAULT 0 NOT NULL,
+    ticket_id integer NOT NULL,
+    selected boolean DEFAULT false NOT NULL,
     comments character varying DEFAULT ''::character varying NOT NULL
 );
 
@@ -513,6 +513,14 @@ ALTER TABLE ONLY public.user_shifts
 
 ALTER TABLE ONLY public.user_shifts
     ADD CONSTRAINT user_shifts_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: user_tickets user_tickets_ticket_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_tickets
+    ADD CONSTRAINT user_tickets_ticket_id_fkey FOREIGN KEY (ticket_id) REFERENCES public.tickets(id);
 
 
 --
