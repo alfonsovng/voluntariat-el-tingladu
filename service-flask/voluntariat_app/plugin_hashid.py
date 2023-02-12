@@ -1,7 +1,7 @@
 from hashids import Hashids
 import sys, time, random, string
-from datetime import datetime
 from werkzeug.utils import secure_filename
+from .helper import get_timestamp
 
 class HashidManager:
 
@@ -33,7 +33,7 @@ class HashidManager:
     def create_unique_file_name(self,id,name,extension):
         prefix = secure_filename(name)
         hash = self.hashid_generator.encode(id, int(random.random()*sys.maxsize))
-        str_date_time = datetime.fromtimestamp(time.time()).strftime("%Y%m%d%H%M%S")
+        str_date_time = get_timestamp()
         return str_date_time + "_" + prefix + "_" + hash + extension
 
     def create_password(self):

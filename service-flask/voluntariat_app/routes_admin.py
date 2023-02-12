@@ -1,8 +1,9 @@
 from flask import Blueprint, redirect, render_template, url_for, request, Response, abort, stream_with_context
 from flask_login import current_user, login_required
 from .forms_message import EmailForm
-from .helper import flash_error, flash_info, load_volunteer
-from .models import User, Task, Shift, UserShift, Meal, UserMeal, UserDiet, Ticket, UserTicket
+from .forms_worker import NewWorkerForm, WorkerForm
+from .helper import flash_error, flash_info, load_volunteer, logger, get_timestamp
+from .models import User, Task, Shift, UserShift, Meal, UserMeal, UserDiet, Ticket, UserTicket, UserRole
 from . import db, hashid_manager, excel_manager, task_manager, params_manager
 from .plugin_gmail import TaskMessageEmail
 import sqlalchemy
@@ -40,12 +41,12 @@ def people():
     if excel:
         file_name = hashid_manager.create_unique_file_name(
             id = current_user.id,
-            name = "USERS",
+            name = "PEOPLE",
             extension = ".xlsx"
         )
         select = """
             select surname as cognoms, name as nom, email, phone as mòbil, role as rol, 
-            purchased_ticket1 as ticket1, purchased_ticket2 as ticket2, purchased_ticket3 as ticket3, purchased_ticket4 as ticket4
+            purchased_ticket1 as "entrada adquirida"
             from users order by cognoms asc, nom asc
         """
         return generate_excel(file_name = file_name, select = select)
@@ -65,8 +66,100 @@ def profile(volunteer_hashid):
     if volunteer is None:
         flash_error("Adreça incorrecta")
         return redirect(url_for('main_bp.init'))
+    elif volunteer.is_worker:
+        return redirect(url_for('admin_bp.worker',worker_hashid=volunteer_hashid))
 
-    return render_template('admin-profile.html',volunteer=volunteer,user=current_user)
+    shifts = [s for s in db.session.execute(f"""select t.name || ': ' || s.name 
+        from tasks as t 
+        join shifts as s on t.id = s.task_id 
+        join user_shifts as us on us.shift_id = s.id 
+        where us.user_id = {volunteer.id}""").scalars()]
+    meals = [m for m in db.session.execute(f"""select m.name 
+        from meals as m 
+        join user_meals as um on m.id=um.meal_id 
+        where um.selected and um.user_id = {volunteer.id}""").scalars()]
+    tickets = [t for t in db.session.execute(f"""select t.name 
+        from tickets as t 
+        join user_tickets as ut on t.id=ut.ticket_id 
+        where ut.selected and ut.user_id = {volunteer.id}""").scalars()]
+
+    return render_template('admin-profile.html',shifts=shifts,meals=meals,tickets=tickets,volunteer=volunteer,user=current_user)
+
+@admin_bp.route("/admin/worker", methods=["GET", "POST"])
+@login_required
+def new_worker():
+    if not current_user.is_admin:
+        flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
+        return redirect(url_for('volunteer_bp.dashboard'))
+
+    form = NewWorkerForm()
+    if form.validate_on_submit():
+        logger.info(f"Nou treballador: {form.name.data}")
+
+        fake_email = f"{get_timestamp()}#{current_user.id}#{hash(form.name.data) % 10000}#{hash(form.place.data) % 10000}"
+
+        worker = User(
+            name=form.place.data,
+            surname=form.name.data,
+            email=fake_email,
+            role=UserRole.worker
+        )
+        # set a random password because it can't be null
+        worker.set_password(hashid_manager.create_password())
+        db.session.add(worker)
+        db.session.commit()  # Create new user
+
+        # guardo la informació de la seva dieta
+        db.session.add(UserDiet(user_id = worker.id))
+
+        db.session.commit() # guardem la dieta
+        flash_info('Persona treballadora creada')
+        return redirect(url_for('admin_bp.profile',volunteer_hashid=worker.hashid))
+
+    return render_template('admin-new-worker.html',form=form,user=current_user)
+
+@admin_bp.route("/admin/worker/<worker_hashid>", methods=["GET", "POST"])
+@login_required
+def worker(worker_hashid):
+    if not current_user.is_admin:
+        flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
+        return redirect(url_for('volunteer_bp.dashboard'))
+
+    worker = load_volunteer(current_user,worker_hashid)
+    if worker is None:
+        flash_error("Adreça incorrecta")
+        return redirect(url_for('main_bp.init'))
+    elif not worker.is_worker:
+        return redirect(url_for('admin_bp.profile',volunteer_hashid=worker_hashid))
+
+    form = WorkerForm()
+    if form.validate_on_submit():
+        worker.surname = form.name.data
+        worker.name = form.place.data
+
+        db.session.add(worker)
+        db.session.commit() # guardem els canvis
+        flash_info('Dades actualitzades')
+        return redirect(url_for('admin_bp.worker',worker_hashid=worker_hashid))
+  
+    form.name.data = worker.surname
+    form.place.data = worker.name
+
+    shifts = [s for s in db.session.execute(f"""select t.name || ': ' || s.name 
+        from tasks as t 
+        join shifts as s on t.id = s.task_id 
+        join user_shifts as us on us.shift_id = s.id 
+        where us.user_id = {worker.id}""").scalars()]
+    meals = [m for m in db.session.execute(f"""select m.name 
+        from meals as m 
+        join user_meals as um on m.id=um.meal_id 
+        where um.selected and um.user_id = {worker.id}""").scalars()]
+    tickets = [t for t in db.session.execute(f"""select t.name 
+        from tickets as t 
+        join user_tickets as ut on t.id=ut.ticket_id 
+        where ut.selected and ut.user_id = {worker.id}""").scalars()]
+
+    return render_template('admin-worker.html',shifts=shifts,meals=meals,tickets=tickets,form=form,worker=worker,user=current_user)
 
 @admin_bp.route('/admin/people/<volunteer_hashid>/message', methods=["GET", "POST"])
 @login_required

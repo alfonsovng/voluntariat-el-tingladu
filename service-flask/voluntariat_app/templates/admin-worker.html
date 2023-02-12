@@ -1,0 +1,83 @@
+{% extends '_registered.html' %}
+
+<!--
+{% block admin_css %}
+<link href="/static/css/voluntariat_app_admin.css" rel="stylesheet">
+{% endblock %}
+-->
+
+{% from "_form_macros.html" import text with context %}
+
+{% block content %}
+<div class="row justify-content-md-center">
+    <div class="col-md-8 col-lg-7 col-xl-6">
+        <h2>{% block title %}Persona treballadora{% endblock %}</h2>
+        <h2><small class="text-muted">{{ worker.surname }} [{{ worker.name }}]</small></h2>
+        <div class="table-responsive">
+            <table class="table table-light table-striped table-hover table-bordered">
+                <tbody>
+                    <tr>
+                        <th>DADES PERSONALS</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <form role="form" method='POST'>
+                                {{ form.csrf_token }}
+                                {{ text(form.name, placeholder="Nom de la persona treballadora") }}
+                                {{ text(form.place, placeholder="Lloc de la persona treballadora") }}
+                                {{ form.submit(class='btn btn-success') }}
+                            </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>TASQUES I TORNS</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            {% if shifts %}
+                                {% for name in shifts %}
+                                <p class="text-task">{{name}}</p>
+                                {% endfor %}
+                            {% else %}
+                            <p class="font-italic">No hi ha tasques assignades</p>
+                            {% endif %}
+                            <a class="btn btn-dark bg-task text-white" href="/v/{{worker.hashid}}/tasks">Les seves tasques i torns</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>ÀPATS I DIETA</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            {% if meals %}
+                                {% for name in meals %}
+                                <p class="text-meal">{{name}}</p>
+                                {% endfor %}
+                            {% else %}
+                            <p class="font-italic">No hi ha àpats assignats</p>
+                            {% endif %}
+                            <a class="btn btn-dark bg-meal text-white" href="/v/{{worker.hashid}}/meals">Els seus àpats i la seva dieta</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>ENTRADES I RECOMPENSES</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            {% if tickets %}
+                                {% for name in tickets %}
+                                <p class="text-ticket">{{name}}</p>
+                                {% endfor %}
+                            {% else %}
+                            <p class="font-italic">No hi ha entrades assignades</p>
+                            {% endif %}
+                            <a class="btn btn-dark bg-ticket text-white" href="/v/{{worker.hashid}}/rewards">Les seves entrades i recompenses</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <a class="btn btn-secondary" href="/admin/people"> &#x3c;&#x3c; Torna enrera</a>
+    </div>
+</div>
+{% endblock %}

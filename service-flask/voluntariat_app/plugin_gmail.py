@@ -2,7 +2,7 @@ import smtplib
 from flask import url_for, render_template
 from email.message import EmailMessage
 from email.utils import formataddr
-from .helper import logger
+from .helper import logger, get_timestamp
 
 class GmailManager:
 
@@ -115,11 +115,8 @@ class TaskConfirmPasswordChangeEmail(TaskEmail):
 class TaskIncidenceEmail(TaskEmail):
     def __init__(self, incidence_user, incidence_type, incidence_description):
         from . import gmail_manager, params_manager
-        from datetime import datetime
-        import time
 
-        email = gmail_manager.sender_email
-        str_date_time = datetime.fromtimestamp(time.time()).strftime("%Y%m%d%H%M%S")
+        str_date_time = get_timestamp()
 
         subject = f'Incidència {str_date_time}-{incidence_user.id}'
         content = render_template("email/incidence_email.txt",

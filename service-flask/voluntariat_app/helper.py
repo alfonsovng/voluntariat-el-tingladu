@@ -70,3 +70,12 @@ def trim(s):
     if s is None:
         return None
     return s.strip()
+
+
+# 
+# Retorna un timestamp
+#
+def get_timestamp():
+    from datetime import datetime
+    import time
+    return datetime.fromtimestamp(time.time()).strftime("%Y%m%d%H%M%S")
