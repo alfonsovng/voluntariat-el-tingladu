@@ -318,7 +318,7 @@ def tickets():
     if excel:
         select = f"""select t.name as ticket,
             u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil,
-            ut.comments as "obs ticket"
+            ut.comments as "obs entrada"
             from users as u 
             join user_tickets as ut on u.id = ut.user_id
             join tickets as t on t.id = ut.ticket_id
@@ -363,7 +363,7 @@ def tickets_detail(ticket_id):
     if excel:
         select = f"""select t.name as ticket,
             u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil,
-            ut.comments as "obs ticket"
+            ut.comments as "obs entrada"
             from users as u 
             join user_tickets as ut on u.id = ut.user_id
             join tickets as t on t.id = ut.ticket_id
