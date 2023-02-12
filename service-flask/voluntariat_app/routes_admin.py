@@ -2,7 +2,7 @@ from flask import Blueprint, redirect, render_template, url_for, request, Respon
 from flask_login import current_user, login_required
 from .forms_message import EmailForm
 from .helper import flash_error, flash_info, load_volunteer
-from .models import User, Task, Shift, UserShift, Meal
+from .models import User, Task, Shift, UserShift, Meal, UserMeal, UserDiet
 from . import db, hashid_manager, excel_manager, task_manager, params_manager
 from .plugin_gmail import TaskMessageEmail
 import sqlalchemy
@@ -48,7 +48,7 @@ def people():
             purchased_ticket1 as ticket1, purchased_ticket2 as ticket2, purchased_ticket3 as ticket3, purchased_ticket4 as ticket4
             from users order by cognoms asc, nom asc
         """
-        return generate_excel(select = select, file_name = file_name)
+        return generate_excel(file_name = file_name, select = select)
     else:
         volunteers = User.query.order_by(User.surname.asc(), User.name.asc()).all()
 
@@ -116,12 +116,12 @@ def shifts(task_id):
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
         select = f"""select t.name as tasca, s.name as torn,
-            u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil, us.comments as observacions 
+            u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil, us.comments as "obs torn" 
             from users as u 
             join user_shifts as us on u.id = us.user_id
             join shifts as s on s.id = us.shift_id
             join tasks as t on t.id = s.task_id
-            where t.id = {task_id}
+            where t.id = :TASK_ID
             order by s.id asc, cognoms asc, nom asc"""
 
         file_name = hashid_manager.create_unique_file_name(
@@ -130,8 +130,9 @@ def shifts(task_id):
             extension = ".xlsx"
         )
         return generate_excel(
+            file_name=file_name,
             select=select,
-            file_name=file_name
+            params={"TASK_ID": task_id}
         )
     else:
         task = Task.query.filter_by(id = task_id).first()
@@ -167,12 +168,12 @@ def shift_detail(task_id, shift_id):
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
         select = f"""select t.name as tasca, s.name as torn,
-            u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil, us.comments as observacions 
+            u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil, us.comments as "obs torn" 
             from users as u 
             join user_shifts as us on u.id = us.user_id
             join shifts as s on s.id = us.shift_id
             join tasks as t on t.id = s.task_id
-            where s.id = {shift_id}
+            where s.id = :SHIFT_ID
             order by cognoms asc, nom asc"""
 
         file_name = hashid_manager.create_unique_file_name(
@@ -181,8 +182,9 @@ def shift_detail(task_id, shift_id):
             extension = ".xlsx"
         )
         return generate_excel(
+            file_name=file_name,
             select=select,
-            file_name=file_name
+            params={"SHIFT_ID":shift_id}
         )
 
     task_and_shift = db.session.query(Task, Shift).join(Shift).filter(Shift.task_id == task_id, Shift.id == shift_id).first()
@@ -211,14 +213,21 @@ def meals():
 
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
-        #TODO... afegir alergies
-
         select = f"""select m.name as àpat,
-            u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil, um.comments as observacions 
+            u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil,
+            um.comments as "obs àpat",
+            case when ud.vegan then 'X' else '' end as vegana,
+            case when ud.vegetarian then 'X' else '' end as vegetariana,
+            case when ud.no_gluten then 'X' else '' end as "sense gluten",
+            case when ud.no_lactose then 'X' else '' end as "sense lactosa",
+            ud.comments as "obs dieta"
             from users as u 
             join user_meals as um on u.id = um.user_id
-            join meals as m on m.id = um.meal_id where um.selected
-            order by m.id asc, cognoms asc, nom asc"""
+            join meals as m on m.id = um.meal_id
+            join user_diets as ud on u.id = ud.user_id
+            where um.selected
+            order by m.id asc, cognoms asc, nom asc
+        """
 
         file_name = hashid_manager.create_unique_file_name(
             id = current_user.id,
@@ -226,12 +235,25 @@ def meals():
             extension = ".xlsx"
         )
         return generate_excel(
-            select=select,
-            file_name=file_name
+            file_name=file_name,
+            select=select
         )
-    meals = Meal.query.order_by(Meal.id.asc()).all()
 
-    return render_template('admin-meals.html',meals=meals,user=current_user)
+    count_subquery = sqlalchemy.text(f"""
+        select meal_id, count(user_id) as n_meals
+        from user_meals where selected
+        group by meal_id
+    """).columns(meal_id=db.Integer,n_meals=db.Integer).subquery("count_subquery")
+
+    meals_and_quantity = db.session.query(
+        Meal, count_subquery.c.n_meals, 
+    ).outerjoin(
+        count_subquery, Meal.id == count_subquery.c.meal_id
+    ).order_by(
+        Meal.id.asc()
+    )
+
+    return render_template('admin-meals.html',meals_and_quantity=meals_and_quantity,user=current_user)
 
 @admin_bp.route('/admin/meals/<int:meal_id>')
 @login_required
@@ -242,15 +264,21 @@ def meal_detail(meal_id):
 
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
-        #TODO... afegir alergies
-        
         select = f"""select m.name as àpat,
-            u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil, um.comments as observacions 
+            u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil,
+            um.comments as "obs àpat",
+            case when ud.vegan then 'X' else '' end as vegana,
+            case when ud.vegetarian then 'X' else '' end as vegetariana,
+            case when ud.no_gluten then 'X' else '' end as "sense gluten",
+            case when ud.no_lactose then 'X' else '' end as "sense lactosa",
+            ud.comments as "obs dieta"
             from users as u 
             join user_meals as um on u.id = um.user_id
             join meals as m on m.id = um.meal_id
-            where m.id={meal_id} and um.selected
-            order by cognoms asc, nom asc"""
+            join user_diets as ud on u.id = ud.user_id
+            where m.id = :MEAL_ID and um.selected
+            order by cognoms asc, nom asc
+        """
 
         file_name = hashid_manager.create_unique_file_name(
             id = current_user.id,
@@ -258,8 +286,9 @@ def meal_detail(meal_id):
             extension = ".xlsx"
         )
         return generate_excel(
+            file_name=file_name,
             select=select,
-            file_name=file_name
+            params={"MEAL_ID":meal_id}
         )
 
     meal = Meal.query.filter_by(id = meal_id).first()
@@ -267,10 +296,14 @@ def meal_detail(meal_id):
         flash_error("Adreça incorrecta")
         return redirect(url_for('main_bp.init'))
 
-    users_with_meals = [] 
+    users_with_diet_and_meals = db.session.query(User, UserDiet, UserMeal).join(UserDiet).join(UserMeal).filter(
+        UserMeal.meal_id == meal_id
+    ).filter(
+        UserMeal.selected
+    ).order_by(User.surname.asc(), User.name.asc()).all()
 
     return render_template('admin-meal-detail.html',
-        meal=meal,users_with_meals=users_with_meals,
+        meal=meal,users_with_diet_and_meals=users_with_diet_and_meals,
         user=current_user
     )
 
@@ -283,9 +316,9 @@ def tickets():
 
     return render_template('admin-tickets.html',user=current_user)
 
-def generate_excel(select, file_name):
+def generate_excel(file_name, select, params={}):
     with excel_manager.create_excel(file_name) as excel:
-        rows = db.session.execute(select)
+        rows = db.session.execute(select, params=params)
 
         keys_to_upper = list(map(str.upper,rows._metadata.keys))
         excel.write(0, keys_to_upper)

@@ -15,26 +15,32 @@
             <table class="table table-light table-striped table-hover table-bordered table-sm">
                 <thead>
                     <tr>
-                        <th colspan="5">
+                        <th colspan="8">
                             {{meal.name}}: {{meal.description}}
                         </th>
                     </tr>
                     <tr>
                         <th>COGNOMS</th>
                         <th>NOM</th>
-                        <th>EMAIL</th>
-                        <th>MÒBIL</th>
-                        <th>OBSERVACIONS</th>
+                        <th>OBS ÀPAT</th>
+                        <th>VEGANA</th>
+                        <th>VEGETARIANA</th>
+                        <th>SENSE GLUTEN</th>
+                        <th>SENSE LACTOSA</th>
+                        <th>OBS DIETA</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for (u,um) in users_with_meals %}
+                    {% for (u,ud,um) in users_with_diet_and_meals %}
                         <tr>
                             <td>{{u.surname}}</td>
                             <td>{{u.name}}</td>
-                            <td>{{u.email}}</td>
-                            <td>{{u.phone}}</td>
-                            <td>{{us.comments}}</td>
+                            <td>{{um.comments}}</td>
+                            <td>{{"X" if ud.vegan}}</td>
+                            <td>{{"X" if ud.vegetarian}}</td>
+                            <td>{{"X" if ud.no_gluten}}</td>
+                            <td>{{"X" if ud.no_lactose}}</td>
+                            <td>{{ud.comments}}</td>
                         </tr>
                     {% endfor %}
                 </tbody>
