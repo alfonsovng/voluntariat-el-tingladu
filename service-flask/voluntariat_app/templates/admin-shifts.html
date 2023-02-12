@@ -32,7 +32,7 @@
                     <tr>
                         <td><a href='/admin/tasks/{{s.task_id}}/{{s.id}}'>{{s.name}}</a></td>
                         <td><a href='/admin/tasks/{{s.task_id}}/{{s.id}}'>{{s.description}}</a></td>
-                        <td><a href='/admin/tasks/{{s.task_id}}/{{s.id}}'>{{n if n is not none else 0}}</a></td>
+                        <td><a href='/admin/tasks/{{s.task_id}}/{{s.id}}'>{{0 if n is none else n}}</a></td>
                         <td><a href='/admin/tasks/{{s.task_id}}/{{s.id}}'>{{s.slots if s.slots > 0}}</a></td>
                         <td><a href='/admin/tasks/{{s.task_id}}/{{s.id}}?excel=1'><img src="/static/img/excel-icon.png" alt="Excel"/></a></td>
                     </tr>

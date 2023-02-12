@@ -17,16 +17,17 @@
                     <tr>
                         <th>NOM</th>
                         <th>DESCRIPCIÓ</th>
+                        <th>QUANTITAT</th>
                         <th>EXCEL</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for m in meals %}
+                    {% for m,q in meals_and_quantity %}
                     <tr>
                         <td><a href='/admin/meals/{{m.id}}'>{{m.name}}</a></td>
                         <td><a href='/admin/meals/{{m.id}}'>{{m.description}}</a></td>
+                        <td><a href='/admin/meals/{{m.id}}'>{{0 if q is none else q}}</a></td>
                         <td><a href='/admin/meals/{{m.id}}?excel=1'><img src="/static/img/excel-icon.png" alt="Excel"/></a></td>
-
                     </tr>
                     {% endfor %}
                 </tbody>
