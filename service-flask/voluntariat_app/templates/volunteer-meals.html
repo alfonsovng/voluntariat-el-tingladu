@@ -20,11 +20,15 @@
     <h4><small class="text-muted">Si aquest dia no faràs un d'aquests àpats a la cuina d'El Tingladu, desmarca la casella per evitar el malbaratament alimentari.</small></h4>
     <form role="form" method='POST' class="{{'text-secondary' if read_only }}">
       {{ meals_form.csrf_token }}
-      {% for id in meals_form.ids %}
-        {{ checkbox_with_comments(meals_form["selected-"+ id], meals_form["comments-" + id], read_only=read_only)}}
-      {% endfor %}
-      {% if not read_only %}
-      {{ meals_form.submit(class='btn btn-success') }}
+      {% if meals_form.ids %}
+        {% for id in meals_form.ids %}
+          {{ checkbox_with_comments(meals_form["selected-"+ id], meals_form["comments-" + id], read_only=read_only)}}
+        {% endfor %}
+        {% if not read_only %}
+        {{ meals_form.submit(class='btn btn-success') }}
+        {% endif %}
+      {% else %}
+        <p class="font-italic text-meal">No hi ha àpats assignats</p>
       {% endif %}
     </form>
     <hr />

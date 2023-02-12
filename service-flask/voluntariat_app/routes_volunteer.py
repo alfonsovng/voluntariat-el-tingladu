@@ -285,16 +285,15 @@ def __create_meals_form(meals, user_meals):
 
     return F()
 
-@volunteer_bp.route('/v/<volunteer_hashid>/tickets', methods=["GET", "POST"])
+@volunteer_bp.route('/v/<volunteer_hashid>/rewards', methods=["GET", "POST"])
 @login_required
-def tickets(volunteer_hashid):
+def rewards(volunteer_hashid):
     volunteer = load_volunteer(current_user,volunteer_hashid)
     if volunteer is None:
         flash_error("Adreça incorrecta")
         return redirect(url_for('main_bp.init'))
 
-    # read_only = __is_read_only(current_user)
-    read_only = True # las entradas no hace falta guardar si renuncian
+    read_only = __is_read_only(current_user)
     if not volunteer.has_shifts:
         flash_warning("Abans d'accedir a aquesta secció s'han de completar les Tasques i Torns")
         read_only = True
@@ -316,7 +315,7 @@ def tickets(volunteer_hashid):
     #     flash_info("S'han registrat els canvis en els teus àpats")
     #     return redirect(url_for('volunteer_bp.meals',volunteer_hashid=volunteer_hashid))
 
-    return render_template('volunteer-tickets.html',read_only=read_only,
+    return render_template('volunteer-rewards.html',read_only=read_only,
         tickets_form=tickets_form,
         volunteer=volunteer,user=current_user
     )

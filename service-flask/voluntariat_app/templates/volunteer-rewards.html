@@ -14,20 +14,30 @@
 {% block content %}
 <div class="row justify-content-md-center">
   <div class="col-md-8 col-lg-7 col-xl-6">
-    <h2>{% block title %}Entrades{% endblock %}</h2>
+    <h2>{% block title %}Entrades i recompenses{% endblock %}</h2>
     <h2><small class="text-muted">{{ volunteer.full_name }}</small></h2>
     <hr />
     <h4>Les teves entrades</h4>
     <h4><small class="text-muted">Entrades assignades segons les teves tasques i torns</small></h4>
     <form role="form" method='POST' class="{{'text-secondary' if read_only }}">
       {{ tickets_form.csrf_token }}
-      {% for id in tickets_form.ids %}
-        {{ checkbox(tickets_form["selected-"+ id], read_only=read_only)}}
-      {% endfor %}
-      {% if not read_only %}
+      {% if tickets_form.ids %}
+      <ul>
+        {% for id in tickets_form.ids %}
+          <li class="font-weight-bolder font-italic text-ticket">{{tickets_form["selected-"+ id].label.text }}</li>
+        {% endfor %}
+      </ul>
+      <!-- {% if not read_only %}
       {{ tickets_form.submit(class='btn btn-success') }}
+      {% endif %} -->
+      {% else %}
+        <p class="font-italic text-ticket">No hi ha entrades assignades</p>
       {% endif %}
     </form>
+    <hr />
+    <h4>Les teves recompenses</h4>
+    <h4><small class="text-muted">Recompenses assignades segons les teves tasques i torns</small></h4>
+    <p class="font-italic text-ticket">No hi ha recompenses assignades</p>
     <hr />
     <a class="btn btn-secondary" href="/v/{{ volunteer.hashid }}"> &#x3c;&#x3c; Torna enrera</a>
   </div>
