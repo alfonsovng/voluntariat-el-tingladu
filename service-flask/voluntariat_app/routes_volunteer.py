@@ -32,7 +32,7 @@ def profile(volunteer_hashid):
     volunteer = load_volunteer(current_user,volunteer_hashid,allow_all_admins=False)
     if volunteer is None:
         if current_user.is_admin:
-            return redirect(url_for('admin_bp.volunteer',volunteer_hashid=volunteer_hashid))
+            return redirect(url_for('admin_bp.profile',volunteer_hashid=volunteer_hashid))
 
         flash_error("Adreça incorrecta")
         return redirect(url_for('main_bp.init'))

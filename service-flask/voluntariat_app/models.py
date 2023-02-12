@@ -46,6 +46,10 @@ class User(UserMixin, db.Model):
     def is_admin(self):
         return self.role == UserRole.admin
 
+    @hybrid_property
+    def is_worker(self):
+        return self.role == UserRole.worker
+
     def set_password(self, password):
         """Assigna un password amb la funció hash aplicada"""
         self.password = generate_password_hash(password, method="sha256")
