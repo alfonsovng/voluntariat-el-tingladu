@@ -54,7 +54,7 @@ class ResetPasswordForm(FlaskForm):
 class LoginForm(FlaskForm):
     email = StringField(
         "Email", 
-        validators=[DataRequired(), Email(message="Introdueix una adreça de correu vàlida")],
+        validators=[DataRequired()],
         filters = [trim]
     )
     password = PasswordField("Contrasenya", validators=[DataRequired()])

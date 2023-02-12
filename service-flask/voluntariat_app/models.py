@@ -9,6 +9,7 @@ from . import db, hashid_manager
 class UserRole(enum.Enum):
     admin = 1
     volunteer = 2
+    worker = 3
 
 class UserShift(db.Model):
     __tablename__ = "user_shifts"

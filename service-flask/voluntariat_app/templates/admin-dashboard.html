@@ -15,13 +15,13 @@
             <table class="table table-light table-striped table-hover table-bordered">
                 <tbody>
                     <tr>
-                        <th>Voluntariat</th>
+                        <th>Persones voluntàries i treballadores </th>
                     </tr>
                     <tr>
                         <td>
-                            <p>Consulta les dades del voluntariat i fes exportacions a excel</p>
-                            <a class="btn btn-dark bg-profile" href="/admin/volunteers">
-                                Administra el voluntariat
+                            <p>Consulta les dades del voluntariat i de la resta de persones treblladores, i fes exportacions a excel</p>
+                            <a class="btn btn-dark bg-profile" href="/admin/people">
+                                Administra les dades de les persones
                             </a>
                         </td>
                     </tr>
@@ -62,10 +62,11 @@
                         <th>Enllaç d'invitació</th>
                     </tr>
                     <tr>
-                        <td>                                  
-                            <small><a href="#" data-toggle="tooltip" title="Fes click per copiar-ho" onclick="return copy_to_clipboard(this);">
+                        <td>
+                            <p>Mitjançant aquest enllaç les persones voluntàries es podran registrar a aquesta aplicació:</p>                            
+                            <p class="text-center"><small><a href="#" data-toggle="tooltip" title="Fes click per copiar-ho" onclick="return copy_to_clipboard(this);">
                                 {{invitation_url}}
-                            </a></small>
+                            </a></small></p>
                         </td>
                     </tr>
                     <tr>

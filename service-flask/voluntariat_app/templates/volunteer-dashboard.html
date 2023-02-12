@@ -10,8 +10,8 @@
             <div class="card">
                 <div class="card-body bg-admin">
                     <h2 class="card-title">Administració</h2>
-                    <p class="card-text">Consulta les dades del voluntariat i fes exportacions a excel.</p>
-                    <a class="btn btn-lg btn-light text-dark" href="/admin">Administra les dades del voluntariat</a>
+                    <p class="card-text">Consulta les dades introduïdes i fes exportacions a excel.</p>
+                    <a class="btn btn-lg btn-light text-dark" href="/admin">Administra les dades introduïdes</a>
                 </div>
             </div>
         {% endif %}
@@ -34,14 +34,14 @@
                 <div class="card-body bg-meal text-white">
                     <h2 class="card-title">Àpats i característiques de la teva dieta</h2>
                     <p class="card-text">Indica quins àpats faràs i notifica les característiques de la teva dieta, indicant al·lèrgies, intol·leràncies i/o d'altres dades importants.</p>
-                    <a class="btn btn-lg btn-light text-meal" href="/v/{{user.hashid}}/meals">Els teus àpats</a>
+                    <a class="btn btn-lg btn-light text-meal" href="/v/{{user.hashid}}/meals">Els teus àpats i la teva dieta</a>
                 </div>
             {% else %}
                 <div class="card-body bg-meal text-white-50" data-toggle="tooltip" 
                     title="Abans d'accedir a aquesta secció has de completar les Tasques i Torns">
                     <h2 class="card-title">Àpats i característiques de la teva dieta</h2>
                     <p class="card-text">Indica quins àpats faràs i notifica les característiques de la teva dieta, indicant al·lèrgies, intol·leràncies i/o d'altres dades importants.</p>
-                    <a class="btn btn-lg btn-light text-black-50 disabled" href="#">Els teus àpats</a>
+                    <a class="btn btn-lg btn-light text-black-50 disabled" href="#">Els teus àpats i la teva dieta</a>
                 </div>
             {% endif %}
         </div>

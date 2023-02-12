@@ -29,7 +29,7 @@ def dashboard():
         password_tasks=password_tasks,
         user=current_user)
 
-@admin_bp.route('/admin/volunteers')
+@admin_bp.route('/admin/people')
 @login_required
 def people():
     if not current_user.is_admin:
@@ -52,9 +52,9 @@ def people():
     else:
         volunteers = User.query.order_by(User.surname.asc(), User.name.asc()).all()
 
-        return render_template('admin-volunteers.html', volunteers=volunteers,user=current_user)
+        return render_template('admin-people.html', volunteers=volunteers,user=current_user)
 
-@admin_bp.route("/admin/volunteers/<volunteer_hashid>", methods=["GET"])
+@admin_bp.route("/admin/people/<volunteer_hashid>", methods=["GET"])
 @login_required
 def profile(volunteer_hashid):
     if not current_user.is_admin:
@@ -68,7 +68,7 @@ def profile(volunteer_hashid):
 
     return render_template('admin-profile.html',volunteer=volunteer,user=current_user)
 
-@admin_bp.route('/admin/volunteers/<volunteer_hashid>/message', methods=["GET", "POST"])
+@admin_bp.route('/admin/people/<volunteer_hashid>/message', methods=["GET", "POST"])
 @login_required
 def message(volunteer_hashid):
     if not current_user.is_admin:
