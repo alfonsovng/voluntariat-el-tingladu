@@ -2,7 +2,6 @@ from flask_login import UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
 import enum
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy.orm import aliased
 from sqlalchemy import text, exists
 from . import db, hashid_manager
@@ -107,6 +106,9 @@ class UserTicket(db.Model):
     __tablename__ = "user_tickets"
     id = db.Column(db.BigInteger, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    ticket_options = db.Column(ARRAY(db.Integer), nullable=False) # zero pot ser un valor
-    selected = db.Column(db.Integer, nullable=False, server_default=text("0")) # zero pot ser un valor
+    ticket_id = db.Column(db.Integer, db.ForeignKey("tickets.id"), nullable=False)
+    selected = db.Column(db.Boolean, nullable=False, default=False, server_default=text("FALSE"))
     comments = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
+    # TODO: Versió completa pendent
+    # ticket_options = db.Column(ARRAY(db.Integer), nullable=False) # zero pot ser un valor
+    # selected = db.Column(db.Integer, nullable=False, server_default=text("0")) # zero pot ser un valor
