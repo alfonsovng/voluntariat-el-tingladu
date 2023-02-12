@@ -278,7 +278,6 @@ def __create_meals_form(meals, user_meals):
         setattr(F, f"selected-{um.id}", boolean_field)
 
         text_area_field = TextAreaField(
-            "Comentaris", 
             filters = [trim],
             default = um.comments
         )

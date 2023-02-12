@@ -13,8 +13,8 @@
       {{ text(form.surname, placeholder="primer cognom i segon cognom") }}
       {{ text(form.email, placeholder="el@teu.email") }}
       {{ text(form.phone, placeholder="opcional, per tal millorar la comunicaci") }}
-      {{ checkbox(form.adult) }}
-      {{ checkbox(form.store_email) }}
+      {{ checkbox(form.adult, description="Has de confirmar que ets major d'edat per a poder col·laborar amb El Tingladu") }}
+      {{ checkbox(form.store_email, description = "Necessari per a col·laborar com a voluntariat amb els esdeveniments organitzats per El Tingladu. Tota la resta de dades personals (nom, cognoms i telèfon) s'esborran en acabar aquest esdeveniment") }}
       {{ form.submit(class='btn btn-lg btn-success') }}
     </form>
     <p>
