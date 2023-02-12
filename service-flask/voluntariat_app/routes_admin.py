@@ -45,7 +45,7 @@ def people():
             extension = ".xlsx"
         )
         select = """
-            select surname as cognoms, name as nom, email, phone as mòbil, role as rol, 
+            select surname as cognoms, name as nom, email, dni, phone as mòbil, role as rol, 
             purchased_ticket1 as "entrada adquirida"
             from users order by cognoms asc, nom asc
         """
@@ -102,6 +102,7 @@ def new_worker():
             name=form.place.data,
             surname=form.name.data,
             email=fake_email,
+            dni=fake_email,
             role=UserRole.worker
         )
         # set a random password because it can't be null

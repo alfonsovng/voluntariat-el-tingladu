@@ -41,6 +41,7 @@ def signup(invitation_token):
                 name=form.name.data,
                 surname=form.surname.data,
                 email=form.email.data,
+                dni=form.dni.data,
                 phone=form.phone.data,
                 role=UserRole.volunteer
             )

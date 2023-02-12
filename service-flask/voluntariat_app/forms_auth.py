@@ -15,6 +15,7 @@ class SignUpForm(FlaskForm):
         ],
         filters = [trim]
     )
+    dni = StringField("DNI", validators=[DataRequired()], filters = [trim])
     phone = StringField("Mòbil", filters = [trim])
     adult = BooleanField(
         "Sóc major d'edat",
@@ -22,6 +23,10 @@ class SignUpForm(FlaskForm):
     )
     store_email = BooleanField(
         "Accepto rebre emails d'El Tingladu i que el meu email sigui emmagatzemat per a futurs esdeveniments",
+        validators=[DataRequired()]
+    )
+    contract = BooleanField(
+        "Accepto l'acord de col·laboració voluntària amb El Tingladu",
         validators=[DataRequired()]
     )
     submit = SubmitField("Registra't")

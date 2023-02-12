@@ -288,6 +288,7 @@ CREATE TABLE public.users (
     name character varying NOT NULL,
     surname character varying NOT NULL,
     email character varying NOT NULL,
+    dni character varying NOT NULL,
     password character varying NOT NULL,
     phone character varying DEFAULT ''::character varying NOT NULL,
     purchased_ticket1 character varying DEFAULT ''::character varying NOT NULL,
