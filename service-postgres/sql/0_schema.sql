@@ -22,7 +22,8 @@ SET row_security = off;
 
 CREATE TYPE public.users_role AS ENUM (
     'admin',
-    'volunteer'
+    'volunteer',
+    'worker'
 );
 
 
