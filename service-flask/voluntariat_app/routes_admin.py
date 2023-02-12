@@ -2,7 +2,7 @@ from flask import Blueprint, redirect, render_template, url_for, request, Respon
 from flask_login import current_user, login_required
 from .forms_message import EmailForm
 from .helper import flash_error, flash_info, load_volunteer
-from .models import User, Task, Shift, UserShift, Meal, UserMeal, UserDiet
+from .models import User, Task, Shift, UserShift, Meal, UserMeal, UserDiet, Ticket, UserTicket
 from . import db, hashid_manager, excel_manager, task_manager, params_manager
 from .plugin_gmail import TaskMessageEmail
 import sqlalchemy
@@ -314,7 +314,89 @@ def tickets():
         flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
         return redirect(url_for('volunteer_bp.dashboard'))
 
-    return render_template('admin-tickets.html',user=current_user)
+    excel = request.args.get('excel', default=False, type=bool)
+    if excel:
+        select = f"""select t.name as ticket,
+            u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil,
+            ut.comments as "obs ticket"
+            from users as u 
+            join user_tickets as ut on u.id = ut.user_id
+            join tickets as t on t.id = ut.ticket_id
+            where ut.selected
+            order by t.id asc, cognoms asc, nom asc
+        """
+
+        file_name = hashid_manager.create_unique_file_name(
+            id = current_user.id,
+            name = "TICKETS",
+            extension = ".xlsx"
+        )
+        return generate_excel(
+            file_name=file_name,
+            select=select
+        )
+
+    count_subquery = sqlalchemy.text(f"""
+        select ticket_id, count(user_id) as n_tickets
+        from user_tickets where selected
+        group by ticket_id
+    """).columns(ticket_id=db.Integer,n_tickets=db.Integer).subquery("count_subquery")
+
+    tickets_and_quantity = db.session.query(
+        Ticket, count_subquery.c.n_tickets, 
+    ).outerjoin(
+        count_subquery, Ticket.id == count_subquery.c.ticket_id
+    ).order_by(
+        Ticket.id.asc()
+    )
+
+    return render_template('admin-tickets.html',tickets_and_quantity=tickets_and_quantity,user=current_user)
+
+@admin_bp.route('/admin/tickets/<int:ticket_id>')
+@login_required
+def tickets_detail(ticket_id):
+    if not current_user.is_admin:
+        flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
+        return redirect(url_for('volunteer_bp.dashboard'))
+
+    excel = request.args.get('excel', default=False, type=bool)
+    if excel:
+        select = f"""select t.name as ticket,
+            u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil,
+            ut.comments as "obs ticket"
+            from users as u 
+            join user_tickets as ut on u.id = ut.user_id
+            join tickets as t on t.id = ut.ticket_id
+            where t.id = :TICKET_ID and ut.selected
+            order by t.id asc, cognoms asc, nom asc
+        """
+
+        file_name = hashid_manager.create_unique_file_name(
+            id = current_user.id,
+            name = f"TICKET {ticket_id}",
+            extension = ".xlsx"
+        )
+        return generate_excel(
+            file_name=file_name,
+            select=select,
+            params={"TICKET_ID":ticket_id}
+        )
+
+    ticket = Ticket.query.filter_by(id = ticket_id).first()
+    if ticket is None:
+        flash_error("Adreça incorrecta")
+        return redirect(url_for('main_bp.init'))
+
+    users_with_tickets = db.session.query(User, UserTicket).join(UserTicket).filter(
+        UserTicket.ticket_id == ticket_id
+    ).filter(
+        UserTicket.selected
+    ).order_by(User.surname.asc(), User.name.asc()).all()
+
+    return render_template('admin-ticket-detail.html',
+        ticket=ticket,users_with_tickets=users_with_tickets,
+        user=current_user
+    )
 
 def generate_excel(file_name, select, params={}):
     with excel_manager.create_excel(file_name) as excel:

@@ -2,9 +2,9 @@ from flask import Blueprint, redirect, render_template, url_for, request
 from flask_login import current_user, login_required
 from .helper import flash_error, flash_info, load_volunteer, flash_warning, trim
 from . import db, task_manager, params_manager, rewards_manager
-from .forms_volunteer import ProfileForm, ChangePasswordForm, ShiftsForm, ShiftsFormWithPassword, DietForm, MealsForm
+from .forms_volunteer import ProfileForm, ChangePasswordForm, ShiftsForm, ShiftsFormWithPassword, DietForm, MealsForm, TicketsForm
 from .plugin_gmail import TaskConfirmPasswordChangeEmail
-from .models import Task, Shift, UserShift, UserDiet, UserMeal, Meal
+from .models import Task, Shift, UserShift, UserDiet, UserMeal, Meal, Ticket, UserTicket
 import sqlalchemy
 
 # Blueprint Configuration
@@ -293,10 +293,60 @@ def tickets(volunteer_hashid):
         flash_error("Adreça incorrecta")
         return redirect(url_for('main_bp.init'))
 
+    # read_only = __is_read_only(current_user)
+    read_only = True # las entradas no hace falta guardar si renuncian
     if not volunteer.has_shifts:
         flash_warning("Abans d'accedir a aquesta secció s'han de completar les Tasques i Torns")
+        read_only = True
 
-    return render_template('volunteer-tickets.html',volunteer=volunteer,user=current_user)
+    tickets = Ticket.query.all()
+    user_tickets = UserTicket.query.filter_by(user_id = volunteer.id).order_by(UserTicket.id.asc()).all()
+    tickets_form = __create_tickets_form(tickets = tickets, user_tickets = user_tickets)
+
+    # if not read_only and tickets_form.validate_on_submit():
+    #     # update de tickets
+    #     for um in user_meals:
+    #         um.selected = meals_form[f"selected-{um.id}"].data
+    #         if um.selected:
+    #             um.comments = meals_form[f"comments-{um.id}"].data
+    #         else:
+    #             um.comments = ""
+
+    #     db.session.commit()
+    #     flash_info("S'han registrat els canvis en els teus àpats")
+    #     return redirect(url_for('volunteer_bp.meals',volunteer_hashid=volunteer_hashid))
+
+    return render_template('volunteer-tickets.html',read_only=read_only,
+        tickets_form=tickets_form,
+        volunteer=volunteer,user=current_user
+    )
+
+def __create_tickets_form(tickets, user_tickets):
+    from wtforms import BooleanField, TextAreaField
+
+    if not user_tickets:
+        return TicketsForm()
+
+    tickets_dict = {}
+    for m in tickets:
+        tickets_dict[m.id] = m.name
+
+    class F(TicketsForm):
+        pass
+    
+    setattr(F, "ids", [str(ut.id) for ut in user_tickets])
+
+    for ut in user_tickets:
+        boolean_field = BooleanField(tickets_dict[ut.ticket_id], default = ut.selected)
+        setattr(F, f"selected-{ut.id}", boolean_field)
+
+        text_area_field = TextAreaField(
+            filters = [trim],
+            default = ut.comments
+        )
+        setattr(F, f"comments-{ut.id}", text_area_field)
+
+    return F()
 
 def __is_read_only(current_user):
     return not params_manager.allow_modifications and not current_user.is_admin

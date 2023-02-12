@@ -12,25 +12,31 @@
         <h2>Administració</h2>
         <h2><small class="text-muted">{% block title %}Entrades{% endblock %}</small></h2>
         <div class="table-responsive">
-            <table class="table table-light table-striped table-hover table-bordered">
+            <table class="table table-light table-striped table-hover table-bordered table-sm">
                 <thead>
                     <tr>
-                        <th>TODO</th>
-                        <th>TODO</th>
+                        <th>NOM</th>
+                        <th>DESCRIPCIÓ</th>
+                        <th>QUANTITAT</th>
+                        <th>EXCEL</th>
                     </tr>
                 </thead>
                 <tbody>
+                    {% for t,q in tickets_and_quantity %}
                     <tr>
-                        <td>TODO</td>
-                        <td>TODO</td>
+                        <td><a href='/admin/tickets/{{t.id}}'>{{t.name}}</a></td>
+                        <td><a href='/admin/tickets/{{t.id}}'>{{t.description}}</a></td>
+                        <td><a href='/admin/tickets/{{t.id}}'>{{0 if q is none else q}}</a></td>
+                        <td><a href='/admin/tickets/{{t.id}}?excel=1'><img src="/static/img/excel-icon.png" alt="Excel"/></a></td>
                     </tr>
+                    {% endfor %}
                 </tbody>
             </table>
         </div>
         <br />
         <div class="btn-group">
             <a class="btn btn-secondary" href="/admin"> &#x3c;&#x3c; Torna enrera</a>
-            <a class="btn btn-primary" href="#">Descarrega en format Excel</a>
+            <a class="btn btn-primary" href="?excel=1">Descarrega en format Excel</a>
         </div>
     </div>
 </div>  

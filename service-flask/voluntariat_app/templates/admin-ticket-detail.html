@@ -1,0 +1,50 @@
+{% extends '_registered.html' %}
+
+<!--
+{% block admin_css %}
+<link href="/static/css/voluntariat_app_admin.css" rel="stylesheet">
+{% endblock %}
+-->
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-12">
+        <h2>Administració</h2>
+        <h2><small class="text-muted">{% block title %}Àpat{% endblock %}</small></h2>
+        <div class="table-responsive">
+            <table class="table table-light table-striped table-hover table-bordered table-sm">
+                <thead>
+                    <tr>
+                        <th colspan="5">
+                            {{ticket.name}}: {{ticket.description}}
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>COGNOMS</th>
+                        <th>NOM</th>
+                        <th>EMAIL</th>
+                        <th>MÒBIL</th>
+                        <th>OBS TICKET</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for (u,ut) in users_with_tickets %}
+                        <tr>
+                            <td>{{u.surname}}</td>
+                            <td>{{u.name}}</td>
+                            <td>{{u.email}}</td>
+                            <td>{{u.phone}}</td>
+                            <td>{{ut.comments}}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <br />
+        <div class="btn-group">
+            <a class="btn btn-secondary" href="/admin/tickets"> &#x3c;&#x3c; Torna enrera</a>
+            <a class="btn btn-primary" href="?excel=1">Descarrega en format Excel</a>
+        </div>
+    </div>
+</div>  
+{% endblock %}
