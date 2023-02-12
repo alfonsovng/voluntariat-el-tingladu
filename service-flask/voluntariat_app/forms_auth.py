@@ -18,12 +18,10 @@ class SignUpForm(FlaskForm):
     phone = StringField("Mòbil", filters = [trim])
     adult = BooleanField(
         "Sóc major d'edat",
-        description = "Has de confirmar que ets major d'edat per a poder col·laborar amb El Tingladu",
         validators=[DataRequired()]
     )
     store_email = BooleanField(
         "Accepto rebre emails d'El Tingladu i que el meu email sigui emmagatzemat per a futurs esdeveniments",
-        description = "Necessari per a col·laborar com a voluntariat amb els esdeveniments organitzats per El Tingladu. Tota la resta de dades personals (nom, cognoms i telèfon) s'esborran en acabar aquest esdeveniment",
         validators=[DataRequired()]
     )
     submit = SubmitField("Registra't")
