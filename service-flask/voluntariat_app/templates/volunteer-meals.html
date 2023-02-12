@@ -13,11 +13,11 @@
 {% block content %}
 <div class="row justify-content-md-center">
   <div class="col-md-8 col-lg-7 col-xl-6">
-    <h3>{% block title %}Àpats i dieta{% endblock %}</h3>
-    <h3><small class="text-muted">{{ volunteer.full_name }}</small></h3>
+    <h2>{% block title %}Àpats i dieta{% endblock %}</h2>
+    <h2><small class="text-muted">{{ volunteer.full_name }}</small></h2>
     <hr />
-    <h5>Els teus àpats</h5>
-    <h5><small class="text-muted">Si aquest dia no faràs un d'aquests àpats a la cuina d'El Tingladu, desmarca la casella per evitar el malbaratament alimentari.</small></h5>
+    <h4>Els teus àpats</h4>
+    <h4><small class="text-muted">Si aquest dia no faràs un d'aquests àpats a la cuina d'El Tingladu, desmarca la casella per evitar el malbaratament alimentari.</small></h4>
     <form role="form" method='POST' class="{{'text-secondary' if read_only }}">
       {{ meals_form.csrf_token }}
       {% for id in meals_form.ids %}
@@ -28,8 +28,8 @@
       {% endif %}
     </form>
     <hr />
-    <h5>La teva dieta</h5>
-    <h5><small class="text-muted">Notifica les característiques de la teva dieta, indicant al·lèrgies, intol·leràncies i altres dades importants.</small></h5>
+    <h4>La teva dieta</h4>
+    <h4><small class="text-muted">Notifica les característiques de la teva dieta, indicant al·lèrgies, intol·leràncies i altres dades importants.</small></h4>
     <form role="form" method='POST' class="{{'text-secondary' if read_only }}">
       {{ diet_form.csrf_token }}
       {{ checkbox(diet_form.vegan, read_only = read_only)}}
