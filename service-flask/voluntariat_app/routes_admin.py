@@ -2,7 +2,7 @@ from flask import Blueprint, redirect, render_template, url_for, request, Respon
 from flask_login import current_user, login_required
 from .forms_message import EmailForm
 from .forms_worker import NewWorkerForm, WorkerForm
-from .helper import flash_error, flash_info, load_volunteer, logger, get_timestamp
+from .helper import flash_error, flash_info, load_volunteer, logger, get_timestamp, get_shifts_meals_and_tickets
 from .models import User, Task, Shift, UserShift, Meal, UserMeal, UserDiet, Ticket, UserTicket, UserRole
 from . import db, hashid_manager, excel_manager, task_manager, params_manager
 from .plugin_gmail import TaskMessageEmail
@@ -73,19 +73,7 @@ def profile(volunteer_hashid):
     elif volunteer.is_worker:
         return redirect(url_for('admin_bp.worker',worker_hashid=volunteer_hashid))
 
-    shifts = [s for s in db.session.execute(f"""select t.name || ': ' || s.name 
-        from tasks as t 
-        join shifts as s on t.id = s.task_id 
-        join user_shifts as us on us.shift_id = s.id 
-        where us.user_id = {volunteer.id}""").scalars()]
-    meals = [m for m in db.session.execute(f"""select m.name 
-        from meals as m 
-        join user_meals as um on m.id=um.meal_id 
-        where um.selected and um.user_id = {volunteer.id}""").scalars()]
-    tickets = [t for t in db.session.execute(f"""select t.name 
-        from tickets as t 
-        join user_tickets as ut on t.id=ut.ticket_id 
-        where ut.selected and ut.user_id = {volunteer.id}""").scalars()]
+    (shifts, meals, tickets) = get_shifts_meals_and_tickets(volunteer.id)
 
     return render_template('admin-volunteer.html',shifts=shifts,meals=meals,tickets=tickets,volunteer=volunteer,user=current_user)
 
@@ -144,19 +132,7 @@ def worker(worker_hashid):
         flash_info('Dades actualitzades')
         return redirect(url_for('admin_bp.worker',worker_hashid=worker_hashid))
 
-    shifts = [s for s in db.session.execute(f"""select t.name || ': ' || s.name 
-        from tasks as t 
-        join shifts as s on t.id = s.task_id 
-        join user_shifts as us on us.shift_id = s.id 
-        where us.user_id = {worker.id}""").scalars()]
-    meals = [m for m in db.session.execute(f"""select m.name 
-        from meals as m 
-        join user_meals as um on m.id=um.meal_id 
-        where um.selected and um.user_id = {worker.id}""").scalars()]
-    tickets = [t for t in db.session.execute(f"""select t.name 
-        from tickets as t 
-        join user_tickets as ut on t.id=ut.ticket_id 
-        where ut.selected and ut.user_id = {worker.id}""").scalars()]
+    (shifts, meals, tickets) = get_shifts_meals_and_tickets(worker.id)
 
     return render_template('admin-worker.html',shifts=shifts,meals=meals,tickets=tickets,form=form,worker=worker,user=current_user)
 

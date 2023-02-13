@@ -1,6 +1,6 @@
 from flask import Blueprint, redirect, render_template, url_for, request
 from flask_login import current_user, login_required
-from .helper import flash_error, flash_info, load_volunteer, flash_warning, trim
+from .helper import flash_error, flash_info, load_volunteer, flash_warning, trim, get_shifts_meals_and_tickets
 from . import db, task_manager, params_manager, rewards_manager
 from .forms_volunteer import ProfileForm, ChangePasswordForm, ShiftsForm, ShiftsFormWithPassword, DietForm, MealsForm, TicketsForm
 from .plugin_gmail import TaskConfirmPasswordChangeEmail
@@ -23,7 +23,8 @@ def volunteer(volunteer_hashid):
 @volunteer_bp.route('/dashboard')
 @login_required
 def dashboard():
-    return render_template('volunteer-dashboard.html',user=current_user)
+    (shifts, meals, tickets) = get_shifts_meals_and_tickets(current_user.id)
+    return render_template('volunteer-dashboard.html',shifts=shifts,meals=meals,tickets=tickets,user=current_user)
 
 @volunteer_bp.route('/v/<volunteer_hashid>/profile', methods=["GET", "POST"])
 @login_required
