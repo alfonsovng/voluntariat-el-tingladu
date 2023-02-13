@@ -15,8 +15,10 @@
       <h2><small class="text-muted">Dona d'alta una nova persona treballadora</small></h2>
       <form role="form" method='POST'>
         {{ form.csrf_token }}
+        {{ text(form.surname, placeholder="Cognoms de la nova persona treballadora", 
+          description="El llistat de persones s'ordena pels cognoms") }}
         {{ text(form.name, placeholder="Nom de la nova persona treballadora") }}
-        {{ text(form.place, placeholder="Lloc de la nova persona treballadora") }}
+        {{ text(form.phone, placeholder="Mòbil (opcional)") }}
         <div class="btn-group">
           <a class="btn btn-secondary" href="/admin"> &#x3c;&#x3c; Torna enrera</a>
           {{ form.submit(class='btn btn-success') }}

@@ -12,7 +12,7 @@
 <div class="row justify-content-md-center">
     <div class="col-md-8 col-lg-7 col-xl-6">
         <h2>{% block title %}Persona treballadora{% endblock %}</h2>
-        <h2><small class="text-muted">{{ worker.surname }} [{{ worker.name }}]</small></h2>
+        <h2><small class="text-muted">{{ worker.full_name }}</small></h2>
         <div class="table-responsive">
             <table class="table table-light table-striped table-hover table-bordered">
                 <tbody>
@@ -23,10 +23,35 @@
                         <td>
                             <form role="form" method='POST'>
                                 {{ form.csrf_token }}
+                                {{ text(form.surname, placeholder="Cognoms de la persona treballadora") }}
                                 {{ text(form.name, placeholder="Nom de la persona treballadora") }}
-                                {{ text(form.place, placeholder="Lloc de la persona treballadora") }}
+                                {{ text(form.phone, placeholder="Mòbil (opcional)") }}
                                 {{ form.submit(class='btn btn-success') }}
                             </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>MÒBIL</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="d-xl-flex justify-content-between">
+                                {% if worker.phone %}
+                                <p>
+                                    <a href="#" data-toggle="tooltip" title="Fes click per copiar-ho" onclick="return copy_to_clipboard(this)">{{worker.phone}}</a>
+                                </p>
+                                <div class="btn-group">
+                                    <a class="btn btn-dark bg-profile-light" href="tel:{{worker.phone}}"">Truca al mòbil</a>
+                                    <a class="btn btn-dark bg-profile" target="_blank" href="https://wa.me/{{worker.phone}}">Envia un Whatsapp</a> 
+                                </div>
+                                {% else %}
+                                <p class="text-secondary">Mòbil no proporcionat</p>
+                                <div class="btn-group">
+                                    <a class="btn btn-secondary bg-profile disabled" href="#">Truca al mòbil</a>
+                                    <a class="btn btn-secondary bg-profile disabled" href="#">Envia un Whatsapp</a>
+                                </div>
+                                {% endif %}
+                            </div>
                         </td>
                     </tr>
                     <tr>

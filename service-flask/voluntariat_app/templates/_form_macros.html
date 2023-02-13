@@ -38,10 +38,13 @@
 </div>
 {% endmacro %}
 
-{% macro text(field, placeholder="") %}
+{% macro text(field, placeholder="", description=None) %}
 <div class="form-group">
   {{ field.label }}
   {{ field(class='form-control', placeholder=placeholder) }}
+  {% if description %}
+  <label class="small font-italic d-block text-right" for="{{field.name}}">{{description|safe}}</label>
+  {% endif %}
   {% for error in field.errors %}
     <p class="form-error">{{ error }}</p>
   {% endfor %}

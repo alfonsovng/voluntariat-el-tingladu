@@ -12,3 +12,4 @@ class ParamsManager:
         self.external_url = app.config.get('PARAM_EXTERNAL_URL')
         self.invitation_token = app.config.get('PARAM_INVITATION_TOKEN')
         self.allow_modifications = app.config.get('PARAM_ALLOW_MODIFICATIONS')
+        self.worker_fake_email_domain = app.config.get('PARAM_WORKER_FAKE_EMAIL_DOMAIN')
