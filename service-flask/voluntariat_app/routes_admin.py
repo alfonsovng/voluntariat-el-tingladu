@@ -49,6 +49,7 @@ def people():
             case when role='worker' then '' else email end as email, 
             case when role='worker' then '' else dni end as dni, 
             phone as mòbil, role as rol, 
+            case when electrician then 'X' else '' end as electricitat,
             purchased_ticket1 as "entrada adquirida"
             from users order by cognoms asc, nom asc
         """

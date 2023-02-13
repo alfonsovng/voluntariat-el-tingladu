@@ -15,6 +15,7 @@ class ProfileForm(FlaskForm):
     purchased_ticket2 = StringField("Si ja tens l'entrada comprada, indica'ns el localitzador", filters = [trim])
     purchased_ticket3 = StringField("Si ja tens l'entrada comprada, indica'ns el localitzador", filters = [trim])
     purchased_ticket4 = StringField("Si ja tens l'entrada comprada, indica'ns el localitzador", filters = [trim])
+    electrician = BooleanField("Domines d'electricitat?")
     submit = SubmitField("Actualiza les dades")
 
 class ChangePasswordForm(FlaskForm):
