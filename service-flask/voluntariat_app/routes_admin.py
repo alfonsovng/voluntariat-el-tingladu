@@ -45,7 +45,10 @@ def people():
             extension = ".xlsx"
         )
         select = """
-            select surname as cognoms, name as nom, email, dni, phone as mòbil, role as rol, 
+            select surname as cognoms, name as nom, 
+            case when role='worker' then '' else email end as email, 
+            case when role='worker' then '' else dni end as dni, 
+            phone as mòbil, role as rol, 
             purchased_ticket1 as "entrada adquirida"
             from users order by cognoms asc, nom asc
         """
@@ -83,7 +86,7 @@ def profile(volunteer_hashid):
         join user_tickets as ut on t.id=ut.ticket_id 
         where ut.selected and ut.user_id = {volunteer.id}""").scalars()]
 
-    return render_template('admin-profile.html',shifts=shifts,meals=meals,tickets=tickets,volunteer=volunteer,user=current_user)
+    return render_template('admin-volunteer.html',shifts=shifts,meals=meals,tickets=tickets,volunteer=volunteer,user=current_user)
 
 @admin_bp.route("/admin/worker", methods=["GET", "POST"])
 @login_required
@@ -94,19 +97,18 @@ def new_worker():
 
     form = NewWorkerForm()
     if form.validate_on_submit():
-        logger.info(f"Nou treballador: {form.name.data}")
+        worker = User()
+        form.populate_obj(worker)
 
-        fake_email = f"{get_timestamp()}#{current_user.id}#{hash(form.name.data) % 10000}#{hash(form.place.data) % 10000}"
+        logger.info(f"Nou treballador: {worker.full_name}")
 
-        worker = User(
-            name=form.place.data,
-            surname=form.name.data,
-            email=fake_email,
-            dni=fake_email,
-            role=UserRole.worker
-        )
-        # set a random password because it can't be null
+        worker.dni = f"{get_timestamp()}#{current_user.id}"
+        worker.role = UserRole.worker
+        # random email pq no pot ser buit
+        worker.email = hashid_manager.create_token(current_user.id) + params_manager.worker_fake_email_domain
+        # random password pq no pot ser buit
         worker.set_password(hashid_manager.create_password())
+       
         db.session.add(worker)
         db.session.commit()  # Create new user
 
@@ -133,18 +135,13 @@ def worker(worker_hashid):
     elif not worker.is_worker:
         return redirect(url_for('admin_bp.profile',volunteer_hashid=worker_hashid))
 
-    form = WorkerForm()
+    form = WorkerForm(obj = worker)
     if form.validate_on_submit():
-        worker.surname = form.name.data
-        worker.name = form.place.data
-
+        form.populate_obj(worker)
         db.session.add(worker)
         db.session.commit() # guardem els canvis
         flash_info('Dades actualitzades')
         return redirect(url_for('admin_bp.worker',worker_hashid=worker_hashid))
-  
-    form.name.data = worker.surname
-    form.place.data = worker.name
 
     shifts = [s for s in db.session.execute(f"""select t.name || ': ' || s.name 
         from tasks as t 

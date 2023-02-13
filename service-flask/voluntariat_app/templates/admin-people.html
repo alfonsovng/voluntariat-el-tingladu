@@ -17,6 +17,7 @@
                     <tr>
                         <th>COGNOMS</th>
                         <th>NOM</th>
+                        <th>MÒBIL</th>
                         <th>ROL</th>
                     </tr>
                 </thead>
@@ -25,6 +26,7 @@
                     <tr>
                         <td><a href='/admin/people/{{v.hashid}}'>{{v.surname}}</a></td>
                         <td><a href='/admin/people/{{v.hashid}}'>{{v.name}}</a></td>
+                        <td><a href='/admin/people/{{v.hashid}}'>{{v.phone}}</a></td>
                         <td><a href='/admin/people/{{v.hashid}}'>{{v.role.name}}</a></td>
                     </tr>   
                     {% endfor %}
