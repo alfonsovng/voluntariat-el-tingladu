@@ -78,17 +78,23 @@ class RewardsManager:
             current_shifts = current_shifts
         )
 
-        merged_tickets = self.merge_tickets(
-            current_stuff = current_tickets,
-            new_stuff = new_tickets
+        merged_tickets = self.__merge_tickets(
+            current_tickets = current_tickets,
+            new_tickets = new_tickets
         )
 
         UserTicket.query.filter(UserTicket.user_id == user_id).delete()
         db.session.add_all(merged_tickets)
 
-    def merge_tickets(self, current_stuff, new_stuff):
-        # TODO
-        return new_stuff
+    def __merge_tickets(self, current_tickets, new_tickets):
+        for ticket in new_tickets:
+            existing_ticket = self.__get_first_with_filter(lambda t:t.ticket_id == ticket.ticket_id, current_tickets)
+            if existing_ticket:
+                ticket.id = existing_ticket.id
+                ticket.selected = existing_ticket.selected
+                ticket.comments = existing_ticket.comments
+
+        return new_tickets
 
     def update_meals(self, user_id, current_shifts):
         from .models import UserMeal
@@ -100,13 +106,23 @@ class RewardsManager:
             current_shifts = current_shifts
         )
 
-        merged_meals = self.merge_meals(
-            current_stuff = current_meals,
-            new_stuff = new_meals
+        merged_meals = self.__merge_meals(
+            current_meals = current_meals,
+            new_meals = new_meals
         )
         UserMeal.query.filter(UserMeal.user_id == user_id).delete()
         db.session.add_all(merged_meals)
 
-    def merge_meals(self, current_stuff, new_stuff):
-        # TODO
-        return new_stuff
+    def __merge_meals(self, current_meals, new_meals):
+        for meal in new_meals:
+            existing_meal = self.__get_first_with_filter(lambda m:m.meal_id == meal.meal_id, current_meals)
+            if existing_meal:
+                meal.id = existing_meal.id
+                meal.selected = existing_meal.selected
+                meal.comments = existing_meal.comments
+
+        return new_meals
+
+    def __get_first_with_filter(self, lambda_filter, list):
+        filtered_list = filter(lambda_filter, list)
+        return next(iter(filtered_list), None)
