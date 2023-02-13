@@ -73,7 +73,7 @@
                                 <p class="text-task">{{name}}</p>
                                 {% endfor %}
                             {% else %}
-                            <p class="font-italic">No hi ha tasques assignades</p>
+                            <p class="font-italic">No hi ha tasques assignades i/o seleccionades</p>
                             {% endif %}
                             <a class="btn btn-dark bg-task text-white" href="/v/{{volunteer.hashid}}/tasks">Les seves tasques i torns</a>
                         </td>
@@ -88,7 +88,7 @@
                                 <p class="text-meal">{{name}}</p>
                                 {% endfor %}
                             {% else %}
-                            <p class="font-italic">No hi ha àpats assignats</p>
+                            <p class="font-italic">No hi ha àpats assignats i/o seleccionats</p>
                             {% endif %}
                             <a class="btn btn-dark bg-meal text-white" href="/v/{{volunteer.hashid}}/meals">Els seus àpats i la seva dieta</a>
                         </td>
@@ -103,7 +103,7 @@
                                 <p class="text-ticket">{{name}}</p>
                                 {% endfor %}
                             {% else %}
-                            <p class="font-italic">No hi ha entrades assignades</p>
+                            <p class="font-italic">No hi ha entrades assignades i/o seleccionades</p>
                             {% endif %}
                             <a class="btn btn-dark bg-ticket text-white" href="/v/{{volunteer.hashid}}/rewards">Les seves entrades i recompenses</a>
                         </td>
