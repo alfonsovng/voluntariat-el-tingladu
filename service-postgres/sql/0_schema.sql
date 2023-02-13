@@ -295,6 +295,7 @@ CREATE TABLE public.users (
     purchased_ticket2 character varying DEFAULT ''::character varying NOT NULL,
     purchased_ticket3 character varying DEFAULT ''::character varying NOT NULL,
     purchased_ticket4 character varying DEFAULT ''::character varying NOT NULL,
+    electrician boolean DEFAULT false NOT NULL,
     role public.users_role NOT NULL,
     change_password_token character varying
 );

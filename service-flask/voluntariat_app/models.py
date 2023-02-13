@@ -30,6 +30,7 @@ class User(UserMixin, db.Model):
     purchased_ticket2 = db.Column(db.String, nullable=False, server_default='')  #'' es un possible valor
     purchased_ticket3 = db.Column(db.String, nullable=False, server_default='')  #'' es un possible valor
     purchased_ticket4 = db.Column(db.String, nullable=False, server_default='')  #'' es un possible valor
+    electrician = db.Column(db.Boolean, nullable=False, default=False, server_default=text("FALSE"))
     role = db.Column(db.Enum(UserRole, name='users_role'), nullable=False)
     change_password_token = db.Column(db.String)
     # aliased pq quan fem join de user amb user_shifts no doni problemes
