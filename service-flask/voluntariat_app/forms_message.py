@@ -7,11 +7,12 @@ class IncidenceForm(FlaskForm):
     type = SelectField(
         "Tipus d'incidència", 
         choices=[
-            "Error en la web",
-            "Canvi d'adreça d'email",
             "No puc fer una tasca o torn",
             "Desacord amb la recompensa",
-            "Problema amb la dieta",
+            "Problema amb la dieta o els àpats",
+            "Canvi d'adreça d'email o DNI",
+            "Error en en l'aplicatiu",
+            "Suggeriment o millora en l'aplicatiu",
             "Altre tipus d'incidència"
         ]
     )
