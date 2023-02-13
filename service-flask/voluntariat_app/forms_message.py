@@ -7,8 +7,8 @@ class IncidenceForm(FlaskForm):
     type = SelectField(
         "Tipus d'incidència", 
         choices=[
-            "No puc fer una tasca o torn",
-            "Desacord amb la recompensa",
+            "Arribaré tard al torn",
+            "No puc fer un torn",
             "Problema amb la dieta o els àpats",
             "Canvi d'adreça d'email o DNI",
             "Error en en l'aplicatiu",
