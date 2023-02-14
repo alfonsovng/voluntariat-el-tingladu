@@ -79,6 +79,19 @@ class Shift(db.Model):
     slots = db.Column(db.Integer, nullable=False, server_default=text("0")) # 0 significa sense límits
     reward = db.Column(db.Integer, nullable=False, server_default=text("0")) # recompensa en tiquets
 
+class ShiftDetail(db.Model):
+    __tablename__ = "shift_details"
+    id = db.Column(db.Integer, primary_key=True)
+    task_id = db.Column(db.Integer, db.ForeignKey("tasks.id"), nullable=False)
+    name = db.Column(db.String, nullable=False)
+    description = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
+    reward = db.Column(db.Integer, nullable=False, server_default=text("0")) # recompensa en tiquets
+
+class UserShiftDetail(db.Model):
+    __tablename__ = "user_shift_details"
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
+    shift_detail_id = db.Column(db.Integer, db.ForeignKey("shift_details.id"), primary_key=True)
+
 class UserDiet(db.Model):
     __tablename__ = "user_diets"
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
