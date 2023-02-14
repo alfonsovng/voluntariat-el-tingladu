@@ -24,6 +24,7 @@
                         <th>DESCRIPCIÓ</th>
                         <th>LLOCS OCUPATS</th>
                         <th>LLOCS TOTALS</th>
+                        <th>RECOMPENSA</th>
                         <th>EXCEL</th>
                     </tr>
                 </thead>
@@ -34,6 +35,7 @@
                         <td><a href='/admin/tasks/{{s.task_id}}/{{s.id}}'>{{s.description}}</a></td>
                         <td><a href='/admin/tasks/{{s.task_id}}/{{s.id}}'>{{0 if n is none else n}}</a></td>
                         <td><a href='/admin/tasks/{{s.task_id}}/{{s.id}}'>{{s.slots if s.slots > 0}}</a></td>
+                        <td><a href='/admin/tasks/{{s.task_id}}/{{s.id}}'>{{s.reward|string() + " €" if s.reward > 0}}</a></td>
                         <td><a href='/admin/tasks/{{s.task_id}}/{{s.id}}?excel=1'><img src="/static/img/excel-icon.png" alt="Excel"/></a></td>
                     </tr>
                     {% endfor %}

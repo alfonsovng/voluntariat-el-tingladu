@@ -21,7 +21,7 @@
                     </tr>
                     <tr>
                         <th colspan="5">
-                            {{shift.name}}: {{shift.description}}
+                            {{shift.name}}: {{shift.description}} {{"[" + shift.reward|string() + " €]" if shift.reward > 0}}
                         </th>
                     </tr>
                     <tr>

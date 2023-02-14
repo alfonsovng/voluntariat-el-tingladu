@@ -77,6 +77,7 @@ class Shift(db.Model):
     name = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
     slots = db.Column(db.Integer, nullable=False, server_default=text("0")) # 0 significa sense límits
+    reward = db.Column(db.Integer, nullable=False, server_default=text("0")) # recompensa en tiquets
 
 class UserDiet(db.Model):
     __tablename__ = "user_diets"
