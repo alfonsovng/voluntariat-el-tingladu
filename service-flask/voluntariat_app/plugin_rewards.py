@@ -126,3 +126,16 @@ class RewardsManager:
     def __get_first_with_filter(self, lambda_filter, list):
         filtered_list = filter(lambda_filter, list)
         return next(iter(filtered_list), None)
+
+    def calculate_cash(self, user_id):
+        from .models import UserShift, Shift, Task
+        from . import db
+
+        shifts = db.session.query(Task, Shift).join(Shift).join(UserShift).filter(UserShift.user_id == user_id).all()
+        cash = 0
+        cash_details = list()
+        for (t, s) in shifts:
+            cash_details.append(f"{t.name} - {s.name}: {s.reward} €")
+            cash += s.reward
+
+        return (cash, cash_details)

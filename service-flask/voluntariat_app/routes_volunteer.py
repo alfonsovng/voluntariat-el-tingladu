@@ -303,6 +303,8 @@ def rewards(volunteer_hashid):
     user_tickets = UserTicket.query.filter_by(user_id = volunteer.id).order_by(UserTicket.id.asc()).all()
     tickets_form = __create_tickets_form(tickets = tickets, user_tickets = user_tickets)
 
+    (cash, cash_details) = rewards_manager.calculate_cash(volunteer.id)
+
     # if not read_only and tickets_form.validate_on_submit():
     #     # update de tickets
     #     for um in user_meals:
@@ -317,8 +319,9 @@ def rewards(volunteer_hashid):
     #     return redirect(url_for('volunteer_bp.meals',volunteer_hashid=volunteer_hashid))
 
     return render_template('volunteer-rewards.html',read_only=read_only,
-        tickets_form=tickets_form,
-        volunteer=volunteer,user=current_user
+        tickets_form = tickets_form,
+        cash = cash, cash_details = cash_details,
+        volunteer = volunteer, user = current_user
     )
 
 def __create_tickets_form(tickets, user_tickets):

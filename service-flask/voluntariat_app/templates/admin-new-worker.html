@@ -11,8 +11,8 @@
 {% block content %}
 <div class="row justify-content-md-center">
     <div class="col-md-8 col-lg-7 col-xl-6">
-      <h2>{% block title %}Nova persona treballadora{% endblock %}</h2>
-      <h2><small class="text-muted">Dona d'alta una nova persona treballadora</small></h2>
+      <h2>Administració</h2>
+      <h2><small class="text-muted">{% block title %}Nova persona treballadora{% endblock %}</small></h2>
       <form role="form" method='POST'>
         {{ form.csrf_token }}
         {{ text(form.surname, placeholder="Cognoms de la nova persona treballadora", 
