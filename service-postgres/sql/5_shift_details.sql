@@ -1,0 +1,1 @@
+\copy shift_details(task_id, name, description, reward) from '/docker-entrypoint-initdb.d/csv/shift_details.csv' delimiter ',' csv header;
