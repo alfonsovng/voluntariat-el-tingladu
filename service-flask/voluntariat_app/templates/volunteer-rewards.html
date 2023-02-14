@@ -24,7 +24,7 @@
       {% if tickets_form.ids %}
       <ul>
         {% for id in tickets_form.ids %}
-          <li class="font-weight-bolder font-italic text-ticket">{{tickets_form["selected-"+ id].label.text }}</li>
+          <li class="font-weight-bolder text-ticket">{{tickets_form["selected-"+ id].label.text }}</li>
         {% endfor %}
       </ul>
       <!-- {% if not read_only %}
@@ -37,7 +37,16 @@
     <hr />
     <h4>Les teves recompenses</h4>
     <h4><small class="text-muted">Recompenses assignades segons les teves tasques i torns</small></h4>
-    <p class="font-italic text-ticket">No hi ha recompenses assignades</p>
+    {% if cash > 0 %}
+      <ul>
+        {% for d in cash_details %}
+          <li class="text-ticket">{{d}}</li>
+        {% endfor %}
+      </ul>
+      <p class="font-weight-bolder text-ticket">Total: {{cash}} € en tiquets de consum</p>
+    {% else %}
+      <p class="font-italic text-ticket">No hi ha recompenses assignades</p>
+    {% endif %}
     <hr />
     <a class="btn btn-secondary" href="/v/{{ volunteer.hashid }}"> &#x3c;&#x3c; Torna enrera</a>
   </div>

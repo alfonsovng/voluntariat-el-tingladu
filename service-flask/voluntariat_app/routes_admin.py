@@ -466,6 +466,50 @@ def tickets_detail(ticket_id):
         user=current_user
     )
 
+@admin_bp.route('/admin/rewards')
+@login_required
+def rewards():
+    if not current_user.is_admin:
+        flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
+        return redirect(url_for('volunteer_bp.dashboard'))
+
+    excel = request.args.get('excel', default=False, type=bool)
+    if excel:
+        select = f"""select u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil,
+            r.cash as "tickets consum"
+            from users as u 
+            join (select us.user_id, sum(s.reward) as cash from shifts as s join user_shifts as us on s.id = us.shift_id group by user_id) as r 
+            on r.user_id = u.id
+            where r.cash > 0
+            order by cognoms asc, nom asc
+        """
+
+        file_name = hashid_manager.create_unique_file_name(
+            id = current_user.id,
+            name = "CONSUM",
+            extension = ".xlsx"
+        )
+        return generate_excel(
+            file_name=file_name,
+            select=select
+        )
+
+    cash_subquery = sqlalchemy.text(f"""
+        select us.user_id, sum(s.reward) as cash 
+        from shifts as s join user_shifts as us on s.id = us.shift_id
+        group by user_id
+    """).columns(user_id=db.Integer,cash=db.Integer).subquery("cash_subquery")
+
+    users_with_cash = db.session.query(
+        User, cash_subquery.c.cash, 
+    ).join(
+        cash_subquery, User.id == cash_subquery.c.user_id
+    ).filter(
+        cash_subquery.c.cash > 0
+    ).order_by(User.surname.asc(), User.name.asc()).all()
+
+    return render_template('admin-cash.html',users_with_cash=users_with_cash,user=current_user)
+
 def generate_excel(file_name, select, params={}):
     with excel_manager.create_excel(file_name) as excel:
         rows = db.session.execute(select, params=params)
