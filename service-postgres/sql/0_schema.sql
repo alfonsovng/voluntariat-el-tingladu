@@ -78,7 +78,8 @@ CREATE TABLE public.shifts (
     task_id integer NOT NULL,
     name character varying NOT NULL,
     description character varying DEFAULT ''::character varying NOT NULL,
-    slots integer DEFAULT 0 NOT NULL
+    slots integer DEFAULT 0 NOT NULL,
+    reward integer DEFAULT 0 NOT NULL
 );
 
 
