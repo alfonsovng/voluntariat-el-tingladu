@@ -90,6 +90,7 @@ class ShiftDetail(db.Model):
 class UserShiftDetail(db.Model):
     __tablename__ = "user_shift_details"
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
+    shift_id = db.Column(db.Integer, db.ForeignKey("shifts.id"), primary_key=True)
     shift_detail_id = db.Column(db.Integer, db.ForeignKey("shift_details.id"), primary_key=True)
 
 class UserDiet(db.Model):

@@ -274,6 +274,7 @@ ALTER SEQUENCE public.user_meals_id_seq OWNED BY public.user_meals.id;
 
 CREATE TABLE public.user_shift_details (
     user_id integer NOT NULL,
+    shift_id integer NOT NULL,
     shift_detail_id integer NOT NULL
 );
 
@@ -508,7 +509,7 @@ ALTER TABLE ONLY public.user_meals
 --
 
 ALTER TABLE ONLY public.user_shift_details
-    ADD CONSTRAINT user_shift_details_pkey PRIMARY KEY (user_id, shift_detail_id);
+    ADD CONSTRAINT user_shift_details_pkey PRIMARY KEY (user_id, shift_id, shift_detail_id);
 
 
 --
@@ -589,6 +590,14 @@ ALTER TABLE ONLY public.user_meals
 
 ALTER TABLE ONLY public.user_shift_details
     ADD CONSTRAINT user_shift_details_shift_detail_id_fkey FOREIGN KEY (shift_detail_id) REFERENCES public.shift_details(id);
+
+
+--
+-- Name: user_shift_details user_shift_details_shift_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_shift_details
+    ADD CONSTRAINT user_shift_details_shift_id_fkey FOREIGN KEY (shift_id) REFERENCES public.shifts(id);
 
 
 --
