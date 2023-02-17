@@ -15,7 +15,7 @@
             <table class="table table-light table-striped table-hover table-bordered table-sm">
                 <thead>
                     <tr>
-                        <th colspan="5">
+                        <th colspan="{{ 5 + shift.options|length()}}">
                             {{task.name}}: {{task.description}}
                         </th>
                     </tr>
@@ -23,6 +23,9 @@
                         <th colspan="5">
                             {{shift.name}}: {{shift.description}} {{"[" + shift.reward|string() + " €]" if shift.reward > 0}}
                         </th>
+                        {% for option in shift.options %}
+                        <th class="text-secondary text-center">{{ option }}</th>
+                        {% endfor %}
                     </tr>
                     <tr>
                         <th>COGNOMS</th>
@@ -30,6 +33,9 @@
                         <th>EMAIL</th>
                         <th>MÒBIL</th>
                         <th>OBS TORN</th>
+                        {% for option in shift.options %}
+                        <th id="checkbox-{{loop.index0}}" class="text-secondary text-center">-</th>
+                        {% endfor %}
                     </tr>
                 </thead>
                 <tbody>
@@ -40,10 +46,22 @@
                             <td>{{u.email}}</td>
                             <td>{{u.phone}}</td>
                             <td>{{us.comments}}</td>
+                            {% for checked in us.shift_options %}
+                            <td class="td-with-checkbox">
+                                <label><input class="checkbox-{{loop.index0}}" type="checkbox" {{"checked" if checked}} onclick="update_count('checkbox-{{loop.index0}}')"/></label>
+                            </td>                            
+                            {% endfor %}
                         </tr>
                     {% endfor %}
                 </tbody>
             </table>
+            <script>
+               $(document).ready(function(){
+                    {% for n in range(shift.options|length()) %}
+                        update_count('checkbox-{{n}}');
+                    {% endfor %}
+                });
+            </script>
         </div>
         <br />
         <div class="btn-group">

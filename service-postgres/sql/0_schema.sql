@@ -70,43 +70,6 @@ ALTER SEQUENCE public.meals_id_seq OWNED BY public.meals.id;
 
 
 --
--- Name: shift_details; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.shift_details (
-    id integer NOT NULL,
-    task_id integer NOT NULL,
-    name character varying NOT NULL,
-    description character varying DEFAULT ''::character varying NOT NULL,
-    reward integer DEFAULT 0 NOT NULL
-);
-
-
-ALTER TABLE public.shift_details OWNER TO postgres;
-
---
--- Name: shift_details_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.shift_details_id_seq
-    AS integer
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.shift_details_id_seq OWNER TO postgres;
-
---
--- Name: shift_details_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.shift_details_id_seq OWNED BY public.shift_details.id;
-
-
---
 -- Name: shifts; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -116,6 +79,7 @@ CREATE TABLE public.shifts (
     name character varying NOT NULL,
     description character varying DEFAULT ''::character varying NOT NULL,
     slots integer DEFAULT 0 NOT NULL,
+    options character varying[] DEFAULT '{}'::character varying[] NOT NULL,
     reward integer DEFAULT 0 NOT NULL
 );
 
@@ -269,25 +233,13 @@ ALTER SEQUENCE public.user_meals_id_seq OWNED BY public.user_meals.id;
 
 
 --
--- Name: user_shift_details; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public.user_shift_details (
-    user_id integer NOT NULL,
-    shift_id integer NOT NULL,
-    shift_detail_id integer NOT NULL
-);
-
-
-ALTER TABLE public.user_shift_details OWNER TO postgres;
-
---
 -- Name: user_shifts; Type: TABLE; Schema: public; Owner: postgres
 --
 
 CREATE TABLE public.user_shifts (
     user_id integer NOT NULL,
     shift_id integer NOT NULL,
+    shift_options boolean[] NOT NULL,
     comments character varying DEFAULT ''::character varying NOT NULL
 );
 
@@ -384,13 +336,6 @@ ALTER TABLE ONLY public.meals ALTER COLUMN id SET DEFAULT nextval('public.meals_
 
 
 --
--- Name: shift_details id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.shift_details ALTER COLUMN id SET DEFAULT nextval('public.shift_details_id_seq'::regclass);
-
-
---
 -- Name: shifts id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -449,14 +394,6 @@ ALTER TABLE ONLY public.meals
 
 
 --
--- Name: shift_details shift_details_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.shift_details
-    ADD CONSTRAINT shift_details_pkey PRIMARY KEY (id);
-
-
---
 -- Name: shifts shifts_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -505,14 +442,6 @@ ALTER TABLE ONLY public.user_meals
 
 
 --
--- Name: user_shift_details user_shift_details_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.user_shift_details
-    ADD CONSTRAINT user_shift_details_pkey PRIMARY KEY (user_id, shift_id, shift_detail_id);
-
-
---
 -- Name: user_shifts user_shifts_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -545,14 +474,6 @@ ALTER TABLE ONLY public.users
 
 
 --
--- Name: shift_details shift_details_task_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.shift_details
-    ADD CONSTRAINT shift_details_task_id_fkey FOREIGN KEY (task_id) REFERENCES public.tasks(id);
-
-
---
 -- Name: shifts shifts_task_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -582,30 +503,6 @@ ALTER TABLE ONLY public.user_meals
 
 ALTER TABLE ONLY public.user_meals
     ADD CONSTRAINT user_meals_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
-
-
---
--- Name: user_shift_details user_shift_details_shift_detail_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.user_shift_details
-    ADD CONSTRAINT user_shift_details_shift_detail_id_fkey FOREIGN KEY (shift_detail_id) REFERENCES public.shift_details(id);
-
-
---
--- Name: user_shift_details user_shift_details_shift_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.user_shift_details
-    ADD CONSTRAINT user_shift_details_shift_id_fkey FOREIGN KEY (shift_id) REFERENCES public.shifts(id);
-
-
---
--- Name: user_shift_details user_shift_details_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.user_shift_details
-    ADD CONSTRAINT user_shift_details_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
 --

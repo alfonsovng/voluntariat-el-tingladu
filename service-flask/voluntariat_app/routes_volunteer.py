@@ -155,6 +155,8 @@ def shifts(volunteer_hashid, task_id):
         )
 
 def __update_shifts(volunteer, task_id, form):
+    # TODO: mantenir els valors de shift_options!!!
+
     # esborro tots els user_shifts d'aquest
     db.session.execute(f"""
         delete from user_shifts where user_id = {volunteer.id} 

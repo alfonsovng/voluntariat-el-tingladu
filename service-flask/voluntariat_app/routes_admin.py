@@ -522,7 +522,7 @@ def generate_excel(file_name, select, params={}):
 
     return redirect(url_for('admin_bp.download_excel',file_name=file_name))
 
-@admin_bp.route('/excel/<file_name>')
+@admin_bp.route('/admin/excel/<file_name>')
 @login_required
 def download_excel(file_name):
     if not current_user.is_admin or not file_name.endswith(".xlsx"):
