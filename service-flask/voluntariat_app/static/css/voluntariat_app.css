@@ -133,3 +133,13 @@ input[type='checkbox']:checked:after {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+
+.td-with-checkbox label {
+    display: block;
+    margin: 0;
+    text-align: center;
+}
+
+.td-with-checkbox input[type='checkbox'] {
+    margin: 0;
+}

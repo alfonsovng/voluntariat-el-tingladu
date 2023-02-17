@@ -3,6 +3,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import enum
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import aliased
+from sqlalchemy.dialects.postgresql import ARRAY
 from sqlalchemy import text, exists
 from . import db, hashid_manager
 
@@ -15,6 +16,7 @@ class UserShift(db.Model):
     __tablename__ = "user_shifts"
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
     shift_id = db.Column(db.Integer, db.ForeignKey("shifts.id"), primary_key=True)
+    shift_options = db.Column(ARRAY(db.Boolean), nullable=False, default=[])
     comments = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
 
 class User(UserMixin, db.Model):
@@ -77,21 +79,8 @@ class Shift(db.Model):
     name = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
     slots = db.Column(db.Integer, nullable=False, server_default=text("0")) # 0 significa sense límits
+    options = db.Column(ARRAY(db.String), nullable=False, server_default='{}') # opcions que assigna l'admin
     reward = db.Column(db.Integer, nullable=False, server_default=text("0")) # recompensa en tiquets
-
-class ShiftDetail(db.Model):
-    __tablename__ = "shift_details"
-    id = db.Column(db.Integer, primary_key=True)
-    task_id = db.Column(db.Integer, db.ForeignKey("tasks.id"), nullable=False)
-    name = db.Column(db.String, nullable=False)
-    description = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
-    reward = db.Column(db.Integer, nullable=False, server_default=text("0")) # recompensa en tiquets
-
-class UserShiftDetail(db.Model):
-    __tablename__ = "user_shift_details"
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
-    shift_id = db.Column(db.Integer, db.ForeignKey("shifts.id"), primary_key=True)
-    shift_detail_id = db.Column(db.Integer, db.ForeignKey("shift_details.id"), primary_key=True)
 
 class UserDiet(db.Model):
     __tablename__ = "user_diets"
