@@ -22,11 +22,11 @@
     <form role="form" method='POST' class="{{'text-secondary' if read_only }}">
       {{ tickets_form.csrf_token }}
       {% if tickets_form.ids %}
-      <ul>
+      <dl>
         {% for id in tickets_form.ids %}
-          <li class="font-weight-bolder text-ticket">{{tickets_form["selected-"+ id].label.text }}</li>
+          <dt class="text-ticket">{{tickets_form["selected-"+ id].label.text }}</dt>
         {% endfor %}
-      </ul>
+      </dl>
       <!-- {% if not read_only %}
       {{ tickets_form.submit(class='btn btn-success') }}
       {% endif %} -->
@@ -38,11 +38,11 @@
     <h4>Les teves recompenses</h4>
     <h4><small class="text-muted">Recompenses assignades segons les teves tasques i torns</small></h4>
     {% if cash > 0 %}
-      <ul>
+      <dl>
         {% for d in cash_details %}
-          <li class="text-ticket">{{d}}</li>
+          <dt class="font-weight-normal text-ticket">{{d}}</dt>
         {% endfor %}
-      </ul>
+      </dl>
       <p class="font-weight-bolder text-ticket">Total: {{cash}} € en tiquets de consum</p>
     {% else %}
       <p class="font-italic text-ticket">No hi ha recompenses assignades</p>

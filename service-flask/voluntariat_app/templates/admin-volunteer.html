@@ -69,9 +69,11 @@
                     <tr>
                         <td>
                             {% if shifts %}
+                            <dl>
                                 {% for name in shifts %}
-                                <p class="text-task">{{name}}</p>
+                                <dt class="text-task">{{name}}</dt>
                                 {% endfor %}
+                            </dl>
                             {% else %}
                             <p class="font-italic">No hi ha tasques assignades i/o seleccionades</p>
                             {% endif %}
@@ -84,9 +86,11 @@
                     <tr>
                         <td>
                             {% if meals %}
+                            <dl>
                                 {% for name in meals %}
-                                <p class="text-meal">{{name}}</p>
+                                <dt class="text-meal">{{name}}</dt>
                                 {% endfor %}
+                            </dl>
                             {% else %}
                             <p class="font-italic">No hi ha àpats assignats i/o seleccionats</p>
                             {% endif %}
@@ -99,9 +103,11 @@
                     <tr>
                         <td>
                             {% if tickets %}
+                            <dl>
                                 {% for name in tickets %}
-                                <p class="text-ticket">{{name}}</p>
+                                <dt class="text-ticket">{{name}}</dt>
                                 {% endfor %}
+                            </dl>
                             {% else %}
                             <p class="font-italic">No hi ha entrades assignades i/o seleccionades</p>
                             {% endif %}

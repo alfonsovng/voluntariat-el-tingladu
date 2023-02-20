@@ -23,17 +23,16 @@
             </div>
         </div>
         <div class="card">
-            <div class="card-body bg-task text-white">
+            <div class="card-body bg-task text-white card-text">
                 <h2 class="card-title">Tasques i torns</h2>
-                <p class="card-text">Registra la teva disponibilitat indicant els torns on pots dur a terme fer les diferents tasques que fan possible El Tingladu.</p>
+                <p>Registra la teva disponibilitat indicant els torns on pots dur a terme fer les diferents tasques que fan possible El Tingladu.</p>
                 
                 {% if shifts %}
-                <p class="card-text">Torns seleccionats:</p>
-                <ul>
+                <dl>
                     {% for name in shifts %}
-                    <p class="card-text">{{name}}</p>
+                    <dt>{{name}}</dt>
                     {% endfor %}
-                </ul>
+                </dl>
                 {% else %}
                 <p class="font-italic">No hi ha tasques assignades i/o seleccionades</p>
                 {% endif %}
@@ -42,16 +41,15 @@
         </div>
         <div class="card">
             {% if user.has_shifts %}
-                <div class="card-body bg-meal text-white">
+                <div class="card-body bg-meal text-white card-text">
                     <h2 class="card-title">Àpats i característiques de la teva dieta</h2>
-                    <p class="card-text">Indica quins àpats faràs i notifica les característiques de la teva dieta, indicant al·lèrgies, intol·leràncies i/o d'altres dades importants.</p>
+                    <p>Indica quins àpats faràs i notifica les característiques de la teva dieta, indicant al·lèrgies, intol·leràncies i/o d'altres dades importants.</p>
                     {% if meals %}
-                    <p class="card-text">Àpats seleccionats:</p>
-                    <ul>
+                    <dl>
                         {% for name in meals %}
-                        <p class="card-text">{{name}}</p>
+                        <dt>{{name}}</dt>
                         {% endfor %}
-                    </ul>
+                    </dl>
                     {% else %}
                     <p class="font-italic">No hi ha àpats assignats i/o seleccionats</p>
                     {% endif %}
@@ -68,16 +66,15 @@
         </div>
         <div class="card">
             {% if user.has_shifts %}
-                <div class="card-body bg-ticket text-white">
+                <div class="card-body bg-ticket text-white card-text">
                     <h2 class="card-title">Entrades i recompenses</h2>
-                    <p class="card-text">Visualitza les entrades assignades segons les teves tasques i torns.</p>
+                    <p>Visualitza les entrades assignades segons les teves tasques i torns.</p>
                     {% if tickets %}
-                    <p class="card-text">Entrades assignades:</p>
-                    <ul>
+                    <dl>
                         {% for name in tickets %}
-                        <p class="card-text">{{name}}</p>
+                        <dt>{{name}}</dt>
                         {% endfor %}
-                    </ul>
+                    </dl>
                     {% else %}
                     <p class="font-italic">No hi ha entrades assignades i/o seleccionades</p>
                     {% endif %}

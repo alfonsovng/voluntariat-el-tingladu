@@ -16,7 +16,7 @@ class UserShift(db.Model):
     __tablename__ = "user_shifts"
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
     shift_id = db.Column(db.Integer, db.ForeignKey("shifts.id"), primary_key=True)
-    shift_options = db.Column(ARRAY(db.Boolean), nullable=False, default=[])
+    shift_assignations = db.Column(ARRAY(db.Boolean), nullable=False, default=[])
     comments = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
 
 class User(UserMixin, db.Model):
@@ -79,7 +79,7 @@ class Shift(db.Model):
     name = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
     slots = db.Column(db.Integer, nullable=False, server_default=text("0")) # 0 significa sense límits
-    options = db.Column(ARRAY(db.String), nullable=False, server_default='{}') # opcions que assigna l'admin
+    assignations = db.Column(ARRAY(db.String), nullable=False, server_default='{}') # opcions que assigna l'admin
     reward = db.Column(db.Integer, nullable=False, server_default=text("0")) # recompensa en tiquets
 
 class UserDiet(db.Model):

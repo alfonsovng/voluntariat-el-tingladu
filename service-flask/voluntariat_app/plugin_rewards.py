@@ -131,11 +131,22 @@ class RewardsManager:
         from .models import UserShift, Shift, Task
         from . import db
 
-        shifts = db.session.query(Task, Shift).join(Shift).join(UserShift).filter(UserShift.user_id == user_id).all()
+        shifts = db.session.query(Task, Shift, UserShift).join(Shift, Task.id == Shift.task_id).join(UserShift).filter(UserShift.user_id == user_id).all()
         cash = 0
         cash_details = list()
-        for (t, s) in shifts:
-            cash_details.append(f"{t.name} - {s.name}: {s.reward} €")
-            cash += s.reward
+        for (t, s, us) in shifts:
+            if s.assignations: # no es buit, és a dir, hi ha opcions
+                zero_assignations = True
+                for (name, assigned) in zip(s.assignations, us.shift_assignations):
+                    if assigned:
+                        cash_details.append(f"{t.name} - {s.name} - {name}: {s.reward} €")
+                        cash += s.reward
+                        zero_assignations = False
+                    
+                if zero_assignations:
+                    cash_details.append(f"{t.name} - {s.name}: pendent d'assignació")
+            else:
+                cash_details.append(f"{t.name} - {s.name}: {s.reward} €")
+                cash += s.reward
 
         return (cash, cash_details)
