@@ -7,6 +7,7 @@ from .models import User, Task, Shift, UserShift, Meal, UserMeal, UserDiet, Tick
 from . import db, hashid_manager, excel_manager, task_manager, params_manager
 from .plugin_gmail import TaskMessageEmail
 import sqlalchemy
+from io import StringIO
 
 # Blueprint Configuration
 admin_bp = Blueprint(
@@ -183,7 +184,7 @@ def shifts(task_id):
 
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
-        select = f"""select t.name as tasca, s.name as torn,
+        select = """select t.name as tasca, s.name as torn,
             u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil, us.comments as "obs torn" 
             from users as u 
             join user_shifts as us on u.id = us.user_id
@@ -233,10 +234,23 @@ def shift_detail(task_id, shift_id):
         flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
         return redirect(url_for('volunteer_bp.dashboard'))
 
+    task_and_shift = db.session.query(Task, Shift).join(Shift).filter(Shift.task_id == task_id, Shift.id == shift_id).first()
+    if task_and_shift is None:
+        flash_error("Adreça incorrecta")
+        return redirect(url_for('main_bp.init'))
+
+    task = task_and_shift[0]
+    shift = task_and_shift[1]
+
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
+        assignations_select = StringIO()
+        for (i, name) in enumerate(shift.assignations, start=1):
+            assignations_select.write(f""",case when us.shift_assignations[{i}] then 'X' else '' end as "{name}"\n""")
+
         select = f"""select t.name as tasca, s.name as torn,
-            u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil, us.comments as "obs torn" 
+            u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil, us.comments as "obs torn"
+            {assignations_select.getvalue()}
             from users as u 
             join user_shifts as us on u.id = us.user_id
             join shifts as s on s.id = us.shift_id
@@ -254,14 +268,6 @@ def shift_detail(task_id, shift_id):
             select=select,
             params={"SHIFT_ID":shift_id}
         )
-
-    task_and_shift = db.session.query(Task, Shift).join(Shift).filter(Shift.task_id == task_id, Shift.id == shift_id).first()
-    if task_and_shift is None:
-        flash_error("Adreça incorrecta")
-        return redirect(url_for('main_bp.init'))
-
-    task = task_and_shift[0]
-    shift = task_and_shift[1]
 
     users_with_shifts = db.session.query(User,UserShift).join(UserShift).filter(
         UserShift.shift_id == shift_id
@@ -281,7 +287,7 @@ def meals():
 
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
-        select = f"""select m.name as àpat,
+        select = """select m.name as àpat,
             u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil,
             um.comments as "obs àpat",
             case when ud.vegan then 'X' else '' end as vegana,
@@ -332,7 +338,7 @@ def meal_detail(meal_id):
 
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
-        select = f"""select m.name as àpat,
+        select = """select m.name as àpat,
             u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil,
             um.comments as "obs àpat",
             case when ud.vegan then 'X' else '' end as vegana,
@@ -384,7 +390,7 @@ def tickets():
 
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
-        select = f"""select t.name as ticket,
+        select = """select t.name as ticket,
             u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil,
             ut.comments as "obs entrada"
             from users as u 
@@ -429,7 +435,7 @@ def tickets_detail(ticket_id):
 
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
-        select = f"""select t.name as ticket,
+        select = """select t.name as ticket,
             u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil,
             ut.comments as "obs entrada"
             from users as u 
@@ -475,7 +481,7 @@ def rewards():
 
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
-        select = f"""select u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil,
+        select = """select u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil,
             r.cash as "tickets consum"
             from users as u 
             join (select us.user_id, sum(s.reward) as cash from shifts as s join user_shifts as us on s.id = us.shift_id group by user_id) as r 
