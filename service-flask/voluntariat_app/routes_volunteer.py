@@ -6,6 +6,7 @@ from .forms_volunteer import ProfileForm, ChangePasswordForm, ShiftsForm, Shifts
 from .plugin_gmail import TaskConfirmPasswordChangeEmail
 from .models import Task, Shift, UserShift, UserDiet, UserMeal, Meal, Ticket, UserTicket
 import sqlalchemy
+from sqlalchemy import text
 
 # Blueprint Configuration
 volunteer_bp = Blueprint(
@@ -155,32 +156,44 @@ def shifts(volunteer_hashid, task_id):
         )
 
 def __update_shifts(volunteer, task_id, form):
-    # TODO: mantenir els valors de shift_assignations!!!
+    current_user_shifts = UserShift.query.filter(UserShift.user_id == volunteer.id).filter(
+        text(f"""shift_id in (select id from shifts where task_id = {task_id})""")
+    ).all()
 
-    # esborro tots els user_shifts d'aquest
-    db.session.execute(f"""
-        delete from user_shifts where user_id = {volunteer.id} 
-        and shift_id in (select id from shifts where task_id = {task_id})
-    """)        
+    shift_id_to_insert = set((int(id) for id in form.getlist("shifts")))
 
-    # afegeixo els torns
-    for shift_id in form.getlist("shifts"):
+    for user_shift in current_user_shifts:
+        if user_shift.shift_id in shift_id_to_insert:
+            comments = trim(form.get(f"user-comments-{user_shift.shift_id}"))
+            user_shift.comments = comments
+            db.session.add(user_shift)
 
+            # aquest no cal inserirlo
+            shift_id_to_insert.remove(user_shift.shift_id)
+        else:
+            # l'esborrem
+            db.session.delete(user_shift)
+
+    # ara afegim tots els quu hi ha a shift_id_selected
+    for shift_id in shift_id_to_insert:
         taked = db.session.execute(f"select count(*) from user_shifts where shift_id = {shift_id}").scalar()
         shift = Shift.query.filter_by(id = shift_id).first()
 
         # hi ha espai lliure!
-        if shift is not None and (shift.slots <= 0 or shift.slots > taked):
+        if shift.slots <= 0 or shift.slots > taked:
             comments = trim(form.get(f"user-comments-{shift_id}"))
+            shift_assignations = [False for _ in shift.assignations]
             user_shift = UserShift(
                 user_id = volunteer.id,
                 shift_id = int(shift_id),
+                shift_assignations = shift_assignations,
                 comments = comments
             )
             db.session.add(user_shift)
         else:
             flash_warning(f"No s'ha pogut registrar el torn: {shift.name}")
 
+    # actualitzo els tickets i els àpats
     current_shifts = UserShift.query.filter_by(user_id = volunteer.id).all()
 
     rewards_manager.update_tickets(

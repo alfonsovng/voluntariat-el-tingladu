@@ -37,13 +37,15 @@
     <hr />
     <h4>Les teves recompenses</h4>
     <h4><small class="text-muted">Recompenses assignades segons les teves tasques i torns</small></h4>
-    {% if cash > 0 %}
+    {% if cash_details %}
       <dl>
         {% for d in cash_details %}
           <dt class="font-weight-normal text-ticket">{{d}}</dt>
         {% endfor %}
       </dl>
-      <p class="font-weight-bolder text-ticket">Total: {{cash}} € en tiquets de consum</p>
+      {% if cash > 0 %}
+        <p class="font-weight-bolder text-ticket">Total: {{cash}} € en tiquets de consum</p>
+      {% endif %}
     {% else %}
       <p class="font-italic text-ticket">No hi ha recompenses assignades</p>
     {% endif %}
