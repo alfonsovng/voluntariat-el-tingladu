@@ -14,3 +14,6 @@ class WorkerForm(FlaskForm):
     name = StringField("Nom", filters = [trim], validators=[DataRequired()])
     phone = StringField("Mòbil", filters = [trim])
     submit = SubmitField("Actualitza")
+
+class AssignationsForm(FlaskForm):
+    submit = SubmitField("Guarda les assignacions")
