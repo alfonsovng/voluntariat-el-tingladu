@@ -79,7 +79,7 @@ CREATE TABLE public.shifts (
     name character varying NOT NULL,
     description character varying DEFAULT ''::character varying NOT NULL,
     slots integer DEFAULT 0 NOT NULL,
-    options character varying[] DEFAULT '{}'::character varying[] NOT NULL,
+    assignations character varying[] DEFAULT '{}'::character varying[] NOT NULL,
     reward integer DEFAULT 0 NOT NULL
 );
 
@@ -239,7 +239,7 @@ ALTER SEQUENCE public.user_meals_id_seq OWNED BY public.user_meals.id;
 CREATE TABLE public.user_shifts (
     user_id integer NOT NULL,
     shift_id integer NOT NULL,
-    shift_options boolean[] NOT NULL,
+    shift_assignations boolean[] NOT NULL,
     comments character varying DEFAULT ''::character varying NOT NULL
 );
 
