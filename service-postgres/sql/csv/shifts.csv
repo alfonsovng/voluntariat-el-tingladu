@@ -1,17 +1,17 @@
-task_id,nom,descripció,limit,recompensa
-1,DISSABTE 18.30-21:00,Atendre les barres dissabte de 18.30 a 21:00,10,8
-1,DISSABTE 21:00-00:30,Atendre les barres dissabte de 21:00 a 00:30,10,15
-1,DISSABTE 00:30-03:00,Atendre les barres dissabte de 00:30 a 03:00,10,15
-2,DISSABTE 18.30-21:00,Fer la beguda secreta dissabte de 18.30 a 21:00,2,20
-2,DISSABTE 21:00-00:30,Fer la beguda secreta dissabte de 21:00 a 00:30,2,20
-2,DISSABTE 00:30-03:00,Fer la beguda secreta dissabte de 00:30 a 03:00,2,20
-3,DISSABTE 16.00-18:30,Entrades i sortides dissabte de 16.00 a 18:30,5,0
-3,DISSABTE 18.30-21:00,Entrades i sortides dissabte de 18.30 a 21:00,5,0
-3,DISSABTE 21:00-00:30,Entrades i sortides dissabte de 21:00 a 00:30,5,0
-3,DISSABTE 00:30-03:00,Entrades i sortides dissabte de 00:30 a 03:00,5,0
-4,DIMECRES,Molta feina a fer,0,10
-4,DIJOUS,Molta feina a fer,0,10
-4,DIVENDRES,Molta feina a fer,0,10
-4,DISSABTE,Molta feina a fer,0,10
-4,DIUMENGE,Molta feina a fer,0,10
-4,DILLUNS,Molta feina a fer,0,10
+task_id,nom,descripció,limit,recompensa,assignacions
+1,DISSABTE 18.30-21:00,Atendre les barres dissabte de 18.30 a 21:00,10,8,"{barra 1,barra 2}"
+1,DISSABTE 21:00-00:30,Atendre les barres dissabte de 21:00 a 00:30,10,15,"{barra 1,barra 2,barra 3}"
+1,DISSABTE 00:30-03:00,Atendre les barres dissabte de 00:30 a 03:00,10,15,"{barra 1,barra 2,barra 3}"
+2,DISSABTE 18.30-21:00,Fer la beguda secreta dissabte de 18.30 a 21:00,2,20,"{}"
+2,DISSABTE 21:00-00:30,Fer la beguda secreta dissabte de 21:00 a 00:30,2,20,"{}"
+2,DISSABTE 00:30-03:00,Fer la beguda secreta dissabte de 00:30 a 03:00,2,20,"{}"
+3,DISSABTE 16.00-18:30,Entrades i sortides dissabte de 16.00 a 18:30,5,0,"{}"
+3,DISSABTE 18.30-21:00,Entrades i sortides dissabte de 18.30 a 21:00,5,0,"{}"
+3,DISSABTE 21:00-00:30,Entrades i sortides dissabte de 21:00 a 00:30,5,0,"{}"
+3,DISSABTE 00:30-03:00,Entrades i sortides dissabte de 00:30 a 03:00,5,0,"{}"
+4,DIMECRES,Molta feina a fer,0,10,"{}"
+4,DIJOUS,Molta feina a fer,0,10,"{}"
+4,DIVENDRES,Molta feina a fer,0,10,"{}"
+4,DISSABTE,Molta feina a fer,0,10,"{}"
+4,DIUMENGE,Molta feina a fer,0,10,"{}"
+4,DILLUNS,Molta feina a fer,0,10,"{}"

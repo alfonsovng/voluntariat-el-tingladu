@@ -135,18 +135,19 @@ class RewardsManager:
         cash = 0
         cash_details = list()
         for (t, s, us) in shifts:
-            if s.assignations: # no es buit, és a dir, hi ha opcions
-                zero_assignations = True
-                for (name, assigned) in zip(s.assignations, us.shift_assignations):
-                    if assigned:
-                        cash_details.append(f"{t.name} - {s.name} - {name}: {s.reward} €")
-                        cash += s.reward
-                        zero_assignations = False
-                    
-                if zero_assignations:
-                    cash_details.append(f"{t.name} - {s.name}: pendent d'assignació")
-            else:
-                cash_details.append(f"{t.name} - {s.name}: {s.reward} €")
-                cash += s.reward
+            if s.reward > 0:
+                if s.assignations: # no es buit, és a dir, hi ha opcions
+                    zero_assignations = True
+                    for (name, assigned) in zip(s.assignations, us.shift_assignations):
+                        if assigned:
+                            cash_details.append(f"{t.name} - {s.name} - {name}: {s.reward} €")
+                            cash += s.reward
+                            zero_assignations = False
+                        
+                    if zero_assignations:
+                        cash_details.append(f"{t.name} - {s.name}: pendent d'assignació")
+                else:
+                    cash_details.append(f"{t.name} - {s.name}: {s.reward} €")
+                    cash += s.reward
 
         return (cash, cash_details)
