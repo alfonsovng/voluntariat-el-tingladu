@@ -1,7 +1,7 @@
 from flask import Blueprint, redirect, render_template, url_for, request, Response, abort, stream_with_context
 from flask_login import current_user, login_required
 from .forms_message import EmailForm
-from .forms_worker import NewWorkerForm, WorkerForm
+from .forms_admin import NewWorkerForm, WorkerForm, AssignationsForm
 from .helper import flash_error, flash_info, load_volunteer, logger, get_timestamp, get_shifts_meals_and_tickets
 from .models import User, Task, Shift, UserShift, Meal, UserMeal, UserDiet, Ticket, UserTicket, UserRole
 from . import db, hashid_manager, excel_manager, task_manager, params_manager
@@ -269,13 +269,31 @@ def shift_detail(task_id, shift_id):
             params={"SHIFT_ID":shift_id}
         )
 
+    form = AssignationsForm()
+    if form.validate_on_submit():
+        for i in range(len(shift.assignations)):
+            user_ids = ",".join(request.form.getlist(f"assignations-{i}"))
+            # totes a FALSE
+            db.session.execute(f"""update user_shifts set shift_assignations[{i+1}] = FALSE 
+                where shift_id = {shift_id}"""
+            )
+            # les triades, a TRUE
+            if user_ids:
+                db.session.execute(f"""update user_shifts set shift_assignations[{i+1}] = TRUE 
+                    where shift_id = {shift_id} and user_id in ({user_ids})"""
+                )
+
+        db.session.commit()
+        flash_info("S'han guardat les assignacions")
+        return redirect(url_for('admin_bp.shift_detail',task_id=task_id,shift_id=shift_id))
+
     users_with_shifts = db.session.query(User,UserShift).join(UserShift).filter(
         UserShift.shift_id == shift_id
     ).order_by(User.surname.asc(), User.name.asc()).all()
 
     return render_template('admin-shift-detail.html',
         task=task,shift=shift,users_with_shifts=users_with_shifts,
-        user=current_user
+        form=form,user=current_user
     )
 
 @admin_bp.route('/admin/meals')
