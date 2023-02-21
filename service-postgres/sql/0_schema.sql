@@ -34,6 +34,42 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: accreditations; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.accreditations (
+    id integer NOT NULL,
+    code character varying NOT NULL,
+    name character varying NOT NULL,
+    description character varying NOT NULL
+);
+
+
+ALTER TABLE public.accreditations OWNER TO postgres;
+
+--
+-- Name: accreditations_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public.accreditations_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.accreditations_id_seq OWNER TO postgres;
+
+--
+-- Name: accreditations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public.accreditations_id_seq OWNED BY public.accreditations.id;
+
+
+--
 -- Name: meals; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -181,6 +217,18 @@ ALTER SEQUENCE public.tickets_id_seq OWNED BY public.tickets.id;
 
 
 --
+-- Name: user_accreditations; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.user_accreditations (
+    user_id integer NOT NULL,
+    accreditation_id integer NOT NULL
+);
+
+
+ALTER TABLE public.user_accreditations OWNER TO postgres;
+
+--
 -- Name: user_diets; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -201,7 +249,6 @@ ALTER TABLE public.user_diets OWNER TO postgres;
 --
 
 CREATE TABLE public.user_meals (
-    id bigint NOT NULL,
     user_id integer NOT NULL,
     meal_id integer NOT NULL,
     selected boolean DEFAULT false NOT NULL,
@@ -210,27 +257,6 @@ CREATE TABLE public.user_meals (
 
 
 ALTER TABLE public.user_meals OWNER TO postgres;
-
---
--- Name: user_meals_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.user_meals_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.user_meals_id_seq OWNER TO postgres;
-
---
--- Name: user_meals_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.user_meals_id_seq OWNED BY public.user_meals.id;
-
 
 --
 -- Name: user_shifts; Type: TABLE; Schema: public; Owner: postgres
@@ -251,7 +277,6 @@ ALTER TABLE public.user_shifts OWNER TO postgres;
 --
 
 CREATE TABLE public.user_tickets (
-    id bigint NOT NULL,
     user_id integer NOT NULL,
     ticket_id integer NOT NULL,
     selected boolean DEFAULT false NOT NULL,
@@ -260,27 +285,6 @@ CREATE TABLE public.user_tickets (
 
 
 ALTER TABLE public.user_tickets OWNER TO postgres;
-
---
--- Name: user_tickets_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public.user_tickets_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public.user_tickets_id_seq OWNER TO postgres;
-
---
--- Name: user_tickets_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public.user_tickets_id_seq OWNED BY public.user_tickets.id;
-
 
 --
 -- Name: users; Type: TABLE; Schema: public; Owner: postgres
@@ -329,6 +333,13 @@ ALTER SEQUENCE public.users_id_seq OWNED BY public.users.id;
 
 
 --
+-- Name: accreditations id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.accreditations ALTER COLUMN id SET DEFAULT nextval('public.accreditations_id_seq'::regclass);
+
+
+--
 -- Name: meals id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -357,24 +368,26 @@ ALTER TABLE ONLY public.tickets ALTER COLUMN id SET DEFAULT nextval('public.tick
 
 
 --
--- Name: user_meals id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.user_meals ALTER COLUMN id SET DEFAULT nextval('public.user_meals_id_seq'::regclass);
-
-
---
--- Name: user_tickets id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public.user_tickets ALTER COLUMN id SET DEFAULT nextval('public.user_tickets_id_seq'::regclass);
-
-
---
 -- Name: users id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_id_seq'::regclass);
+
+
+--
+-- Name: accreditations accreditations_code_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.accreditations
+    ADD CONSTRAINT accreditations_code_key UNIQUE (code);
+
+
+--
+-- Name: accreditations accreditations_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.accreditations
+    ADD CONSTRAINT accreditations_pkey PRIMARY KEY (id);
 
 
 --
@@ -426,6 +439,14 @@ ALTER TABLE ONLY public.tickets
 
 
 --
+-- Name: user_accreditations user_accreditations_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_accreditations
+    ADD CONSTRAINT user_accreditations_pkey PRIMARY KEY (user_id, accreditation_id);
+
+
+--
 -- Name: user_diets user_diets_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -438,7 +459,7 @@ ALTER TABLE ONLY public.user_diets
 --
 
 ALTER TABLE ONLY public.user_meals
-    ADD CONSTRAINT user_meals_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT user_meals_pkey PRIMARY KEY (user_id, meal_id);
 
 
 --
@@ -454,7 +475,7 @@ ALTER TABLE ONLY public.user_shifts
 --
 
 ALTER TABLE ONLY public.user_tickets
-    ADD CONSTRAINT user_tickets_pkey PRIMARY KEY (id);
+    ADD CONSTRAINT user_tickets_pkey PRIMARY KEY (user_id, ticket_id);
 
 
 --
@@ -479,6 +500,22 @@ ALTER TABLE ONLY public.users
 
 ALTER TABLE ONLY public.shifts
     ADD CONSTRAINT shifts_task_id_fkey FOREIGN KEY (task_id) REFERENCES public.tasks(id);
+
+
+--
+-- Name: user_accreditations user_accreditations_accreditation_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_accreditations
+    ADD CONSTRAINT user_accreditations_accreditation_id_fkey FOREIGN KEY (accreditation_id) REFERENCES public.accreditations(id);
+
+
+--
+-- Name: user_accreditations user_accreditations_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_accreditations
+    ADD CONSTRAINT user_accreditations_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
 --

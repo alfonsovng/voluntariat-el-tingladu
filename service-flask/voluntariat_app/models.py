@@ -100,9 +100,8 @@ class Meal(db.Model):
 
 class UserMeal(db.Model):
     __tablename__ = "user_meals"
-    id = db.Column(db.BigInteger, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    meal_id = db.Column(db.Integer, db.ForeignKey("meals.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
+    meal_id = db.Column(db.Integer, db.ForeignKey("meals.id"), primary_key=True)
     selected = db.Column(db.Boolean, nullable=False, default=False, server_default=text("FALSE"))
     comments = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
 
@@ -115,11 +114,22 @@ class Ticket(db.Model):
 
 class UserTicket(db.Model):
     __tablename__ = "user_tickets"
-    id = db.Column(db.BigInteger, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
-    ticket_id = db.Column(db.Integer, db.ForeignKey("tickets.id"), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
+    ticket_id = db.Column(db.Integer, db.ForeignKey("tickets.id"), primary_key=True)
     selected = db.Column(db.Boolean, nullable=False, default=False, server_default=text("FALSE"))
     comments = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
     # TODO: Versió completa pendent
     # ticket_options = db.Column(ARRAY(db.Integer), nullable=False) # zero pot ser un valor
     # selected = db.Column(db.Integer, nullable=False, server_default=text("0")) # zero pot ser un valor
+
+class Accreditation(db.Model):
+    __tablename__ = "accreditations"
+    id = db.Column(db.Integer, primary_key=True)
+    code = db.Column(db.String, unique=True, nullable=False)
+    name = db.Column(db.String, nullable=False)
+    description = db.Column(db.String, nullable=False) #'' es un possible valor
+
+class UserAccreditation(db.Model):
+    __tablename__ = "user_accreditations"
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
+    accreditation_id = db.Column(db.Integer, db.ForeignKey("accreditations.id"), primary_key=True)

@@ -21,9 +21,9 @@
     <h4><small class="text-muted">Entrades assignades segons les teves tasques i torns</small></h4>
     <form role="form" method='POST' class="{{'text-secondary' if read_only }}">
       {{ tickets_form.csrf_token }}
-      {% if tickets_form.ids %}
+      {% if tickets_form.ticket_ids %}
       <dl>
-        {% for id in tickets_form.ids %}
+        {% for id in tickets_form.ticket_ids %}
           <dt class="text-ticket">{{tickets_form["selected-"+ id].label.text }}</dt>
         {% endfor %}
       </dl>
