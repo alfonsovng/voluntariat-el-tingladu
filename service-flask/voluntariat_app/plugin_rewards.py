@@ -90,7 +90,6 @@ class RewardsManager:
         for ticket in new_tickets:
             existing_ticket = self.__get_first_with_filter(lambda t:t.ticket_id == ticket.ticket_id, current_tickets)
             if existing_ticket:
-                ticket.id = existing_ticket.id
                 ticket.selected = existing_ticket.selected
                 ticket.comments = existing_ticket.comments
 
@@ -117,7 +116,6 @@ class RewardsManager:
         for meal in new_meals:
             existing_meal = self.__get_first_with_filter(lambda m:m.meal_id == meal.meal_id, current_meals)
             if existing_meal:
-                meal.id = existing_meal.id
                 meal.selected = existing_meal.selected
                 meal.comments = existing_meal.comments
 

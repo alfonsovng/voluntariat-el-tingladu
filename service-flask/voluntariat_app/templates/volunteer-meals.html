@@ -20,8 +20,8 @@
     <h4><small class="text-muted">Si aquest dia no faràs un d'aquests àpats a la cuina d'El Tingladu, desmarca la casella per evitar el malbaratament alimentari.</small></h4>
     <form role="form" method='POST' class="{{'text-secondary' if read_only }}">
       {{ meals_form.csrf_token }}
-      {% if meals_form.ids %}
-        {% for id in meals_form.ids %}
+      {% if meals_form.meal_ids %}
+        {% for id in meals_form.meal_ids %}
           {{ checkbox_with_comments(meals_form["selected-"+ id], meals_form["comments-" + id], read_only=read_only)}}
         {% endfor %}
         {% if not read_only %}

@@ -245,7 +245,7 @@ def meals(volunteer_hashid):
     diet_form = DietForm(obj = diet)
 
     meals = Meal.query.all()
-    user_meals = UserMeal.query.filter_by(user_id = volunteer.id).order_by(UserMeal.id.asc()).all()
+    user_meals = UserMeal.query.filter_by(user_id = volunteer.id).order_by(UserMeal.meal_id.asc()).all()
     meals_form = __create_meals_form(meals = meals, user_meals = user_meals)
 
     if not read_only:
@@ -259,9 +259,9 @@ def meals(volunteer_hashid):
         elif meals_form.validate_on_submit():
             # update de meals
             for um in user_meals:
-                um.selected = meals_form[f"selected-{um.id}"].data
+                um.selected = meals_form[f"selected-{um.meal_id}"].data
                 if um.selected:
-                    um.comments = meals_form[f"comments-{um.id}"].data
+                    um.comments = meals_form[f"comments-{um.meal_id}"].data
                 else:
                     um.comments = ""
 
@@ -287,17 +287,17 @@ def __create_meals_form(meals, user_meals):
     class F(MealsForm):
         pass
     
-    setattr(F, "ids", [str(um.id) for um in user_meals])
+    setattr(F, "meal_ids", [str(um.meal_id) for um in user_meals])
 
     for um in user_meals:
         boolean_field = BooleanField(meals_dict[um.meal_id], default = um.selected)
-        setattr(F, f"selected-{um.id}", boolean_field)
+        setattr(F, f"selected-{um.meal_id}", boolean_field)
 
         text_area_field = TextAreaField(
             filters = [trim],
             default = um.comments
         )
-        setattr(F, f"comments-{um.id}", text_area_field)
+        setattr(F, f"comments-{um.meal_id}", text_area_field)
 
     return F()
 
@@ -315,7 +315,7 @@ def rewards(volunteer_hashid):
         read_only = True
 
     tickets = Ticket.query.all()
-    user_tickets = UserTicket.query.filter_by(user_id = volunteer.id).order_by(UserTicket.id.asc()).all()
+    user_tickets = UserTicket.query.filter_by(user_id = volunteer.id).order_by(UserTicket.ticket_id.asc()).all()
     tickets_form = __create_tickets_form(tickets = tickets, user_tickets = user_tickets)
 
     (cash, cash_details) = rewards_manager.calculate_cash(volunteer.id)
@@ -323,9 +323,9 @@ def rewards(volunteer_hashid):
     # if not read_only and tickets_form.validate_on_submit():
     #     # update de tickets
     #     for um in user_meals:
-    #         um.selected = meals_form[f"selected-{um.id}"].data
+    #         um.selected = meals_form[f"selected-{um.ticket_id}"].data
     #         if um.selected:
-    #             um.comments = meals_form[f"comments-{um.id}"].data
+    #             um.comments = meals_form[f"comments-{um.ticket_id}"].data
     #         else:
     #             um.comments = ""
 
@@ -352,17 +352,17 @@ def __create_tickets_form(tickets, user_tickets):
     class F(TicketsForm):
         pass
     
-    setattr(F, "ids", [str(ut.id) for ut in user_tickets])
+    setattr(F, "ticket_ids", [str(ut.ticket_id) for ut in user_tickets])
 
     for ut in user_tickets:
         boolean_field = BooleanField(tickets_dict[ut.ticket_id], default = ut.selected)
-        setattr(F, f"selected-{ut.id}", boolean_field)
+        setattr(F, f"selected-{ut.ticket_id}", boolean_field)
 
         text_area_field = TextAreaField(
             filters = [trim],
             default = ut.comments
         )
-        setattr(F, f"comments-{ut.id}", text_area_field)
+        setattr(F, f"comments-{ut.ticket_id}", text_area_field)
 
     return F()
 
