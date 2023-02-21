@@ -7,6 +7,7 @@ from .plugin_gmail import TaskConfirmPasswordChangeEmail
 from .models import Task, Shift, UserShift, UserDiet, UserMeal, Meal, Ticket, UserTicket
 import sqlalchemy
 from sqlalchemy import text
+from sqlalchemy.dialects.postgresql import ARRAY
 
 # Blueprint Configuration
 volunteer_bp = Blueprint(
@@ -211,17 +212,17 @@ def __update_shifts(volunteer, task_id, form):
 def __select_shifts_and_selected(volunteer_id, task_id):
     # subquery que calcula, donat un usuari i una tasca, si ha seleccionat el torn (t/f) i les possibles observacions que ha posat
     selected_shifts_subquery = sqlalchemy.text(f"""
-        select s.id as shift_id, COALESCE(c.taked,0) as taked, user_id is not null as selected, u.comments as comments 
+        select s.id as shift_id, COALESCE(c.taked,0) as taked, user_id is not null as selected, u.comments as comments, s.assignations as assignations, u.shift_assignations as shift_assignations 
         from shifts as s left join 
-            (select shift_id, user_id, comments from user_shifts where user_id = {volunteer_id}) as u 
+            (select shift_id, user_id, comments, shift_assignations from user_shifts where user_id = {volunteer_id}) as u 
         on s.id = u.shift_id left join 
             (select shift_id, count(*) as taked from user_shifts group by shift_id) as c 
         on s.id = c.shift_id
         where s.task_id = {task_id}
-    """).columns(shift_id=db.Integer,taked=db.Integer,selected=db.Boolean, comments=db.String).subquery("selected_shifts_subquery")
+    """).columns(shift_id=db.Integer,taked=db.Integer,selected=db.Boolean, comments=db.String, assignations=ARRAY(db.String), shift_assignations=ARRAY(db.Boolean)).subquery("selected_shifts_subquery")
 
     return db.session.query(
-        Shift, selected_shifts_subquery.c.taked, selected_shifts_subquery.c.selected, selected_shifts_subquery.c.comments, 
+        Shift, selected_shifts_subquery.c.taked, selected_shifts_subquery.c.selected, selected_shifts_subquery.c.comments, selected_shifts_subquery.c.assignations, selected_shifts_subquery.c.shift_assignations
     ).join(
         selected_shifts_subquery, Shift.id == selected_shifts_subquery.c.shift_id
     ).order_by(
