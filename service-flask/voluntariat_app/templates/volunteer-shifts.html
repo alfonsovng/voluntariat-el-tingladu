@@ -20,7 +20,7 @@
           <h4>{{task.name}}</h4>
           <h4><small>{{ task.description }}</small></h4>
         </li>
-        {% for shift,taked,selected,comments in shifts_and_selected %}
+        {% for shift,taked,selected,comments,assignations,shift_assignations in shifts_and_selected %}
           {% set disponibles = (shift.slots - taked) if shift.slots > 0 else 1 %}
           {% set no_accessible = disponibles <= 0 and not selected %}
         <li class="list-group-item {{'list-group-item-light' if no_accessible }}">
@@ -47,11 +47,22 @@
                   {% endif %}
                 {% endif %}
               </h5>
-              <div class="form-group hidden-texarea text-right font-italic">
-                <label for="user-comments-{{shift.id}}">Observacions sobre aquest torn</label>
+              <div class="form-group hidden-texarea">
+                <div class="text-right font-italic" ><label for="user-comments-{{shift.id}}">Observacions sobre aquest torn</label></div>
                 <textarea class="form-control" id="user-comments-{{shift.id}}" 
                   name="user-comments-{{shift.id}}" rows="2" {{'disabled' if read_only}}>{{ comments if comments is not none }}</textarea>
+
+                {% if shift_assignations %}
+                <h4>
+                {% for assigned in shift_assignations %}
+                  {% if assigned %}
+                  <span class="badge badge-dark">{{assignations[loop.index0]}}</span>
+                  {% endif %}
+                {% endfor %}
+                </h4>
+                {% endif %}
               </div>
+
             </div>
           </label>
 
