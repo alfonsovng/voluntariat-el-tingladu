@@ -502,7 +502,11 @@ def rewards():
         select = """select u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil,
             r.cash as "tickets consum"
             from users as u 
-            join (select us.user_id, sum(s.reward) as cash from shifts as s join user_shifts as us on s.id = us.shift_id group by user_id) as r 
+            join (
+                select us.user_id, 
+                sum(s.reward*(case when array_length(us.shift_assignations,1) > 0 then (select sum(case when s then 1 else 0 end) from unnest(us.shift_assignations) s) else 1 end)) as cash
+                from shifts as s join user_shifts as us on s.id = us.shift_id group by user_id
+            ) as r 
             on r.user_id = u.id
             where r.cash > 0
             order by cognoms asc, nom asc
@@ -519,7 +523,8 @@ def rewards():
         )
 
     cash_subquery = sqlalchemy.text(f"""
-        select us.user_id, sum(s.reward) as cash 
+        select us.user_id, 
+        sum(s.reward*(case when array_length(us.shift_assignations,1) > 0 then (select sum(case when s then 1 else 0 end) from unnest(us.shift_assignations) s) else 1 end)) as cash
         from shifts as s join user_shifts as us on s.id = us.shift_id
         group by user_id
     """).columns(user_id=db.Integer,cash=db.Integer).subquery("cash_subquery")
