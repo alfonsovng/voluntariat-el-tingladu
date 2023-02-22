@@ -194,17 +194,9 @@ def __update_shifts(volunteer, task_id, form):
         else:
             flash_warning(f"No s'ha pogut registrar el torn: {shift.name}")
 
-    # actualitzo els tickets i els àpats
-    current_shifts = UserShift.query.filter_by(user_id = volunteer.id).all()
-
-    rewards_manager.update_tickets(
-        user_id = volunteer.id,
-        current_shifts = current_shifts
-    )
-
-    rewards_manager.update_meals(
-        user_id = volunteer.id,
-        current_shifts = current_shifts
+    # actualitzo tickets, àpats i acreditacions
+    rewards_manager.update_rewards(
+        user_id = volunteer.id
     )
 
     db.session.commit()
