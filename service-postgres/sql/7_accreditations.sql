@@ -1,0 +1,1 @@
+\copy accreditations(code, name, description) from '/docker-entrypoint-initdb.d/csv/accreditations.csv' delimiter ',' csv header;
