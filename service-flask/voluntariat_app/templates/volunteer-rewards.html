@@ -14,30 +14,26 @@
 {% block content %}
 <div class="row justify-content-md-center">
   <div class="col-md-8 col-lg-7 col-xl-6">
-    <h2>{% block title %}Entrades i recompenses{% endblock %}</h2>
+    <h2>{% block title %}Entrades, acreditacions i recompenses{% endblock %}</h2>
     <h2><small class="text-muted">{{ volunteer.full_name }}</small></h2>
     <hr />
-    <h4>Les teves entrades</h4>
-    <h4><small class="text-muted">Entrades assignades segons les teves tasques i torns</small></h4>
-    <form role="form" method='POST' class="{{'text-secondary' if read_only }}">
-      {{ tickets_form.csrf_token }}
-      {% if tickets_form.ticket_ids %}
-      <dl>
-        {% for id in tickets_form.ticket_ids %}
-          <dt class="text-ticket">{{tickets_form["selected-"+ id].label.text }}</dt>
-        {% endfor %}
-      </dl>
-      <!-- {% if not read_only %}
-      {{ tickets_form.submit(class='btn btn-success') }}
-      {% endif %} -->
-      {% else %}
-        <p class="font-italic text-ticket">No hi ha entrades assignades</p>
-      {% endif %}
-    </form>
+    <h4>Les teves entrades i acreditacions</h4>
+    <h4><small class="text-muted">Entrades i/o acreditacions assignades segons les teves tasques i torns</small></h4>
+    {% if tickets %}
+    <br />
+    <dl>
+      {% for t in tickets %}
+        <dt class="text-ticket">{{t.name}}</dt>
+      {% endfor %}
+    </dl>
+    {% else %}
+      <p class="font-italic text-ticket">No hi ha entrades o acreditacions assignades</p>
+    {% endif %}
     <hr />
     <h4>Les teves recompenses</h4>
     <h4><small class="text-muted">Recompenses assignades segons les teves tasques i torns</small></h4>
     {% if cash_details %}
+      <br />
       <dl>
         {% for d in cash_details %}
           <dt class="font-weight-normal text-ticket">{{d}}</dt>

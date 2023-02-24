@@ -68,6 +68,3 @@ class DietForm(FlaskForm):
 
 class MealsForm(FlaskForm):
     submit = SubmitField("Actualitza els teus àpats")
-
-class TicketsForm(FlaskForm):
-    submit = SubmitField("Actualitza les teves entrades")

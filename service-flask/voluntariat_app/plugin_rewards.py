@@ -16,11 +16,6 @@ class RewardsImpl:
         id =  db.session.execute(f"select id from tickets where code = '{code}'").one()[0] #it's a tuple
         logger.info(f"{self.__class__.__name__} - ticket:{code} = {id}")
         return id
-    
-    def _get_accreditation_id(self, db, code):
-        id =  db.session.execute(f"select id from accreditations where code = '{code}'").one()[0] #it's a tuple
-        logger.info(f"{self.__class__.__name__} - accreditation:{code} = {id}")
-        return id
 
 class Rewards15Anniversary(RewardsImpl):
 
@@ -30,13 +25,11 @@ class Rewards15Anniversary(RewardsImpl):
             self.dinar_15_aniversari_id = self._get_meal_id(db, "dinar_15_aniversari")
             self.sopar_15_aniversari_id = self._get_meal_id(db, "sopar_15_aniversari")
 
-            # entrades
+            # entrades i acreditacions
             self.entrada_15_aniversari_id = self._get_ticket_id(db, "entrada_15_aniversari")
-
-            # acreditacions
-            self.pulsera_voluntari_id = self._get_accreditation_id(db, "pulsera_voluntari")
-            self.acreditacio_globus_id = self._get_accreditation_id(db, "acreditacio_globus")
-            self.acreditacio_org_id = self._get_accreditation_id(db, "acreditacio_org")
+            self.pulsera_voluntari_id = self._get_ticket_id(db, "pulsera_voluntari")
+            self.acreditacio_globus_id = self._get_ticket_id(db, "acreditacio_globus")
+            self.acreditacio_org_id = self._get_ticket_id(db, "acreditacio_org")
 
     def calculate_tickets(self, user_id, current_shifts):
         from .models import UserTicket
@@ -70,10 +63,6 @@ class Rewards15Anniversary(RewardsImpl):
 
         return [meal]
 
-    def calculate_accreditations(self, user_id, current_shifts):
-        # TODO
-        return []
-
 class RewardsManager:
     
     def __init__(self, app=None):
@@ -91,10 +80,9 @@ class RewardsManager:
         # miro quins torns fa l'usuari
         current_shifts = UserShift.query.filter_by(user_id = user_id).all()
 
-        # actualitzo tickets, àpats i acreditacions
+        # actualitzo tickets, acreditacions i àpats
         self.__update_tickets(user_id, current_shifts)
         self.__update_meals(user_id, current_shifts)
-        self.__update_accreditations(user_id, current_shifts)
 
     def __update_tickets(self, user_id, current_shifts):
         from .models import UserTicket
@@ -119,7 +107,6 @@ class RewardsManager:
             existing_ticket = self.__get_first_with_filter(lambda t:t.ticket_id == ticket.ticket_id, current_tickets)
             if existing_ticket:
                 ticket.selected = existing_ticket.selected
-                ticket.comments = existing_ticket.comments
 
         return new_tickets
 
@@ -148,27 +135,6 @@ class RewardsManager:
                 meal.comments = existing_meal.comments
 
         return new_meals
-
-    def __update_accreditations(self, user_id, current_shifts):
-        from .models import UserAccreditation
-        from . import db
-
-        current_accreditations = UserAccreditation.query.filter(UserAccreditation.user_id == user_id).all()
-        new_accreditations = self.rewards_instance.calculate_accreditations(
-            user_id = user_id,
-            current_shifts = current_shifts
-        )
-
-        merged_accreditations = self.__merge_accreditations(
-            current_accreditations = current_accreditations,
-            new_accreditations = new_accreditations
-        )
-        UserAccreditation.query.filter(UserAccreditation.user_id == user_id).delete()
-        db.session.add_all(merged_accreditations)
-
-    def __merge_accreditations(self, current_accreditations, new_accreditations):
-        # no cal fer res, es poden esborrar les que hi havia i inserir-les de nou
-        return new_accreditations
 
     def __get_first_with_filter(self, lambda_filter, list):
         filtered_list = filter(lambda_filter, list)

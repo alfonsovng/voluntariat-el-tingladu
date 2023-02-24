@@ -21,6 +21,7 @@
     <form role="form" method='POST' class="{{'text-secondary' if read_only }}">
       {{ meals_form.csrf_token }}
       {% if meals_form.meal_ids %}
+        <br />
         {% for id in meals_form.meal_ids %}
           {{ checkbox_with_comments(meals_form["selected-"+ id], meals_form["comments-" + id], read_only=read_only)}}
         {% endfor %}
@@ -35,6 +36,7 @@
     <h4>La teva dieta</h4>
     <h4><small class="text-muted">Notifica les característiques de la teva dieta, indicant al·lèrgies, intol·leràncies i altres dades importants.</small></h4>
     <form role="form" method='POST' class="{{'text-secondary' if read_only }}">
+      <br />
       {{ diet_form.csrf_token }}
       {{ checkbox(diet_form.vegan, read_only = read_only)}}
       {{ checkbox(diet_form.vegetarian, read_only = read_only)}}
