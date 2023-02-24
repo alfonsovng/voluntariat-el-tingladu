@@ -1,4 +1,5 @@
 from .helper import logger
+from sqlalchemy import text
 
 class RewardsImpl:
     def calculate_tickets(self, user_id, current_shifts):
@@ -8,12 +9,12 @@ class RewardsImpl:
         raise NotImplementedError
 
     def _get_meal_id(self, db, code):
-        id = db.session.execute(f"select id from meals where code = '{code}'").one()[0] #it's a tuple
+        id = db.session.execute(text(f"select id from meals where code = '{code}'")).one()[0] #it's a tuple
         logger.info(f"{self.__class__.__name__} - meal:{code} = {id}")
         return id
 
     def _get_ticket_id(self, db, code):
-        id =  db.session.execute(f"select id from tickets where code = '{code}'").one()[0] #it's a tuple
+        id =  db.session.execute(text(f"select id from tickets where code = '{code}'")).one()[0] #it's a tuple
         logger.info(f"{self.__class__.__name__} - ticket:{code} = {id}")
         return id
 

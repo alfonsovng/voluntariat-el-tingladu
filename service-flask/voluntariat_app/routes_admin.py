@@ -8,6 +8,7 @@ from . import db, hashid_manager, excel_manager, task_manager, params_manager
 from .plugin_gmail import TaskMessageEmail
 import sqlalchemy
 from io import StringIO
+from sqlalchemy import text
 
 # Blueprint Configuration
 admin_bp = Blueprint(
@@ -539,7 +540,7 @@ def rewards():
 
 def generate_excel(file_name, select, params={}):
     with excel_manager.create_excel(file_name) as excel:
-        rows = db.session.execute(select, params=params)
+        rows = db.session.execute(text(select), params=params)
 
         keys_to_upper = list(map(str.upper,rows._metadata.keys))
         excel.write(0, keys_to_upper)

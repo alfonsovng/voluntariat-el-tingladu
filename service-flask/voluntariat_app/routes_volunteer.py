@@ -5,7 +5,6 @@ from . import db, task_manager, params_manager, rewards_manager
 from .forms_volunteer import ProfileForm, ChangePasswordForm, ShiftsForm, ShiftsFormWithPassword, DietForm, MealsForm
 from .plugin_gmail import TaskConfirmPasswordChangeEmail
 from .models import Task, Shift, UserShift, UserDiet, UserMeal, Meal, Ticket, UserTicket
-import sqlalchemy
 from sqlalchemy import text
 from sqlalchemy.dialects.postgresql import ARRAY
 
@@ -90,7 +89,7 @@ def tasks(volunteer_hashid):
         return redirect(url_for('main_bp.init'))
 
     # subquery que calcula quants torns té l'usuari per cada tasca
-    count_subquery = sqlalchemy.text(f"""
+    count_subquery = text(f"""
         select s.task_id as task_id, count(u.user_id) as n_shifts
         from shifts as s left join 
             (select user_id, shift_id from user_shifts where user_id = {volunteer.id}) as u
@@ -177,7 +176,7 @@ def __update_shifts(volunteer, task_id, form):
 
     # ara afegim tots els quu hi ha a shift_id_selected
     for shift_id in shift_id_to_insert:
-        taked = db.session.execute(f"select count(*) from user_shifts where shift_id = {shift_id}").scalar()
+        taked = db.session.execute(text(f"select count(*) from user_shifts where shift_id = {shift_id}")).scalar()
         shift = Shift.query.filter_by(id = shift_id).first()
 
         # hi ha espai lliure!
@@ -203,7 +202,7 @@ def __update_shifts(volunteer, task_id, form):
 
 def __select_shifts_and_selected(volunteer_id, task_id):
     # subquery que calcula, donat un usuari i una tasca, si ha seleccionat el torn (t/f) i les possibles observacions que ha posat
-    selected_shifts_subquery = sqlalchemy.text(f"""
+    selected_shifts_subquery = text(f"""
         select s.id as shift_id, COALESCE(c.taked,0) as taked, user_id is not null as selected, u.comments as comments, s.assignations as assignations, u.shift_assignations as shift_assignations 
         from shifts as s left join 
             (select shift_id, user_id, comments, shift_assignations from user_shifts where user_id = {volunteer_id}) as u 
