@@ -2,7 +2,7 @@ from flask import Blueprint, redirect, render_template, url_for, request
 from flask_login import current_user, login_required
 from .helper import flash_error, flash_info, load_volunteer, flash_warning, trim, get_shifts_meals_and_tickets
 from . import db, task_manager, params_manager, rewards_manager
-from .forms_volunteer import ProfileForm, ChangePasswordForm, ShiftsForm, ShiftsFormWithPassword, DietForm, MealsForm, TicketsForm
+from .forms_volunteer import ProfileForm, ChangePasswordForm, ShiftsForm, ShiftsFormWithPassword, DietForm, MealsForm
 from .plugin_gmail import TaskConfirmPasswordChangeEmail
 from .models import Task, Shift, UserShift, UserDiet, UserMeal, Meal, Ticket, UserTicket
 import sqlalchemy
@@ -307,57 +307,19 @@ def rewards(volunteer_hashid):
         flash_warning("Abans d'accedir a aquesta secció s'han de completar les Tasques i Torns")
         read_only = True
 
-    tickets = Ticket.query.all()
-    user_tickets = UserTicket.query.filter_by(user_id = volunteer.id).order_by(UserTicket.ticket_id.asc()).all()
-    tickets_form = __create_tickets_form(tickets = tickets, user_tickets = user_tickets)
+    tickets = db.session.query(Ticket).join(UserTicket).filter(
+        UserTicket.user_id == volunteer.id
+    ).filter(
+        UserTicket.selected
+    ).order_by(UserTicket.ticket_id.asc()).all()
 
     (cash, cash_details) = rewards_manager.calculate_cash(volunteer.id)
 
-    # if not read_only and tickets_form.validate_on_submit():
-    #     # update de tickets
-    #     for um in user_meals:
-    #         um.selected = meals_form[f"selected-{um.ticket_id}"].data
-    #         if um.selected:
-    #             um.comments = meals_form[f"comments-{um.ticket_id}"].data
-    #         else:
-    #             um.comments = ""
-
-    #     db.session.commit()
-    #     flash_info("S'han registrat els canvis en els teus àpats")
-    #     return redirect(url_for('volunteer_bp.meals',volunteer_hashid=volunteer_hashid))
-
     return render_template('volunteer-rewards.html',read_only=read_only,
-        tickets_form = tickets_form,
+        tickets = tickets,
         cash = cash, cash_details = cash_details,
         volunteer = volunteer, user = current_user
     )
-
-def __create_tickets_form(tickets, user_tickets):
-    from wtforms import BooleanField, TextAreaField
-
-    if not user_tickets:
-        return TicketsForm()
-
-    tickets_dict = {}
-    for m in tickets:
-        tickets_dict[m.id] = m.name
-
-    class F(TicketsForm):
-        pass
-    
-    setattr(F, "ticket_ids", [str(ut.ticket_id) for ut in user_tickets])
-
-    for ut in user_tickets:
-        boolean_field = BooleanField(tickets_dict[ut.ticket_id], default = ut.selected)
-        setattr(F, f"selected-{ut.ticket_id}", boolean_field)
-
-        text_area_field = TextAreaField(
-            filters = [trim],
-            default = ut.comments
-        )
-        setattr(F, f"comments-{ut.ticket_id}", text_area_field)
-
-    return F()
 
 def __is_read_only(current_user):
     return not params_manager.allow_modifications and not current_user.is_admin
