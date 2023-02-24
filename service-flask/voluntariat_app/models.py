@@ -68,7 +68,7 @@ class User(UserMixin, db.Model):
 class Task(db.Model):
     __tablename__ = "tasks"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, nullable=False)
+    name = db.Column(db.String, unique=True, nullable=False)
     description = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
     password = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
 
@@ -94,8 +94,7 @@ class UserDiet(db.Model):
 class Meal(db.Model):
     __tablename__ = "meals"
     id = db.Column(db.Integer, primary_key=True)
-    code = db.Column(db.String, unique=True, nullable=False)
-    name = db.Column(db.String, nullable=False)
+    name = db.Column(db.String, unique=True, nullable=False)
     description = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
 
 class UserMeal(db.Model):
@@ -108,8 +107,7 @@ class UserMeal(db.Model):
 class Ticket(db.Model):
     __tablename__ = "tickets"
     id = db.Column(db.Integer, primary_key=True)
-    code = db.Column(db.String, unique=True, nullable=False)
-    name = db.Column(db.String, nullable=False)
+    name = db.Column(db.String, unique=True, nullable=False)
     description = db.Column(db.String, nullable=False) #'' es un possible valor
 
 class UserTicket(db.Model):

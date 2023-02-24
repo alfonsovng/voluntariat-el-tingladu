@@ -1,5 +1,5 @@
-id,nom,descripció,contrasenya
-1,BARRES,Ajuda a les barres,""
-2,GLOBUS,Fer la beguda secreta d'El Tingladu,globus2023
-3,CONTROL D'ACCÉS,Controlar l’accés al recinte,""
-4,MUNTATGE,Muntar i desmuntar tot plegat,""
+nom,descripció,contrasenya
+BARRES,Ajuda a les barres,""
+GLOBUS,Fer la beguda secreta d'El Tingladu,globus2023
+CONTROL D'ACCÉS,Controlar l’accés al recinte,""
+MUNTATGE,Muntar i desmuntar tot plegat,""
