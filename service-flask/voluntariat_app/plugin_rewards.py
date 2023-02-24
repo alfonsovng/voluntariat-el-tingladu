@@ -8,14 +8,14 @@ class RewardsImpl:
     def calculate_meals(self, user_id, current_shifts):
         raise NotImplementedError
 
-    def _get_meal_id(self, db, code):
-        id = db.session.execute(text(f"select id from meals where code = '{code}'")).one()[0] #it's a tuple
-        logger.info(f"{self.__class__.__name__} - meal:{code} = {id}")
+    def _get_meal_id(self, db, name):
+        id = db.session.execute(text(f"select id from meals where name = '{name}'")).one()[0] #it's a tuple
+        logger.info(f"{self.__class__.__name__} - meal:{name} = {id}")
         return id
 
-    def _get_ticket_id(self, db, code):
-        id =  db.session.execute(text(f"select id from tickets where code = '{code}'")).one()[0] #it's a tuple
-        logger.info(f"{self.__class__.__name__} - ticket:{code} = {id}")
+    def _get_ticket_id(self, db, name):
+        id =  db.session.execute(text(f"select id from tickets where name = '{name}'")).one()[0] #it's a tuple
+        logger.info(f"{self.__class__.__name__} - ticket:{name} = {id}")
         return id
 
 class Rewards15Anniversary(RewardsImpl):
@@ -23,14 +23,15 @@ class Rewards15Anniversary(RewardsImpl):
     def __init__(self, app, db):
         with app.app_context():
             # àpats
-            self.dinar_15_aniversari_id = self._get_meal_id(db, "dinar_15_aniversari")
-            self.sopar_15_aniversari_id = self._get_meal_id(db, "sopar_15_aniversari")
+            self.dinar_15_aniversari_id = self._get_meal_id(db, "DINAR DE DISSABTE")
+            self.sopar_15_aniversari_id = self._get_meal_id(db, "SOPAR DE DISSABTE")
 
             # entrades i acreditacions
-            self.entrada_15_aniversari_id = self._get_ticket_id(db, "entrada_15_aniversari")
-            self.pulsera_voluntari_id = self._get_ticket_id(db, "pulsera_voluntari")
-            self.acreditacio_globus_id = self._get_ticket_id(db, "acreditacio_globus")
-            self.acreditacio_org_id = self._get_ticket_id(db, "acreditacio_org")
+            self.entrada_15_aniversari_id = self._get_ticket_id(db, "ENTRADA DE DISSABTE")
+            self.pulsera_voluntari_id = self._get_ticket_id(db, "PULSERA VOLUNTARI")
+            self.acreditacio_col_id = self._get_ticket_id(db, "ACREDITACIÓ COL·LABORADOR")
+            self.acreditacio_globus_id = self._get_ticket_id(db, "ACREDITACIÓ GLOBUS")
+            self.acreditacio_org_id = self._get_ticket_id(db, "ACREDITACIÓ ORGANITZACIÓ")
 
     def calculate_tickets(self, user_id, current_shifts):
         from .models import UserTicket

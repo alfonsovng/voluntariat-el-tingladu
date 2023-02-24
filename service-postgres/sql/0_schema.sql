@@ -39,7 +39,6 @@ SET default_table_access_method = heap;
 
 CREATE TABLE public.meals (
     id integer NOT NULL,
-    code character varying NOT NULL,
     name character varying NOT NULL,
     description character varying DEFAULT ''::character varying NOT NULL
 );
@@ -150,7 +149,6 @@ ALTER SEQUENCE public.tasks_id_seq OWNED BY public.tasks.id;
 
 CREATE TABLE public.tickets (
     id integer NOT NULL,
-    code character varying NOT NULL,
     name character varying NOT NULL,
     description character varying NOT NULL
 );
@@ -319,11 +317,11 @@ ALTER TABLE ONLY public.users ALTER COLUMN id SET DEFAULT nextval('public.users_
 
 
 --
--- Name: meals meals_code_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: meals meals_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.meals
-    ADD CONSTRAINT meals_code_key UNIQUE (code);
+    ADD CONSTRAINT meals_name_key UNIQUE (name);
 
 
 --
@@ -343,6 +341,14 @@ ALTER TABLE ONLY public.shifts
 
 
 --
+-- Name: tasks tasks_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.tasks
+    ADD CONSTRAINT tasks_name_key UNIQUE (name);
+
+
+--
 -- Name: tasks tasks_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -351,11 +357,11 @@ ALTER TABLE ONLY public.tasks
 
 
 --
--- Name: tickets tickets_code_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+-- Name: tickets tickets_name_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public.tickets
-    ADD CONSTRAINT tickets_code_key UNIQUE (code);
+    ADD CONSTRAINT tickets_name_key UNIQUE (name);
 
 
 --
