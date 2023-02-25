@@ -1,8 +1,10 @@
 {% extends '_registered.html' %}
 
+{% set admin = request.path.startswith('/admin') %}
+
 <!--
 {% block admin_css %}
-{% if user.id != volunteer.id %}
+{% if admin %}
 <link href="/static/css/voluntariat_app_admin.css" rel="stylesheet">
 {% endif %}
 {% endblock %}
@@ -61,7 +63,7 @@
       {% endif %}
     </form>
     <hr />
-    <a class="btn btn-secondary" href="/v/{{ volunteer.hashid }}"> &#x3c;&#x3c; Torna enrera</a>
+    <a class="btn btn-secondary" href="{{'/admin' if admin}}/p/{{ volunteer.hashid }}"> &#x3c;&#x3c; Torna enrera</a>
   </div>
 </div>
 {% endblock %}

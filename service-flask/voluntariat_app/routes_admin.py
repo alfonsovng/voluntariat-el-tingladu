@@ -29,6 +29,7 @@ def dashboard():
         invitation_url=invitation_url,allow_modifications=allow_modifications,
         user=current_user)
 
+@admin_bp.route('/admin/p')
 @admin_bp.route('/admin/people')
 @login_required
 def people():
@@ -58,7 +59,7 @@ def people():
 
         return render_template('admin-people.html', volunteers=volunteers,user=current_user)
 
-@admin_bp.route("/admin/people/<volunteer_hashid>", methods=["GET"])
+@admin_bp.route("/admin/p/<volunteer_hashid>", methods=["GET"])
 @login_required
 def profile(volunteer_hashid):
     if not current_user.is_admin:
@@ -159,13 +160,13 @@ def worker(worker_hashid):
         db.session.add(worker)
         db.session.commit() # guardem els canvis
         flash_info('Dades actualitzades')
-        return redirect(url_for('admin_bp.worker',worker_hashid=worker_hashid))
+        redirect(request.full_path) # redirecció a mi mateix
 
     (shifts, meals, tickets) = get_shifts_meals_and_tickets(worker.id)
 
     return render_template('admin-worker.html',shifts=shifts,meals=meals,tickets=tickets,form=form,worker=worker,user=current_user)
 
-@admin_bp.route('/admin/people/<volunteer_hashid>/message', methods=["GET", "POST"])
+@admin_bp.route('/admin/p/<volunteer_hashid>/message', methods=["GET", "POST"])
 @login_required
 def message(volunteer_hashid):
     if not current_user.is_admin:
@@ -313,7 +314,7 @@ def shift_detail(task_id, shift_id):
 
         db.session.commit()
         flash_info("S'han guardat les assignacions")
-        return redirect(url_for('admin_bp.shift_detail',task_id=task_id,shift_id=shift_id))
+        redirect(request.full_path) # redirecció a mi mateix
 
     users_with_shifts = db.session.query(User,UserShift).join(UserShift).filter(
         UserShift.shift_id == shift_id

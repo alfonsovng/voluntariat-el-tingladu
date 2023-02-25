@@ -19,7 +19,7 @@
             <div class="card-body bg-profile text-white">
                 <h2 class="card-title">Les teves dades personals</h2>
                 <p class="card-text">Visualitza i/o modifica les teves dades personals, com són el nom, cognoms, el teu email i el teu telèfon mòbil. També pots canviar la teva contrasenya.</p>
-                <a class="btn btn-lg btn-light text-profile" href="/v/{{user.hashid}}/profile">Les teves dades personals</a>
+                <a class="btn btn-lg btn-light text-profile" href="/p/{{user.hashid}}/profile">Les teves dades personals</a>
             </div>
         </div>
         <div class="card">
@@ -36,7 +36,7 @@
                 {% else %}
                 <p class="font-italic">No hi ha tasques assignades i/o seleccionades</p>
                 {% endif %}
-                <a class="btn btn-lg btn-light text-task" href="/v/{{user.hashid}}/tasks">Les teves tasques i torns</a>
+                <a class="btn btn-lg btn-light text-task" href="/p/{{user.hashid}}/tasks">Les teves tasques i torns</a>
             </div>
         </div>
         <div class="card">
@@ -53,7 +53,7 @@
                     {% else %}
                     <p class="font-italic">No hi ha àpats assignats i/o seleccionats</p>
                     {% endif %}
-                    <a class="btn btn-lg btn-light text-meal" href="/v/{{user.hashid}}/meals">Els teus àpats i la teva dieta</a>
+                    <a class="btn btn-lg btn-light text-meal" href="/p/{{user.hashid}}/meals">Els teus àpats i la teva dieta</a>
                 </div>
             {% else %}
                 <div class="card-body bg-meal text-white-50" data-toggle="tooltip" 
@@ -78,7 +78,7 @@
                     {% else %}
                     <p class="font-italic">No hi ha entrades assignades i/o seleccionades</p>
                     {% endif %}
-                    <a class="btn btn-lg btn-light text-ticket" href="/v/{{user.hashid}}/rewards">Les teves entrades i recompenses</a>
+                    <a class="btn btn-lg btn-light text-ticket" href="/p/{{user.hashid}}/rewards">Les teves entrades i recompenses</a>
                 </div>
             {% else %}
                 <div class="card-body bg-ticket text-white-50" data-toggle="tooltip" 

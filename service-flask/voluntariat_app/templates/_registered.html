@@ -34,11 +34,11 @@
 					{% endif %}
 					<a class="dropdown-item" href="/dashboard">Inici</a>
 					<div class="dropdown-divider"></div>
-					<a class="dropdown-item" href="/v/{{user.hashid}}/profile">Dades personals</a>
-					<a class="dropdown-item" href="/v/{{user.hashid}}/tasks">Tasques i torns</a>
+					<a class="dropdown-item" href="/p/{{user.hashid}}/profile">Dades personals</a>
+					<a class="dropdown-item" href="/p/{{user.hashid}}/tasks">Tasques i torns</a>
 					{% if user.has_shifts %}
-					<a class="dropdown-item" href="/v/{{user.hashid}}/meals">Àpats i dieta</a>
-					<a class="dropdown-item" href="/v/{{user.hashid}}/rewards">Entrades i recompenses</a>
+					<a class="dropdown-item" href="/p/{{user.hashid}}/meals">Àpats i dieta</a>
+					<a class="dropdown-item" href="/p/{{user.hashid}}/rewards">Entrades i recompenses</a>
 					{% else %}
 					<a class="dropdown-item disabled" href="#">Àpats i dieta</a>
 					<a class="dropdown-item disabled" href="#">Entrades i recompenses</a>

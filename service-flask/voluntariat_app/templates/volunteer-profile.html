@@ -26,7 +26,7 @@
         <div class="form-group">
           <label>Contrasenya</label>
           <input class="form-control" placeholder="la teva contrasenya" readonly disabled>
-          <p class="text-right"><a href="/v/{{ volunteer.hashid }}/password">Per canviar la teva contrasenya fes click aquí</a></p>
+          <p class="text-right"><a href="/p/{{ volunteer.hashid }}/password">Per canviar la teva contrasenya fes click aquí</a></p>
         </div>
         <div class="form-group">
           {{ form.purchased_ticket1.label }}
@@ -48,7 +48,7 @@
           {% endfor %} -->
         </div>
         <div class="btn-group">
-          <a class="btn btn-secondary" href="/v/{{ volunteer.hashid }}"> &#x3c;&#x3c; Torna enrera</a>
+          <a class="btn btn-secondary" href="/p/{{ volunteer.hashid }}"> &#x3c;&#x3c; Torna enrera</a>
           {{ form.submit(class='btn btn-success') }}
         </div>
       </form>
