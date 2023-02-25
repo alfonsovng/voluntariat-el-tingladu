@@ -1,5 +1,15 @@
-nom,descripció,contrasenya,sols treballadors
-BARRES,Ajuda a les barres,"",false
-GLOBUS,Fer la beguda secreta d'El Tingladu,globus2023,false
-CONTROL D'ACCÉS,Controlar l’accés al recinte,"",true
-MUNTATGE,Muntar i desmuntar tot plegat,"",false
+nom,descripció,contrasenya,no voluntaris
+BARRES,Barres,"",FALSE
+CAP BARRES,Cap de barres,maresme,FALSE
+ENTRADES,Entrades,urgell,FALSE
+TRESORERIA,Tresoreria,safor,FALSE
+CUINA,Cuina,nevada,FALSE
+GLOBUS,Globus,vallespir,FALSE
+ELÈCTRICS,Elèctrics,costera,FALSE
+MUNTATGE,Muntatge,"",FALSE
+MARXANDATGE,Marxandatge,matarranya,FALSE
+COMUNICACIÓ,Comunicació,bages,FALSE
+SO,So,"",TRUE
+SEGURETAT,Seguretat,"",TRUE
+ORGANITZACIÓ,Organització,garrotxa,FALSE
+PUNT LILA,Punt Lila,"",TRUE
