@@ -1,0 +1,29 @@
+{% extends '_registered.html' %}
+
+<!--
+{% block admin_css %}
+<link href="/static/css/voluntariat_app_admin.css" rel="stylesheet">
+{% endblock %}
+-->
+
+{% from "_form_macros.html" import text, select with context %}
+
+{% block content %}
+<div class="row justify-content-md-center">
+    <div class="col-md-8 col-lg-7 col-xl-6">
+      <h2>Administració</h2>
+      <h2><small class="text-muted">{% block title %}Noves persones treballadores{% endblock %}</small></h2>
+      <form role="form" method='POST'>
+        {{ form.csrf_token }}
+        {{ text(form.prefix, placeholder="Prefix comú a totes les persones a afegir", 
+          description="S'afegiran amb el prefix seguit d'un número") }}
+        {{ text(form.number, placeholder="Nombre de persones a afegir") }}
+        {{ select(form.shifts, description="Assigna directament les noves persones treballadores a aquest torn") }}
+        <div class="btn-group">
+          <a class="btn btn-secondary" href="/admin"> &#x3c;&#x3c; Torna enrera</a>
+          {{ form.submit(class='btn btn-success') }}
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}

@@ -1,9 +1,9 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, SelectField
-from wtforms.validators import DataRequired
+from wtforms import StringField, SubmitField, SelectField, IntegerField
+from wtforms.validators import DataRequired, NumberRange
 from .helper import trim
 
-class NewWorkerForm(FlaskForm):
+class AddWorkerForm(FlaskForm):
     surname = StringField("Cognoms", filters = [trim], validators=[DataRequired()])
     name = StringField("Nom", filters = [trim])
     phone = StringField("Mòbil", filters = [trim])
@@ -13,10 +13,11 @@ class NewWorkerForm(FlaskForm):
     )
     submit = SubmitField("Dona d'alta")
 
-class NewWorkerBatchForm(FlaskForm):
+class AddSomeWorkersForm(FlaskForm):
     prefix = StringField("Prefix", filters = [trim], validators=[DataRequired()])
+    number = IntegerField("Nombre de persones treballadors", validators=[NumberRange(min=1,max=50)])
     shifts = SelectField(
-        "Torn preassignat", 
+        "Torn preassignat",
         choices=[]
     )
     submit = SubmitField("Dona d'alta")

@@ -1,7 +1,7 @@
 from flask import Blueprint, redirect, render_template, url_for, request, Response, abort, stream_with_context
 from flask_login import current_user, login_required
 from .forms_message import EmailForm
-from .forms_admin import NewWorkerForm, WorkerForm, AssignationsForm
+from .forms_admin import AddWorkerForm, AddSomeWorkersForm, WorkerForm, AssignationsForm
 from .helper import flash_error, flash_info, load_volunteer, logger, get_timestamp, get_shifts_meals_and_tickets
 from .models import User, Task, Shift, UserShift, Meal, UserMeal, UserDiet, Ticket, UserTicket, UserRole
 from . import db, hashid_manager, excel_manager, task_manager, params_manager, rewards_manager
@@ -79,56 +79,99 @@ def profile(volunteer_hashid):
 
 @admin_bp.route("/admin/worker", methods=["GET", "POST"])
 @login_required
-def new_worker():
+def add_worker():
     if not current_user.is_admin:
         flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
         return redirect(url_for('volunteer_bp.dashboard'))
 
-    form = NewWorkerForm()
+    form = AddWorkerForm()
     form.shifts.choices = get_list_shifts()
 
     if form.validate_on_submit():
-        worker = User()
-        form.populate_obj(worker)
-
-        logger.info(f"Nou treballador: {worker.full_name}")
-
-        worker.dni = f"{get_timestamp()}#{current_user.id}"
-        worker.role = UserRole.worker
-        # random email pq no pot ser buit
-        worker.email = hashid_manager.create_token(current_user.id) + params_manager.worker_fake_email_domain
-        # random password pq no pot ser buit
-        worker.set_password(hashid_manager.create_password())
-       
-        db.session.add(worker)
-        db.session.commit()  # Create new user
-
-        shift_id = int(form.shifts.data)
-        if shift_id > 0:
-            # assigno automàticament aquest treballador a aquest torn
-            shift = Shift.query.filter_by(id = shift_id).first()
-            shift_assignations = [False for _ in shift.assignations]
-            user_shift = UserShift(
-                user_id = worker.id,
-                shift_id = shift_id,
-                shift_assignations = shift_assignations,
-                comments = ""
-            )
-            db.session.add(user_shift)
-
-        # guardo la informació de la seva dieta
-        db.session.add(UserDiet(user_id = worker.id))
-
-        # actualitzo tickets, àpats i acreditacions
-        rewards_manager.update_rewards(
-            user = worker
+        worker = __insert_worker(
+            admin_id = current_user.id,
+            name = form.name.data,
+            surname = form.surname.data,
+            phone = form.phone.data,
+            shift_id = int(form.shifts.data)
         )
 
-        db.session.commit() # guardem la dieta
         flash_info('Persona treballadora creada')
         return redirect(url_for('admin_bp.profile',volunteer_hashid=worker.hashid))
 
-    return render_template('admin-new-worker.html',form=form,user=current_user)
+    return render_template('admin-add-worker.html',form=form,user=current_user)
+
+@admin_bp.route("/admin/workers", methods=["GET", "POST"])
+@login_required
+def add_some_workers():
+    if not current_user.is_admin:
+        flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
+        return redirect(url_for('volunteer_bp.dashboard'))
+
+    form = AddSomeWorkersForm()
+    form.shifts.choices = get_list_shifts()
+
+    if form.validate_on_submit():
+        n = form.number.data
+        prefix = form.prefix.data
+        shift_id = int(form.shifts.data)
+
+        for i in range(1,n+1):
+            __insert_worker(
+                admin_id = current_user.id,
+                name = "",
+                surname = f"{prefix} {i}",
+                phone = "",
+                shift_id = shift_id
+            )
+
+        flash_info(f"Persones treballadores creades: {n}")
+        return redirect(url_for('admin_bp.people'))
+
+    return render_template('admin-add-some-workers.html',form=form,user=current_user)
+
+def __insert_worker(admin_id, surname, name, phone, shift_id):
+    worker = User(
+        name = name,
+        surname = surname,
+        phone = phone,
+        email = hashid_manager.create_token(admin_id) + params_manager.worker_fake_email_domain,
+        dni = f"{get_timestamp()}#{admin_id}",
+        role = UserRole.worker
+    )
+    # random password pq no pot ser buit
+    worker.set_password(hashid_manager.create_password())
+
+    logger.info(f"Nou treballador: {worker.full_name}")
+
+    db.session.add(worker)
+    db.session.commit()  # Create new user
+
+    logger.info(f"Afegit treballador {worker.full_name} ")
+
+    if shift_id > 0:
+        # assigno automàticament aquest treballador a aquest torn
+        shift = Shift.query.filter_by(id = shift_id).first()
+        shift_assignations = [False for _ in shift.assignations]
+        user_shift = UserShift(
+            user_id = worker.id,
+            shift_id = shift_id,
+            shift_assignations = shift_assignations,
+            comments = ""
+        )
+        db.session.add(user_shift)
+
+    # guardo la informació de la seva dieta
+    db.session.add(UserDiet(user_id = worker.id))
+
+    # actualitzo tickets, àpats i acreditacions
+    rewards_manager.update_rewards(
+        user = worker
+    )
+
+    db.session.commit() # guardem la dieta i les recompenses
+
+    return worker
 
 def get_list_shifts():
     no_shifts = [(0, "Sense cap torn assignat")]
@@ -214,7 +257,9 @@ def shifts(task_id):
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
         select = """select t.name as tasca, s.name as torn,
-            u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil, us.comments as "obs torn" 
+            u.surname as cognoms, u.name as nom, 
+            case when u.role='worker' then '' else u.email end as email, 
+            u.phone as mòbil, us.comments as "obs torn" 
             from users as u 
             join user_shifts as us on u.id = us.user_id
             join shifts as s on s.id = us.shift_id
@@ -278,7 +323,9 @@ def shift_detail(task_id, shift_id):
             assignations_select.write(f""",case when us.shift_assignations[{i}] then 'X' else '' end as "{name}"\n""")
 
         select = f"""select t.name as tasca, s.name as torn,
-            u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil, us.comments as "obs torn"
+            u.surname as cognoms, u.name as nom, 
+            case when u.role='worker' then '' else u.email end as email, 
+            u.phone as mòbil, us.comments as "obs torn"
             {assignations_select.getvalue()}
             from users as u 
             join user_shifts as us on u.id = us.user_id
@@ -335,7 +382,9 @@ def meals():
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
         select = """select m.name as àpat,
-            u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil,
+            u.surname as cognoms, u.name as nom, 
+            case when u.role='worker' then '' else u.email end as email, 
+            u.phone as mòbil,
             um.comments as "obs àpat",
             case when ud.vegan then 'X' else '' end as vegana,
             case when ud.vegetarian then 'X' else '' end as vegetariana,
@@ -386,7 +435,9 @@ def meal_detail(meal_id):
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
         select = """select m.name as àpat,
-            u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil,
+            u.surname as cognoms, u.name as nom, 
+            case when u.role='worker' then '' else u.email end as email, 
+            u.phone as mòbil,
             um.comments as "obs àpat",
             case when ud.vegan then 'X' else '' end as vegana,
             case when ud.vegetarian then 'X' else '' end as vegetariana,
@@ -438,7 +489,9 @@ def tickets():
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
         select = """select t.name as ticket,
-            u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil
+            u.surname as cognoms, u.name as nom, 
+            case when u.role='worker' then '' else u.email end as email, 
+            u.phone as mòbil
             from users as u 
             join user_tickets as ut on u.id = ut.user_id
             join tickets as t on t.id = ut.ticket_id
@@ -482,7 +535,9 @@ def tickets_detail(ticket_id):
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
         select = """select t.name as ticket,
-            u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil
+            u.surname as cognoms, u.name as nom, 
+            case when u.role='worker' then '' else u.email end as email, 
+            u.phone as mòbil
             from users as u 
             join user_tickets as ut on u.id = ut.user_id
             join tickets as t on t.id = ut.ticket_id
@@ -526,7 +581,9 @@ def rewards():
 
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
-        select = """select u.surname as cognoms, u.name as nom, u.email as email, u.phone as mòbil,
+        select = """select u.surname as cognoms, u.name as nom, 
+            case when u.role='worker' then '' else u.email end as email, 
+            u.phone as mòbil,
             r.cash as "tickets consum"
             from users as u 
             join (

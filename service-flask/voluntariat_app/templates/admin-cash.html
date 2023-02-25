@@ -27,7 +27,7 @@
                         <tr>
                             <td>{{u.surname}}</td>
                             <td>{{u.name}}</td>
-                            <td>{{u.email}}</td>
+                            <td>{{u.email if not u.is_worker}}</td>
                             <td>{{u.phone}}</td>
                             <td>{{cash}} €</td>
                         </tr>
