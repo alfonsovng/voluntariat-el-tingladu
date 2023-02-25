@@ -1,1 +1,1 @@
-\copy tasks(name, description, password) from '/docker-entrypoint-initdb.d/csv/tasks.csv' delimiter ',' csv header;
+\copy tasks(name, description, password, only_workers) from '/docker-entrypoint-initdb.d/csv/tasks.csv' delimiter ',' csv header;

@@ -18,6 +18,7 @@
                         <th>NOM</th>
                         <th>DESCRIPCIÓ</th>
                         <th>CONTRASENYA</th>
+                        <th>SOL PROFESSIONALS</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -26,6 +27,7 @@
                         <td><a href='/admin/tasks/{{t.id}}'>{{t.name}}</a></td>
                         <td><a href='/admin/tasks/{{t.id}}'>{{t.description}}</a></td>
                         <td><a href='/admin/tasks/{{t.id}}'>{{t.password}}</a></td>
+                        <td><a href='/admin/tasks/{{t.id}}'>{{"X" if t.only_workers}}</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>

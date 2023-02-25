@@ -1,7 +1,7 @@
 from flask import Blueprint, redirect, render_template, url_for, request
 from flask_login import current_user, login_required
 from .helper import flash_error, flash_info, load_volunteer, flash_warning, trim, get_shifts_meals_and_tickets
-from . import db, task_manager, params_manager, rewards_manager
+from . import db, task_manager, params_manager, rewards_manager, hashid_manager
 from .forms_volunteer import ProfileForm, ChangePasswordForm, ShiftsForm, ShiftsFormWithPassword, DietForm, MealsForm
 from .plugin_gmail import TaskConfirmPasswordChangeEmail
 from .models import Task, Shift, UserShift, UserDiet, UserMeal, Meal, Ticket, UserTicket
@@ -96,21 +96,38 @@ def tasks(volunteer_hashid):
         on s.id = u.shift_id group by s.task_id
     """).columns(task_id=db.Integer,n_shifts=db.Integer).subquery("count_subquery")
 
-    tasks_and_number_of_shifts = db.session.query(
-        Task, count_subquery.c.n_shifts
-    ).join(
-        count_subquery, Task.id == count_subquery.c.task_id
-    ).order_by(
-        Task.id.asc()
-    )
-
+    if current_user.is_admin:
+        tasks_and_number_of_shifts = db.session.query(
+            Task, count_subquery.c.n_shifts
+        ).join(
+            count_subquery, Task.id == count_subquery.c.task_id
+        ).order_by(
+            Task.id.asc()
+        )
+    else:
+        # si no es admin, sols veus les tasques de voluntari
+        tasks_and_number_of_shifts = db.session.query(
+            Task, count_subquery.c.n_shifts
+        ).join(
+            count_subquery, Task.id == count_subquery.c.task_id
+        ).filter(
+            Task.only_workers == False
+        ).order_by(
+            Task.id.asc()
+        )
+                
     return render_template('volunteer-tasks.html',tasks_and_number_of_shifts=tasks_and_number_of_shifts,volunteer=volunteer,user=current_user)
 
-@volunteer_bp.route('/v/<volunteer_hashid>/tasks/<int:task_id>', methods=["GET", "POST"])
+@volunteer_bp.route('/v/<volunteer_hashid>/tasks/<task_hashid>', methods=["GET", "POST"])
 @login_required
-def shifts(volunteer_hashid, task_id):
+def shifts(volunteer_hashid, task_hashid):
     volunteer = load_volunteer(current_user,volunteer_hashid)
     if volunteer is None:
+        flash_error("Adreça incorrecta")
+        return redirect(url_for('main_bp.init'))
+    
+    task_id = hashid_manager.get_task_id_from_hashid(task_hashid)
+    if task_id is None:
         flash_error("Adreça incorrecta")
         return redirect(url_for('main_bp.init'))
 
@@ -139,7 +156,7 @@ def shifts(volunteer_hashid, task_id):
             )
             flash_info("S'han registrat els torns")
 
-        return redirect(url_for('volunteer_bp.shifts',volunteer_hashid=volunteer_hashid,task_id=task_id))
+        return redirect(url_for('volunteer_bp.shifts',volunteer_hashid=volunteer_hashid,task_hashid=task_hashid))
     else:
         shifts_and_selected = __select_shifts_and_selected(volunteer_id=volunteer.id, task_id=task_id)
 

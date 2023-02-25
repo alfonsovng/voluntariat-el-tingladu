@@ -46,7 +46,7 @@ def flash_error(message:str) -> None:
 #
 def load_volunteer(current_user,volunteer_hashid,allow_all_admins=True):
     from . import hashid_manager
-    volunteer_id = hashid_manager.get_id_from_hashid(volunteer_hashid)
+    volunteer_id = hashid_manager.get_user_id_from_hashid(volunteer_hashid)
 
     if volunteer_id is None:
         volunteer = None
