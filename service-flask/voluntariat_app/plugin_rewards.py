@@ -2,10 +2,10 @@ from .helper import logger
 from sqlalchemy import text
 
 class RewardsImpl:
-    def calculate_tickets(self, user_id, current_shifts):
+    def calculate_tickets(self, user, current_shifts):
         raise NotImplementedError
 
-    def calculate_meals(self, user_id, current_shifts):
+    def calculate_meals(self, user, current_shifts):
         raise NotImplementedError
 
     def _get_meal_id(self, db, name):
@@ -33,7 +33,7 @@ class Rewards15Anniversary(RewardsImpl):
             self.acreditacio_globus_id = self._get_ticket_id(db, "ACREDITACIÓ GLOBUS")
             self.acreditacio_org_id = self._get_ticket_id(db, "ACREDITACIÓ ORGANITZACIÓ")
 
-    def calculate_tickets(self, user_id, current_shifts):
+    def calculate_tickets(self, user, current_shifts):
         from .models import UserTicket
 
         if len(current_shifts) == 0:
@@ -42,14 +42,14 @@ class Rewards15Anniversary(RewardsImpl):
         # Entrada del dia per qualsevol que faci tasques aquest dia.
         # No es pot renunciar.
         ticket = UserTicket(
-            user_id = user_id,
+            user_id = user.id,
             ticket_id = self.entrada_15_aniversari_id,
             selected = True
         )
 
         return [ticket]
 
-    def calculate_meals(self, user_id, current_shifts):
+    def calculate_meals(self, user, current_shifts):
         from .models import UserMeal
 
         if len(current_shifts) == 0:
@@ -57,10 +57,14 @@ class Rewards15Anniversary(RewardsImpl):
 
         # Sopar del dia del concert per qualsevol que faci tasques. 
         # Es pot renunciar. No surt seleccionat per defecte
+        # Els workers el tenen preseleccionat
+        selected = False
+        if user.is_worker:
+            selected = True
         meal = UserMeal(
-            user_id = user_id,
+            user_id = user.id,
             meal_id = self.sopar_15_aniversari_id,
-            selected = False
+            selected = selected
         )
 
         return [meal]
@@ -76,23 +80,23 @@ class RewardsManager:
         logger.info(f"REWARDS_CLASS = {dynamic_class_name}")
         self.rewards_instance =  globals()[dynamic_class_name](app, db)
 
-    def update_rewards(self, user_id):
+    def update_rewards(self, user):
         from .models import UserShift
 
         # miro quins torns fa l'usuari
-        current_shifts = UserShift.query.filter_by(user_id = user_id).all()
+        current_shifts = UserShift.query.filter_by(user_id = user.id).all()
 
         # actualitzo tickets, acreditacions i àpats
-        self.__update_tickets(user_id, current_shifts)
-        self.__update_meals(user_id, current_shifts)
+        self.__update_tickets(user, current_shifts)
+        self.__update_meals(user, current_shifts)
 
-    def __update_tickets(self, user_id, current_shifts):
+    def __update_tickets(self, user, current_shifts):
         from .models import UserTicket
         from . import db
 
-        current_tickets = UserTicket.query.filter(UserTicket.user_id == user_id).all()
+        current_tickets = UserTicket.query.filter(UserTicket.user_id == user.id).all()
         new_tickets = self.rewards_instance.calculate_tickets(
-            user_id = user_id,
+            user = user,
             current_shifts = current_shifts
         )
 
@@ -101,7 +105,7 @@ class RewardsManager:
             new_tickets = new_tickets
         )
 
-        UserTicket.query.filter(UserTicket.user_id == user_id).delete()
+        UserTicket.query.filter(UserTicket.user_id == user.id).delete()
         db.session.add_all(merged_tickets)
 
     def __merge_tickets(self, current_tickets, new_tickets):
@@ -112,13 +116,13 @@ class RewardsManager:
 
         return new_tickets
 
-    def __update_meals(self, user_id, current_shifts):
+    def __update_meals(self, user, current_shifts):
         from .models import UserMeal
         from . import db
 
-        current_meals = UserMeal.query.filter(UserMeal.user_id == user_id).all()
+        current_meals = UserMeal.query.filter(UserMeal.user_id == user.id).all()
         new_meals = self.rewards_instance.calculate_meals(
-            user_id = user_id,
+            user = user,
             current_shifts = current_shifts
         )
 
@@ -126,7 +130,7 @@ class RewardsManager:
             current_meals = current_meals,
             new_meals = new_meals
         )
-        UserMeal.query.filter(UserMeal.user_id == user_id).delete()
+        UserMeal.query.filter(UserMeal.user_id == user.id).delete()
         db.session.add_all(merged_meals)
 
     def __merge_meals(self, current_meals, new_meals):

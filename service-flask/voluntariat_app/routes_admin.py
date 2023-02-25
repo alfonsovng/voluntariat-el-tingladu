@@ -4,7 +4,7 @@ from .forms_message import EmailForm
 from .forms_admin import NewWorkerForm, WorkerForm, AssignationsForm
 from .helper import flash_error, flash_info, load_volunteer, logger, get_timestamp, get_shifts_meals_and_tickets
 from .models import User, Task, Shift, UserShift, Meal, UserMeal, UserDiet, Ticket, UserTicket, UserRole
-from . import db, hashid_manager, excel_manager, task_manager, params_manager
+from . import db, hashid_manager, excel_manager, task_manager, params_manager, rewards_manager
 from .plugin_gmail import TaskMessageEmail
 import sqlalchemy
 from io import StringIO
@@ -84,6 +84,8 @@ def new_worker():
         return redirect(url_for('volunteer_bp.dashboard'))
 
     form = NewWorkerForm()
+    form.shifts.choices = get_list_shifts()
+
     if form.validate_on_submit():
         worker = User()
         form.populate_obj(worker)
@@ -100,14 +102,42 @@ def new_worker():
         db.session.add(worker)
         db.session.commit()  # Create new user
 
+        shift_id = int(form.shifts.data)
+        if shift_id > 0:
+            # assigno automàticament aquest treballador a aquest torn
+            shift = Shift.query.filter_by(id = shift_id).first()
+            shift_assignations = [False for _ in shift.assignations]
+            user_shift = UserShift(
+                user_id = worker.id,
+                shift_id = shift_id,
+                shift_assignations = shift_assignations,
+                comments = ""
+            )
+            db.session.add(user_shift)
+
         # guardo la informació de la seva dieta
         db.session.add(UserDiet(user_id = worker.id))
+
+        # actualitzo tickets, àpats i acreditacions
+        rewards_manager.update_rewards(
+            user = worker
+        )
 
         db.session.commit() # guardem la dieta
         flash_info('Persona treballadora creada')
         return redirect(url_for('admin_bp.profile',volunteer_hashid=worker.hashid))
 
     return render_template('admin-new-worker.html',form=form,user=current_user)
+
+def get_list_shifts():
+    no_shifts = [(0, "Sense cap torn assignat")]
+    db_shifts = [(id, t + ": " + s) for (id, t, s) in 
+        db.session.execute(text(f"""select s.id, t.name, s.name 
+            from tasks as t
+            join shifts as s on t.id = s.task_id 
+            order by t.id asc, s.id asc""")).all()
+    ]
+    return no_shifts + db_shifts
 
 @admin_bp.route("/admin/worker/<worker_hashid>", methods=["GET", "POST"])
 @login_required

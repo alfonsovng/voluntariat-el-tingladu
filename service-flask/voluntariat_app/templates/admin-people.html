@@ -29,7 +29,7 @@
                         <td><a href='/admin/people/{{v.hashid}}'>{{v.name}}</a></td>
                         <td><a href='/admin/people/{{v.hashid}}'>{{v.role.name}}</a></td>
                         <td><a href='/admin/people/{{v.hashid}}'>{{v.phone}}</a></td>
-                        <td><a href='/admin/people/{{v.hashid}}'>{{v.email if v.role.name != "worker"}}</a></td>
+                        <td><a href='/admin/people/{{v.hashid}}'>{{v.email if not v.is_worker}}</a></td>
                     </tr>   
                     {% endfor %}
                 </tbody>

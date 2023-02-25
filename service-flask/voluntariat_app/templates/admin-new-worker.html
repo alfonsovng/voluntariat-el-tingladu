@@ -6,7 +6,7 @@
 {% endblock %}
 -->
 
-{% from "_form_macros.html" import text with context %}
+{% from "_form_macros.html" import text, select with context %}
 
 {% block content %}
 <div class="row justify-content-md-center">
@@ -17,8 +17,9 @@
         {{ form.csrf_token }}
         {{ text(form.surname, placeholder="Cognoms de la nova persona treballadora", 
           description="El llistat de persones s'ordena pels cognoms") }}
-        {{ text(form.name, placeholder="Nom de la nova persona treballadora") }}
+        {{ text(form.name, placeholder="Nom de la nova persona treballadora (opcional)") }}
         {{ text(form.phone, placeholder="Mòbil (opcional)") }}
+        {{ select(form.shifts, description="Assigna directament la nova persona treballadora a aquest torn") }}
         <div class="btn-group">
           <a class="btn btn-secondary" href="/admin"> &#x3c;&#x3c; Torna enrera</a>
           {{ form.submit(class='btn btn-success') }}
