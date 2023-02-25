@@ -7,16 +7,17 @@
 -->
 
 {% block content %}
-<div class="row justify-content-md-center">
-    <div class="col-md-8 col-lg-7 col-xl-6">
+<div class="row">
+    <div class="col-sm-12">
         <h2>Administració</h2>
         <h2><small class="text-muted">{% block title %}Tasques{% endblock %}</small></h2>
         <div class="table-responsive">
-            <table class="table table-light table-striped table-hover table-bordered">
+            <table class="table table-light table-striped table-hover table-bordered table-sm">
                 <thead>
                     <tr>
                         <th>NOM</th>
                         <th>DESCRIPCIÓ</th>
+                        <th>CONTRASENYA</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -24,6 +25,7 @@
                     <tr>
                         <td><a href='/admin/tasks/{{t.id}}'>{{t.name}}</a></td>
                         <td><a href='/admin/tasks/{{t.id}}'>{{t.description}}</a></td>
+                        <td><a href='/admin/tasks/{{t.id}}'>{{t.password}}</a></td>
                     </tr>
                     {% endfor %}
                 </tbody>
