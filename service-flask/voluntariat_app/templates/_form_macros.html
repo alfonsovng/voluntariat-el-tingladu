@@ -51,11 +51,14 @@
 </div>
 {% endmacro %}
 
-{% macro select(field) %}
+{% macro select(field, description=None) %}
 <div class="form-group">
   {{ field.label }}
   {{ field(class='form-control') }}
-  {% for error in form.type.errors %}
+  {% if description %}
+  <label class="small font-italic d-block text-right" for="{{field.name}}">{{description|safe}}</label>
+  {% endif %}
+  {% for error in field.errors %}
     <p class="form-error">{{ error }}</p>
   {% endfor %}
 </div>

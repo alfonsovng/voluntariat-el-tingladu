@@ -44,7 +44,10 @@ class User(UserMixin, db.Model):
 
     @hybrid_property
     def full_name(self):
-        return f"{self.name} {self.surname}"
+        if self.name:
+            return f"{self.name} {self.surname}"
+        else:
+            return self.surname
 
     @hybrid_property
     def is_admin(self):

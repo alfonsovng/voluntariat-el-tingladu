@@ -212,7 +212,7 @@ def __update_shifts(volunteer, task_id, form):
 
     # actualitzo tickets, àpats i acreditacions
     rewards_manager.update_rewards(
-        user_id = volunteer.id
+        user = volunteer
     )
 
     db.session.commit()

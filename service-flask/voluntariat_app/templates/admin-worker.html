@@ -24,7 +24,7 @@
                             <form role="form" method='POST'>
                                 {{ form.csrf_token }}
                                 {{ text(form.surname, placeholder="Cognoms de la persona treballadora") }}
-                                {{ text(form.name, placeholder="Nom de la persona treballadora") }}
+                                {{ text(form.name, placeholder="Nom de la persona treballadora (opcional)") }}
                                 {{ text(form.phone, placeholder="Mòbil (opcional)") }}
                                 {{ form.submit(class='btn btn-success') }}
                             </form>
