@@ -46,7 +46,7 @@
                             <tr>
                                 <td>{{u.surname}}</td>
                                 <td>{{u.name}}</td>
-                                <td>{{u.email}}</td>
+                                <td>{{u.email if not u.is_worker}}</td>
                                 <td>{{u.phone}}</td>
                                 <td>{{us.comments}}</td>
                                 {% for checked in us.shift_assignations %}
