@@ -15,7 +15,7 @@
     <h2><small class="text-muted">{{ volunteer.full_name }}</small></h2>
     <div class="list-group">
       {% for t,n in tasks_and_number_of_shifts %}
-        <a href="/v/{{ volunteer.hashid }}/tasks/{{t.id}}" 
+        <a href="/v/{{ volunteer.hashid }}/tasks/{{t.hashid}}" 
           class="list-group-item {% if n>0 %}list-group-item-success {% endif %}">
           <h4>{{t.name}}</h4> 
           <h4><small>{{t.description}}</small></h4>

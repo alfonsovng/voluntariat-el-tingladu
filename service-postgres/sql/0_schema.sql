@@ -115,7 +115,8 @@ CREATE TABLE public.tasks (
     id integer NOT NULL,
     name character varying NOT NULL,
     description character varying DEFAULT ''::character varying NOT NULL,
-    password character varying DEFAULT ''::character varying NOT NULL
+    password character varying DEFAULT ''::character varying NOT NULL,
+    only_workers boolean DEFAULT false NOT NULL
 );
 
 

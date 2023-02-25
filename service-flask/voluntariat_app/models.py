@@ -40,7 +40,7 @@ class User(UserMixin, db.Model):
 
     @hybrid_property
     def hashid(self):
-        return hashid_manager.get_hashid(self.id)
+        return hashid_manager.get_user_hashid(self.id)
 
     @hybrid_property
     def full_name(self):
@@ -71,6 +71,11 @@ class Task(db.Model):
     name = db.Column(db.String, unique=True, nullable=False)
     description = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
     password = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
+    only_workers = db.Column(db.Boolean, nullable=False, default=False, server_default=text("FALSE"))
+
+    @hybrid_property
+    def hashid(self):
+        return hashid_manager.get_task_hashid(self.id)
 
 class Shift(db.Model):
     __tablename__ = "shifts"

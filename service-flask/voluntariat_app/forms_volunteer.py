@@ -47,7 +47,7 @@ class ShiftsForm(FlaskForm):
 class ShiftsFormWithPassword(FlaskForm):
     submit = SubmitField("Actualitza els teus torns")
     password = StringField(
-        "Contrasenya per apuntar-se a aquests torns",
+        "Contrasenya per apuntar-se a aquesta tasca",
         validators=[DataRequired()]
     )
 

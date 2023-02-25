@@ -39,7 +39,7 @@ def people():
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
         file_name = hashid_manager.create_unique_file_name(
-            id = current_user.id,
+            user_id = current_user.id,
             name = "PEOPLE",
             extension = ".xlsx"
         )
@@ -192,7 +192,7 @@ def shifts(task_id):
             order by s.id asc, cognoms asc, nom asc"""
 
         file_name = hashid_manager.create_unique_file_name(
-            id = current_user.id,
+            user_id = current_user.id,
             name = f"TASK {task_id}",
             extension = ".xlsx"
         )
@@ -257,7 +257,7 @@ def shift_detail(task_id, shift_id):
             order by cognoms asc, nom asc"""
 
         file_name = hashid_manager.create_unique_file_name(
-            id = current_user.id,
+            user_id = current_user.id,
             name = f"TASK {task_id} SHIFT {shift_id}",
             extension = ".xlsx"
         )
@@ -320,7 +320,7 @@ def meals():
         """
 
         file_name = hashid_manager.create_unique_file_name(
-            id = current_user.id,
+            user_id = current_user.id,
             name = "MEALS",
             extension = ".xlsx"
         )
@@ -371,7 +371,7 @@ def meal_detail(meal_id):
         """
 
         file_name = hashid_manager.create_unique_file_name(
-            id = current_user.id,
+            user_id = current_user.id,
             name = f"MEAL {meal_id}",
             extension = ".xlsx"
         )
@@ -416,7 +416,7 @@ def tickets():
         """
 
         file_name = hashid_manager.create_unique_file_name(
-            id = current_user.id,
+            user_id = current_user.id,
             name = "TICKETS",
             extension = ".xlsx"
         )
@@ -460,7 +460,7 @@ def tickets_detail(ticket_id):
         """
 
         file_name = hashid_manager.create_unique_file_name(
-            id = current_user.id,
+            user_id = current_user.id,
             name = f"TICKET {ticket_id}",
             extension = ".xlsx"
         )
@@ -509,7 +509,7 @@ def rewards():
         """
 
         file_name = hashid_manager.create_unique_file_name(
-            id = current_user.id,
+            user_id = current_user.id,
             name = "CONSUM",
             extension = ".xlsx"
         )
