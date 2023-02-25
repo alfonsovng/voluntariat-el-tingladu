@@ -66,7 +66,7 @@
                             {% else %}
                             <p class="font-italic">No hi ha tasques assignades i/o seleccionades</p>
                             {% endif %}
-                            <a class="btn btn-dark bg-task text-white" href="/v/{{worker.hashid}}/tasks">Les seves tasques i torns</a>
+                            <a class="btn btn-dark bg-task text-white" href="/admin/p/{{worker.hashid}}/tasks">Les seves tasques i torns</a>
                         </td>
                     </tr>
                     <tr>
@@ -81,7 +81,7 @@
                             {% else %}
                             <p class="font-italic">No hi ha àpats assignats i/o seleccionats</p>
                             {% endif %}
-                            <a class="btn btn-dark bg-meal text-white" href="/v/{{worker.hashid}}/meals">Els seus àpats i la seva dieta</a>
+                            <a class="btn btn-dark bg-meal text-white" href="/admin/p/{{worker.hashid}}/meals">Els seus àpats i la seva dieta</a>
                         </td>
                     </tr>
                     <tr>
@@ -96,7 +96,7 @@
                             {% else %}
                             <p class="font-italic">No hi ha entrades assignades i/o seleccionades</p>
                             {% endif %}
-                            <a class="btn btn-dark bg-ticket text-white" href="/v/{{worker.hashid}}/rewards">Les seves entrades i recompenses</a>
+                            <a class="btn btn-dark bg-ticket text-white" href="/admin/p/{{worker.hashid}}/rewards">Les seves entrades i recompenses</a>
                         </td>
                     </tr>
                 </tbody>

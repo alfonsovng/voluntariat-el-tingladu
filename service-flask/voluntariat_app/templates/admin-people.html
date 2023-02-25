@@ -25,11 +25,11 @@
                 <tbody>
                     {% for v in volunteers %}
                     <tr>
-                        <td><a href='/admin/people/{{v.hashid}}'>{{v.surname}}</a></td>
-                        <td><a href='/admin/people/{{v.hashid}}'>{{v.name}}</a></td>
-                        <td><a href='/admin/people/{{v.hashid}}'>{{v.role.name}}</a></td>
-                        <td><a href='/admin/people/{{v.hashid}}'>{{v.phone}}</a></td>
-                        <td><a href='/admin/people/{{v.hashid}}'>{{v.email if not v.is_worker}}</a></td>
+                        <td><a href='/admin/p/{{v.hashid}}'>{{v.surname}}</a></td>
+                        <td><a href='/admin/p/{{v.hashid}}'>{{v.name}}</a></td>
+                        <td><a href='/admin/p/{{v.hashid}}'>{{v.role.name}}</a></td>
+                        <td><a href='/admin/p/{{v.hashid}}'>{{v.phone}}</a></td>
+                        <td><a href='/admin/p/{{v.hashid}}'>{{v.email if not v.is_worker}}</a></td>
                     </tr>   
                     {% endfor %}
                 </tbody>

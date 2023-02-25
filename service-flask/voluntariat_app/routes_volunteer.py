@@ -13,13 +13,10 @@ volunteer_bp = Blueprint(
     "volunteer_bp", __name__, template_folder="templates", static_folder="static"
 )
 
-@volunteer_bp.route("/v/<volunteer_hashid>", methods=["GET"])
+@volunteer_bp.route('/p')
 @login_required
-def volunteer(volunteer_hashid):
-    if not current_user.is_admin or volunteer_hashid == current_user.hashid:
-        return redirect(url_for('volunteer_bp.dashboard'))
-
-    return redirect(url_for('admin_bp.profile', volunteer_hashid = volunteer_hashid))
+def redirect_to_dashboard():
+    return redirect(url_for('volunteer_bp.dashboard'))
 
 @volunteer_bp.route('/dashboard')
 @login_required
@@ -27,7 +24,15 @@ def dashboard():
     (shifts, meals, tickets) = get_shifts_meals_and_tickets(current_user.id)
     return render_template('volunteer-dashboard.html',shifts=shifts,meals=meals,tickets=tickets,user=current_user)
 
-@volunteer_bp.route('/v/<volunteer_hashid>/profile', methods=["GET", "POST"])
+@volunteer_bp.route("/p/<volunteer_hashid>", methods=["GET"])
+@login_required
+def volunteer(volunteer_hashid):
+    if not current_user.is_admin or volunteer_hashid == current_user.hashid:
+        return redirect(url_for('volunteer_bp.dashboard'))
+
+    return redirect(url_for('admin_bp.profile', volunteer_hashid = volunteer_hashid))
+
+@volunteer_bp.route('/p/<volunteer_hashid>/profile', methods=["GET", "POST"])
 @login_required
 def profile(volunteer_hashid):
     # you can't change personal data of another person
@@ -44,11 +49,11 @@ def profile(volunteer_hashid):
         form.populate_obj(volunteer)
         db.session.commit()
         flash_info("S'han actualitzat les dades")
-        return redirect(url_for('volunteer_bp.profile',volunteer_hashid=volunteer_hashid))
+        return redirect(request.full_path) # redirecció a mi mateix
 
     return render_template('volunteer-profile.html',form=form,volunteer=volunteer,user=current_user)
 
-@volunteer_bp.route('/v/<volunteer_hashid>/password', methods=["GET", "POST"])
+@volunteer_bp.route('/p/<volunteer_hashid>/password', methods=["GET", "POST"])
 @login_required
 def password(volunteer_hashid):
     # you can't change personal data of another person
@@ -76,11 +81,12 @@ def password(volunteer_hashid):
         else:
             flash_error("Contrasenya actual incorrecte. No s'ha canviat la contrasenya")
 
-        return redirect(url_for('volunteer_bp.profile',volunteer_hashid=volunteer_hashid))
+        return redirect(request.full_path) # redirecció a mi mateix
 
     return render_template('volunteer-password.html',form=form,volunteer=volunteer,user=current_user)
 
-@volunteer_bp.route('/v/<volunteer_hashid>/tasks', methods=["GET", "POST"])
+@volunteer_bp.route('/admin/p/<volunteer_hashid>/tasks', methods=["GET", "POST"])
+@volunteer_bp.route('/p/<volunteer_hashid>/tasks', methods=["GET", "POST"])
 @login_required
 def tasks(volunteer_hashid):
     volunteer = load_volunteer(current_user,volunteer_hashid)
@@ -118,7 +124,8 @@ def tasks(volunteer_hashid):
                 
     return render_template('volunteer-tasks.html',tasks_and_number_of_shifts=tasks_and_number_of_shifts,volunteer=volunteer,user=current_user)
 
-@volunteer_bp.route('/v/<volunteer_hashid>/tasks/<task_hashid>', methods=["GET", "POST"])
+@volunteer_bp.route('/admin/p/<volunteer_hashid>/tasks/<task_hashid>', methods=["GET", "POST"])
+@volunteer_bp.route('/p/<volunteer_hashid>/tasks/<task_hashid>', methods=["GET", "POST"])
 @login_required
 def shifts(volunteer_hashid, task_hashid):
     volunteer = load_volunteer(current_user,volunteer_hashid)
@@ -156,7 +163,7 @@ def shifts(volunteer_hashid, task_hashid):
             )
             flash_info("S'han registrat els torns")
 
-        return redirect(url_for('volunteer_bp.shifts',volunteer_hashid=volunteer_hashid,task_hashid=task_hashid))
+        return redirect(request.full_path)
     else:
         shifts_and_selected = __select_shifts_and_selected(volunteer_id=volunteer.id, task_id=task_id)
 
@@ -237,7 +244,8 @@ def __select_shifts_and_selected(volunteer_id, task_id):
         Shift.id.asc()
     )
 
-@volunteer_bp.route('/v/<volunteer_hashid>/meals', methods=["GET", "POST"])
+@volunteer_bp.route('/admin/p/<volunteer_hashid>/meals', methods=["GET", "POST"])
+@volunteer_bp.route('/p/<volunteer_hashid>/meals', methods=["GET", "POST"])
 @login_required
 def meals(volunteer_hashid):
     volunteer = load_volunteer(current_user,volunteer_hashid)
@@ -263,7 +271,7 @@ def meals(volunteer_hashid):
             diet_form.populate_obj(diet)
             db.session.commit()
             flash_info("S'han registrat els canvis en la teva dieta")
-            return redirect(url_for('volunteer_bp.meals',volunteer_hashid=volunteer_hashid))
+            return redirect(request.full_path) # redirecció a mi mateix
 
         elif meals_form.validate_on_submit():
             # update de meals
@@ -275,8 +283,8 @@ def meals(volunteer_hashid):
                     um.comments = ""
 
             db.session.commit()
-            flash_info("S'han registrat els canvis en els teus àpats")
-            return redirect(url_for('volunteer_bp.meals',volunteer_hashid=volunteer_hashid))
+            flash_info("S'han registrat els canvis en els àpats")
+            return redirect(request.full_path) # redirecció a mi mateix
 
     return render_template('volunteer-meals.html',read_only=read_only,
         diet_form=diet_form,meals_form=meals_form,
@@ -310,7 +318,8 @@ def __create_meals_form(meals, user_meals):
 
     return F()
 
-@volunteer_bp.route('/v/<volunteer_hashid>/rewards', methods=["GET", "POST"])
+@volunteer_bp.route('/admin/p/<volunteer_hashid>/rewards', methods=["GET", "POST"])
+@volunteer_bp.route('/p/<volunteer_hashid>/rewards', methods=["GET", "POST"])
 @login_required
 def rewards(volunteer_hashid):
     volunteer = load_volunteer(current_user,volunteer_hashid)

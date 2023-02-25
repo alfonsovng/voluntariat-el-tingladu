@@ -1,8 +1,10 @@
 {% extends '_registered.html' %}
 
+{% set admin = request.path.startswith('/admin') %}
+
 <!--
 {% block admin_css %}
-{% if user.id != volunteer.id %}
+{% if admin %}
 <link href="/static/css/voluntariat_app_admin.css" rel="stylesheet">
 {% endif %}
 {% endblock %}
@@ -15,7 +17,7 @@
     <h2><small class="text-muted">{{ volunteer.full_name }}</small></h2>
     <div class="list-group">
       {% for t,n in tasks_and_number_of_shifts %}
-        <a href="/v/{{ volunteer.hashid }}/tasks/{{t.hashid}}" 
+        <a href="{{'/admin' if admin}}/p/{{ volunteer.hashid }}/tasks/{{t.hashid}}" 
           class="list-group-item {% if n>0 %}list-group-item-success {% endif %}">
           <h4>{{t.name}}</h4> 
           <h4><small>{{t.description}}</small></h4>
@@ -24,7 +26,7 @@
       {% endfor %}
     </div>
     <br />
-    <a class="btn btn-secondary" href="/v/{{ volunteer.hashid }}"> &#x3c;&#x3c; Torna enrera</a>
+    <a class="btn btn-secondary" href="{{'/admin' if admin}}/p/{{ volunteer.hashid }}"> &#x3c;&#x3c; Torna enrera</a>
   </div>
 </div>
 {% endblock %}
