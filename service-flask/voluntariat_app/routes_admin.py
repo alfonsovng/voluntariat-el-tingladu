@@ -22,14 +22,11 @@ def dashboard():
         flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
         return redirect(url_for('volunteer_bp.dashboard'))
 
-    password_tasks = Task.query.filter(Task.password != '').order_by(Task.id.asc())
-
     invitation_url = params_manager.external_url + "/invitation/" + params_manager.invitation_token
     allow_modifications = params_manager.allow_modifications
 
     return render_template('admin-dashboard.html',
         invitation_url=invitation_url,allow_modifications=allow_modifications,
-        password_tasks=password_tasks,
         user=current_user)
 
 @admin_bp.route('/admin/people')

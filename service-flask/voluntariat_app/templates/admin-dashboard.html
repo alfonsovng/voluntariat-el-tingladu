@@ -87,9 +87,9 @@
                     <tr>
                         <td>
                             <p>Mitjançant aquest enllaç les persones voluntàries es podran registrar a aquesta aplicació:</p>                            
-                            <p class="text-center"><small><a href="#" data-toggle="tooltip" title="Fes click per copiar-ho" onclick="return copy_to_clipboard(this);">
+                            <p><a href="#" data-toggle="tooltip" title="Fes click per copiar-ho" onclick="return copy_to_clipboard(this);">
                                 {{invitation_url}}
-                            </a></small></p>
+                            </a></p>
                         </td>
                     </tr>
                     <tr>
@@ -102,20 +102,6 @@
                             {% else %}
                             Les persones voluntàries <span class="badge badge-danger">no poden modificar les dades</span> de tasques, torns, àpats, etc.
                             {% endif %}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>Tasques amb contrasenya</th>
-                    </tr>
-                    <tr>
-                        <td>
-                        {% for t in password_tasks %}
-                            {{t.name}}: 
-                            <a href="#" data-toggle="tooltip" title="Fes click per copiar-ho" onclick="return copy_to_clipboard(this)">
-                            {{t.password}}
-                            </a>
-                            <br />
-                        {% endfor %}
                         </td>
                     </tr>
                 </tbody>
