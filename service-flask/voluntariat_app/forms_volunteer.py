@@ -3,10 +3,6 @@ from wtforms import StringField, SubmitField, PasswordField, BooleanField, TextA
 from wtforms.validators import DataRequired, Length, EqualTo
 from .helper import trim
 
-# class MultiCheckboxField(SelectMultipleField):
-#     widget = widgets.ListWidget(prefix_label=False)
-#     option_widget = widgets.CheckboxInput()
-
 class ProfileForm(FlaskForm):
     name = StringField("Nom", filters = [trim], validators=[DataRequired()])
     surname = StringField("Cognoms", filters = [trim], validators=[DataRequired()])

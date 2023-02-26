@@ -31,7 +31,6 @@ class Config:
     PARAM_EXTERNAL_URL = environ.get("PARAM_EXTERNAL_URL")
     PARAM_INVITATION_TOKEN = environ.get("PARAM_INVITATION_TOKEN")
     PARAM_ALLOW_MODIFICATIONS = environ.get("PARAM_ALLOW_MODIFICATIONS").lower() == "true"
-    PARAM_WORKER_FAKE_EMAIL_DOMAIN = environ.get("PARAM_WORKER_FAKE_EMAIL_DOMAIN")
 
     # plugin rewards
     REWARDS_CLASS = environ.get("REWARDS_CLASS")
@@ -44,4 +43,3 @@ class Config:
     # Static Assets
     STATIC_FOLDER = "static"
     TEMPLATES_FOLDER = "templates"
-

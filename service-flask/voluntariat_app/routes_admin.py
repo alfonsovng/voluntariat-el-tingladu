@@ -135,7 +135,7 @@ def __insert_worker(admin_id, surname, name, phone, shift_id):
         name = name,
         surname = surname,
         phone = phone,
-        email = hashid_manager.create_token(admin_id) + params_manager.worker_fake_email_domain,
+        email = hashid_manager.create_token(admin_id) + "@worker",
         dni = f"{get_timestamp()}#{admin_id}",
         role = UserRole.worker
     )
