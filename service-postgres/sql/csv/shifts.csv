@@ -11,7 +11,7 @@ ENTRADES,DISSABTE: 23:30 - 02:00,"Dissabte 13 de maig, de 23:30 a 02:00",6,20,"{
 TRESORERIA,TRESORERIA,Tasques de tresoreria,8,0,"{}"
 CUINA,CUINA,Tasques de cuina en torn únic,12,0,"{}"
 GLOBUS,GLOBUS,Tasques d'el·lanoració del Globus en torn únic,8,0,"{}"
-ELÈCTRICS,ELÈCTRICS,No hi ha torns en aquest tipus de voluntariat,10,15,"{DIMECRES,DIJOUS,DIVENDRES}"
+ELÈCTRICS,ELÈCTRICS,Els torns s'assignaran posteriorment,10,15,"{DIMECRES,DIJOUS,DIVENDRES}"
 MUNTATGE,DIMECRES: 17:00 - 20:00,Dimecres 10 de maig de 17:00 a 20:00,10,10,"{}"
 MUNTATGE,DIJOUS: 10:00 - 13:00,Dijous 11 de maig de 10:00 a 13:00,10,10,"{}"
 MUNTATGE,DIJOUS: 17:00 - 20:00,Dijous 11 de maig de 17:00 a 20:00,10,10,"{}"
