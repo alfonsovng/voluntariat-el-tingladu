@@ -338,7 +338,7 @@ def rewards(volunteer_hashid):
         UserTicket.selected
     ).order_by(UserTicket.ticket_id.asc()).all()
 
-    (cash, cash_details) = rewards_manager.calculate_cash(volunteer.id)
+    (cash, cash_details) = rewards_manager.calculate_cash(volunteer)
 
     return render_template('volunteer-rewards.html',read_only=read_only,
         tickets = tickets,
