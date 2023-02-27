@@ -23,10 +23,10 @@ def signup(invitation_token):
     
     if params_manager.invitation_token: # not empty
         if invitation_token is None:
-            flash_warning("Cal una invitació per a registrar-se a l'aplicació")
+            flash_warning("no_invitation")
             return redirect(url_for("main_bp.contact"))
         elif invitation_token != params_manager.invitation_token:
-            flash_warning("Invitació incorrecta o caducada")
+            flash_warning("wrong_invitation")
             return redirect(url_for("main_bp.contact"))
 
     form = SignUpForm()
@@ -63,11 +63,11 @@ def signup(invitation_token):
             email_task = TaskSignUpEmail(name=form.name.data,email=form.email.data,token=token)
             task_manager.add_task(email_task)
 
-            flash_info('Consulta el teu email per a completar el registre')
+            flash_info("sign_up_successful")
             return redirect(url_for("auth_bp.login"))
 
         # user exists
-        flash_warning("Ja existeix un usuari amb aquesta adreça d'email")
+        flash_warning("sign_up_error")
         
     return render_template('unregistered-sign-up.html', form = form)
 
@@ -91,11 +91,11 @@ def forgotten_password():
             email_task = TaskResetPasswordEmail(name=existing_user.name,email=form.email.data,token=token)
             task_manager.add_task(email_task)
 
-            flash_info('Consulta el teu email per a restaurar la contrasenya')
+            flash_info("reset_password_successful")
             return redirect(url_for("auth_bp.login"))
 
         # user doesn't exist
-        flash_error("No existeix cap usuari amb aquesta adreça d'email")
+        flash_error("reset_password_error")
         
     return render_template('unregistered-forgotten-password.html', form = form)
 
@@ -118,12 +118,12 @@ def reset(token):
             email_task = TaskConfirmPasswordChangeEmail(name=existing_user.name,email=existing_user.email)
             task_manager.add_task(email_task)
 
-            flash_info("S'ha canviat la contrasenya")
+            flash_info("change_password_successful")
             return redirect(url_for("auth_bp.login"))
         
         return render_template('unregistered-change-password.html', token = token, form = form)
     
-    flash_error("Token incorrecte o caducat")
+    flash_error("change_password_error")
     return redirect(url_for("auth_bp.login"))
 
 @auth_bp.route("/login", methods=["GET", "POST"])
@@ -148,20 +148,19 @@ def login():
             next_page = request.args.get("next")
             return redirect(next_page or url_for("main_bp.init"))
 
-        flash_error("Email i/o contrasenya incorrectes")
+        flash_error("login_error")
         return redirect(url_for("auth_bp.login"))
 
     return render_template('unregistered-login.html', form = form)
 
 @login_manager.user_loader
 def load_user(user_id):
-    """Check if user is logged-in upon page load."""
     if user_id is not None:
         return User.query.get(user_id)
     return None
 
 @login_manager.unauthorized_handler
 def unauthorized():
-    flash_warning("Has d'autenticar-te per a poder visualitzar aquesta pàgina")
+    flash_warning("unauthorized")
     # TODO: set next
     return redirect(url_for("auth_bp.login"))

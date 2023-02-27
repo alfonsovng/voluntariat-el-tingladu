@@ -9,10 +9,10 @@
       <h2><small class="text-muted">{{ volunteer.full_name }}</small></h2>
       <form role="form" method='POST'>
         {{ form.csrf_token }}
-        {{ text(form.name) }}
-        {{ text(form.surname) }}
-        {{ text(form.phone, placeholder="opcional, per tal millorar la comunicació") }}
-        {{ checkbox(form.electrician)}}
+        {{ text(form.name, "Nom") }}
+        {{ text(form.surname, "Cognoms") }}
+        {{ text(form.phone, "Mòbil", placeholder="opcional, per tal millorar la comunicació") }}
+        {{ checkbox(form.electrician, "Domines d'electricitat?")}}
         <div class="form-group">
           <label>Email</label>
           <input class="form-control" value="{{volunteer.email}}" readonly disabled>
@@ -29,7 +29,7 @@
           <p class="text-right"><a href="/p/{{ volunteer.hashid }}/password">Per canviar la teva contrasenya fes click aquí</a></p>
         </div>
         <div class="form-group">
-          {{ form.purchased_ticket1.label }}
+          {{ form.purchased_ticket1.label("Si ja tens l'entrada comprada, indica'ns el localitzador") }}
           {{ form.purchased_ticket1(class='form-control', placeholder="localitzador de l'entrada comprada") }}
           {% for error in form.purchased_ticket1.errors %}
             <p class="form-error">{{ error }}</p>
@@ -49,7 +49,7 @@
         </div>
         <div class="btn-group">
           <a class="btn btn-secondary" href="/p/{{ volunteer.hashid }}"> &#x3c;&#x3c; Torna enrera</a>
-          {{ form.submit(class='btn btn-success') }}
+          {{ form.submit(value="Actualiza les dades", class='btn btn-success') }}
         </div>
       </form>
     </div>

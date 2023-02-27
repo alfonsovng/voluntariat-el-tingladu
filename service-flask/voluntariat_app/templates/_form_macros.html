@@ -1,9 +1,9 @@
-{% macro checkbox(field, description=None, read_only=False) %}
+{% macro checkbox(field, name, description=None, read_only=False) %}
 <div class="form-group">
   <div class="d-flex justify-content-start">
     <div>{{ field(disabled=read_only) }}</div>
     <div>
-      {{ field.label }}
+      {{ field.label(name) }}
       {% if description %}
       <label class="small font-italic d-block" for="{{field.name}}">{{description|safe}}</label>
       {% endif %}
@@ -15,12 +15,12 @@
 </div> 
 {% endmacro %}
 
-{% macro checkbox_with_comments(checkbox_field, textarea_field, read_only=False) %}
+{% macro checkbox_with_comments(checkbox_field, textarea_field, placeholder="", read_only=False) %}
 <div class="form-group checkbox-with-hidden-texarea">
   <div class="d-flex justify-content-start">
     <div>{{ checkbox_field(disabled=read_only) }}</div>
     <div>
-      {{ checkbox_field.label }}
+      {{ checkbox_field.label() }}
       {% if checkbox_field.description %}
       <label class="small font-italic d-block" for="{{checkbox_field.name}}">{{checkbox_field.description}}</label>
       {% endif %}
@@ -30,7 +30,7 @@
     {% endfor %}
   </div>
   <div class="hidden-texarea">
-    {{ textarea_field(class='form-control', disabled=read_only, placeholder="Comentaris sobre '" + checkbox_field.label.text + "'", rows=1) }}
+    {{ textarea_field(class='form-control', disabled=read_only, placeholder=placeholder, rows=1) }}
     {% for error in textarea_field.errors %}
       <p class="form-error">{{ error }}</p>
     {% endfor %}
@@ -38,9 +38,9 @@
 </div>
 {% endmacro %}
 
-{% macro text(field, placeholder="", description=None) %}
+{% macro text(field, name, placeholder="", description=None) %}
 <div class="form-group">
-  {{ field.label }}
+  {{ field.label(name) }}
   {{ field(class='form-control', placeholder=placeholder) }}
   {% if description %}
   <label class="small font-italic d-block text-right" for="{{field.name}}">{{description|safe}}</label>
@@ -51,9 +51,9 @@
 </div>
 {% endmacro %}
 
-{% macro select(field, description=None) %}
+{% macro select(field, name, description=None) %}
 <div class="form-group">
-  {{ field.label }}
+  {{ field.label(name) }}
   {{ field(class='form-control') }}
   {% if description %}
   <label class="small font-italic d-block text-right" for="{{field.name}}">{{description|safe}}</label>
@@ -64,9 +64,9 @@
 </div>
 {% endmacro %}
 
-{% macro textarea(field, rows=4, read_only=False) %}
+{% macro textarea(field, name, rows=4, read_only=False) %}
 <div class="form-group">
-  {{ field.label }}
+  {{ field.label(name) }}
   {{ field(class='form-control', disabled=read_only, rows=rows) }}
   {% for error in field.errors %}
     <p class="form-error">{{ error }}</p>

@@ -9,9 +9,9 @@
     <h1>{% block title %}Entra{% endblock %}</h1>
     <form role="form" method='POST'>
       {{ form.csrf_token }}
-      {{ text(form.email, placeholder="el@teu.email") }}
-      {{ text(form.password, placeholder="la teva contrasenya") }}
-      {{ form.submit(class='btn btn-lg btn-success') }}
+      {{ text(form.email, "Email", placeholder="el@teu.email") }}
+      {{ text(form.password, "Contrasenya", placeholder="la teva contrasenya") }}
+      {{ form.submit(value="Entra", class='btn btn-lg btn-success') }}
     </form>
     <p>
       <!-- No tens un compte? <a href="/sign-up">Registra't</a>. -->

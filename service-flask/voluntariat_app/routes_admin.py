@@ -2,7 +2,7 @@ from flask import Blueprint, redirect, render_template, url_for, request, Respon
 from flask_login import current_user, login_required
 from .forms_message import EmailForm
 from .forms_admin import AddWorkerForm, AddSomeWorkersForm, WorkerForm, AssignationsForm
-from .helper import flash_error, flash_info, load_volunteer, logger, get_timestamp, get_shifts_meals_and_tickets
+from .helper import flash_error, flash_info, load_volunteer, logger, get_timestamp, get_shifts_meals_and_tickets, labels
 from .models import User, Task, Shift, UserShift, Meal, UserMeal, UserDiet, Ticket, UserTicket, UserRole
 from . import db, hashid_manager, excel_manager, task_manager, params_manager, rewards_manager
 from .plugin_gmail import TaskMessageEmail
@@ -19,7 +19,7 @@ admin_bp = Blueprint(
 @login_required
 def dashboard():
     if not current_user.is_admin:
-        flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
+        flash_error("must_be_admin")
         return redirect(url_for('volunteer_bp.dashboard'))
 
     invitation_url = params_manager.external_url + "/invitation/" + params_manager.invitation_token
@@ -34,7 +34,7 @@ def dashboard():
 @login_required
 def people():
     if not current_user.is_admin:
-        flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
+        flash_error("must_be_admin")
         return redirect(url_for('volunteer_bp.dashboard'))
 
     excel = request.args.get('excel', default=False, type=bool)
@@ -63,12 +63,12 @@ def people():
 @login_required
 def profile(volunteer_hashid):
     if not current_user.is_admin:
-        flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
+        flash_error("must_be_admin")
         return redirect(url_for('volunteer_bp.dashboard'))
 
     volunteer = load_volunteer(current_user,volunteer_hashid)
     if volunteer is None:
-        flash_error("Adreça incorrecta")
+        flash_error("wrong_address")
         return redirect(url_for('main_bp.init'))
     elif volunteer.is_worker:
         return redirect(url_for('admin_bp.worker',worker_hashid=volunteer_hashid))
@@ -81,7 +81,7 @@ def profile(volunteer_hashid):
 @login_required
 def add_worker():
     if not current_user.is_admin:
-        flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
+        flash_error("must_be_admin")
         return redirect(url_for('volunteer_bp.dashboard'))
 
     form = AddWorkerForm()
@@ -96,7 +96,7 @@ def add_worker():
             shift_id = int(form.shifts.data)
         )
 
-        flash_info('Persona treballadora creada')
+        flash_info("worker_created")
         return redirect(url_for('admin_bp.profile',volunteer_hashid=worker.hashid))
 
     return render_template('admin-add-worker.html',form=form,user=current_user)
@@ -105,7 +105,7 @@ def add_worker():
 @login_required
 def add_some_workers():
     if not current_user.is_admin:
-        flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
+        flash_error("must_be_admin")
         return redirect(url_for('volunteer_bp.dashboard'))
 
     form = AddSomeWorkersForm()
@@ -120,12 +120,12 @@ def add_some_workers():
             __insert_worker(
                 admin_id = current_user.id,
                 name = "",
-                surname = f"{prefix} {i}",
+                surname = f"{prefix} {i:02d}",
                 phone = "",
                 shift_id = shift_id
             )
 
-        flash_info(f"Persones treballadores creades: {n}")
+        flash_info("some_workers_created")
         return redirect(url_for('admin_bp.people'))
 
     return render_template('admin-add-some-workers.html',form=form,user=current_user)
@@ -174,7 +174,7 @@ def __insert_worker(admin_id, surname, name, phone, shift_id):
     return worker
 
 def get_list_shifts():
-    no_shifts = [(0, "Sense cap torn assignat")]
+    no_shifts = [(0, labels.get("worker_without_shifts"))]
     db_shifts = [(id, t + ": " + s) for (id, t, s) in 
         db.session.execute(text(f"""select s.id, t.name, s.name 
             from tasks as t
@@ -187,12 +187,12 @@ def get_list_shifts():
 @login_required
 def worker(worker_hashid):
     if not current_user.is_admin:
-        flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
+        flash_error("must_be_admin")
         return redirect(url_for('volunteer_bp.dashboard'))
 
     worker = load_volunteer(current_user,worker_hashid)
     if worker is None:
-        flash_error("Adreça incorrecta")
+        flash_error("wrong_address")
         return redirect(url_for('main_bp.init'))
     elif not worker.is_worker:
         return redirect(url_for('admin_bp.profile',volunteer_hashid=worker_hashid))
@@ -202,7 +202,7 @@ def worker(worker_hashid):
         form.populate_obj(worker)
         db.session.add(worker)
         db.session.commit() # guardem els canvis
-        flash_info('Dades actualitzades')
+        flash_info("data_saved")
         redirect(request.full_path) # redirecció a mi mateix
 
     (shifts, meals, tickets) = get_shifts_meals_and_tickets(worker.id)
@@ -213,12 +213,12 @@ def worker(worker_hashid):
 @login_required
 def message(volunteer_hashid):
     if not current_user.is_admin:
-        flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
+        flash_error("must_be_admin")
         return redirect(url_for('volunteer_bp.dashboard'))
 
     volunteer = load_volunteer(current_user,volunteer_hashid)
     if volunteer is None:
-        flash_error("Adreça incorrecta")
+        flash_error("wrong_address")
         return redirect(url_for('main_bp.init'))
 
     form = EmailForm()
@@ -231,7 +231,7 @@ def message(volunteer_hashid):
         )
         task_manager.add_task(email_task)
 
-        flash_info('Missatge enviat')
+        flash_info("message_sent")
         return redirect(url_for('admin_bp.profile',volunteer_hashid=volunteer_hashid))
 
     return render_template('admin-message.html',form=form,volunteer=volunteer,user=current_user)
@@ -240,7 +240,7 @@ def message(volunteer_hashid):
 @login_required
 def tasks():
     if not current_user.is_admin:
-        flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
+        flash_error("must_be_admin")
         return redirect(url_for('volunteer_bp.dashboard'))
 
     tasks = Task.query.order_by(Task.id.asc()).all()
@@ -251,7 +251,7 @@ def tasks():
 @login_required
 def shifts(task_id):
     if not current_user.is_admin:
-        flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
+        flash_error("must_be_admin")
         return redirect(url_for('volunteer_bp.dashboard'))
 
     excel = request.args.get('excel', default=False, type=bool)
@@ -280,7 +280,7 @@ def shifts(task_id):
     else:
         task = Task.query.filter_by(id = task_id).first()
         if task is None:
-            flash_error("Adreça incorrecta")
+            flash_error("wrong_address")
             return redirect(url_for('main_bp.init'))
 
         count_subquery = sqlalchemy.text(f"""
@@ -305,12 +305,12 @@ def shifts(task_id):
 @login_required
 def shift_detail(task_id, shift_id):
     if not current_user.is_admin:
-        flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
+        flash_error("must_be_admin")
         return redirect(url_for('volunteer_bp.dashboard'))
 
     task_and_shift = db.session.query(Task, Shift).join(Shift).filter(Shift.task_id == task_id, Shift.id == shift_id).first()
     if task_and_shift is None:
-        flash_error("Adreça incorrecta")
+        flash_error("wrong_address")
         return redirect(url_for('main_bp.init'))
 
     task = task_and_shift[0]
@@ -350,17 +350,17 @@ def shift_detail(task_id, shift_id):
         for i in range(len(shift.assignations)):
             user_ids = ",".join(request.form.getlist(f"assignations-{i}"))
             # totes a FALSE
-            db.session.execute(f"""update user_shifts set shift_assignations[{i+1}] = FALSE 
+            db.session.execute(text(f"""update user_shifts set shift_assignations[{i+1}] = FALSE 
                 where shift_id = {shift_id}"""
-            )
+            ))
             # les triades, a TRUE
             if user_ids:
-                db.session.execute(f"""update user_shifts set shift_assignations[{i+1}] = TRUE 
+                db.session.execute(text(f"""update user_shifts set shift_assignations[{i+1}] = TRUE 
                     where shift_id = {shift_id} and user_id in ({user_ids})"""
-                )
+                ))
 
         db.session.commit()
-        flash_info("S'han guardat les assignacions")
+        flash_info("assignations_saved")
         redirect(request.full_path) # redirecció a mi mateix
 
     users_with_shifts = db.session.query(User,UserShift).join(UserShift).filter(
@@ -376,7 +376,7 @@ def shift_detail(task_id, shift_id):
 @login_required
 def meals():
     if not current_user.is_admin:
-        flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
+        flash_error("must_be_admin")
         return redirect(url_for('volunteer_bp.dashboard'))
 
     excel = request.args.get('excel', default=False, type=bool)
@@ -429,7 +429,7 @@ def meals():
 @login_required
 def meal_detail(meal_id):
     if not current_user.is_admin:
-        flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
+        flash_error("must_be_admin")
         return redirect(url_for('volunteer_bp.dashboard'))
 
     excel = request.args.get('excel', default=False, type=bool)
@@ -465,7 +465,7 @@ def meal_detail(meal_id):
 
     meal = Meal.query.filter_by(id = meal_id).first()
     if meal is None:
-        flash_error("Adreça incorrecta")
+        flash_error("wrong_address")
         return redirect(url_for('main_bp.init'))
 
     users_with_diet_and_meals = db.session.query(User, UserDiet, UserMeal).join(UserDiet).join(UserMeal).filter(
@@ -483,7 +483,7 @@ def meal_detail(meal_id):
 @login_required
 def tickets():
     if not current_user.is_admin:
-        flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
+        flash_error("must_be_admin")
         return redirect(url_for('volunteer_bp.dashboard'))
 
     excel = request.args.get('excel', default=False, type=bool)
@@ -529,7 +529,7 @@ def tickets():
 @login_required
 def tickets_detail(ticket_id):
     if not current_user.is_admin:
-        flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
+        flash_error("must_be_admin")
         return redirect(url_for('volunteer_bp.dashboard'))
 
     excel = request.args.get('excel', default=False, type=bool)
@@ -558,7 +558,7 @@ def tickets_detail(ticket_id):
 
     ticket = Ticket.query.filter_by(id = ticket_id).first()
     if ticket is None:
-        flash_error("Adreça incorrecta")
+        flash_error("wrong_address")
         return redirect(url_for('main_bp.init'))
 
     users_with_tickets = db.session.query(User, UserTicket).join(UserTicket).filter(
@@ -576,7 +576,7 @@ def tickets_detail(ticket_id):
 @login_required
 def rewards():
     if not current_user.is_admin:
-        flash_error("Has de tenir un rol d'administrador per a visualitzar aquesta pàgina")
+        flash_error("must_be_admin")
         return redirect(url_for('volunteer_bp.dashboard'))
 
     excel = request.args.get('excel', default=False, type=bool)

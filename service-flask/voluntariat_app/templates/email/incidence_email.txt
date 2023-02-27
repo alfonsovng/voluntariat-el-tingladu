@@ -15,4 +15,4 @@ Atentament,
 VOLUNTARIAT EL TINGLADU
 {{app_url}}
 -----------------------------
-No respongueu aquest missatge. Aquesta adreça electrònica només admet enviaments. Envia un email a voluntariat@eltingladu.cat per contactar amb nosaltres.
+No respongueu aquest missatge. Aquesta adreça electrònica només admet enviaments. Envia un email a voluntariat@eltingladu.cat per a contactar amb nosaltres.

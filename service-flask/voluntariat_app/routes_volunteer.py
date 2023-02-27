@@ -41,14 +41,14 @@ def profile(volunteer_hashid):
         if current_user.is_admin:
             return redirect(url_for('admin_bp.profile',volunteer_hashid=volunteer_hashid))
 
-        flash_error("Adreça incorrecta")
+        flash_error("wrong_address")
         return redirect(url_for('main_bp.init'))
 
     form = ProfileForm(obj = volunteer)
     if form.validate_on_submit():
         form.populate_obj(volunteer)
         db.session.commit()
-        flash_info("S'han actualitzat les dades")
+        flash_info("data_saved")
         return redirect(request.full_path) # redirecció a mi mateix
 
     return render_template('volunteer-profile.html',form=form,volunteer=volunteer,user=current_user)
@@ -62,7 +62,7 @@ def password(volunteer_hashid):
         if current_user.is_admin:
             return redirect(url_for('admin_bp.volunteer',volunteer_hashid=volunteer_hashid))
 
-        flash_error("Adreça incorrecta")
+        flash_error("wrong_address")
         return redirect(url_for('main_bp.init'))
 
     form = ChangePasswordForm()
@@ -77,9 +77,9 @@ def password(volunteer_hashid):
             email_task = TaskConfirmPasswordChangeEmail(name=volunteer.name,email=volunteer.email)
             task_manager.add_task(email_task)
 
-            flash_info('Contrasenya actualitzada')
+            flash_info("change_password_successful")
         else:
-            flash_error("Contrasenya actual incorrecte. No s'ha canviat la contrasenya")
+            flash_error("current_password_error")
 
         return redirect(request.full_path) # redirecció a mi mateix
 
@@ -91,7 +91,7 @@ def password(volunteer_hashid):
 def tasks(volunteer_hashid):
     volunteer = load_volunteer(current_user,volunteer_hashid)
     if volunteer is None:
-        flash_error("Adreça incorrecta")
+        flash_error("wrong_address")
         return redirect(url_for('main_bp.init'))
 
     # subquery que calcula quants torns té l'usuari per cada tasca
@@ -130,17 +130,17 @@ def tasks(volunteer_hashid):
 def shifts(volunteer_hashid, task_hashid):
     volunteer = load_volunteer(current_user,volunteer_hashid)
     if volunteer is None:
-        flash_error("Adreça incorrecta")
+        flash_error("wrong_address")
         return redirect(url_for('main_bp.init'))
     
     task_id = hashid_manager.get_task_id_from_hashid(task_hashid)
     if task_id is None:
-        flash_error("Adreça incorrecta")
+        flash_error("wrong_address")
         return redirect(url_for('main_bp.init'))
 
     task = Task.query.filter_by(id = task_id).first()
     if task is None:
-        flash_error("Adreça incorrecta")
+        flash_error("wrong_address")
         return redirect(url_for('main_bp.init'))
     
     read_only = __is_read_only(current_user)
@@ -154,21 +154,21 @@ def shifts(volunteer_hashid, task_hashid):
     if not read_only and form.validate_on_submit():
         # els admins no necessiten password
         if not current_user.is_admin and task.password and task.password != form.password.data:
-            flash_warning("Contrasenya per apuntar-se a aquests torns incorrecta")
+            flash_warning("shift_password_error")
         else:
             __update_shifts(
                 volunteer = volunteer,
                 task_id = task_id,
                 form = request.form
             )
-            flash_info("S'han registrat els torns")
+            flash_info("data_saved")
 
         return redirect(request.full_path)
     else:
         shifts_and_selected = __select_shifts_and_selected(volunteer_id=volunteer.id, task_id=task_id)
 
         if read_only:
-            flash_info("S'ha bloquejat la modificació d'aquestes dades. Si hi ha algun problema, notifica una incidència.")
+            flash_info("read_only")
         
         return render_template('volunteer-shifts.html',
             form=form,
@@ -215,7 +215,7 @@ def __update_shifts(volunteer, task_id, form):
             )
             db.session.add(user_shift)
         else:
-            flash_warning(f"No s'ha pogut registrar el torn: {shift.name}")
+            flash_warning("not_all_shifts")
 
     # actualitzo tickets, àpats i acreditacions
     rewards_manager.update_rewards(
@@ -250,12 +250,12 @@ def __select_shifts_and_selected(volunteer_id, task_id):
 def meals(volunteer_hashid):
     volunteer = load_volunteer(current_user,volunteer_hashid)
     if volunteer is None:
-        flash_error("Adreça incorrecta")
+        flash_error("wrong_address")
         return redirect(url_for('main_bp.init'))
 
     read_only = __is_read_only(current_user)
     if not volunteer.has_shifts:
-        flash_warning("Abans d'accedir a aquesta secció s'han de completar les Tasques i Torns")
+        flash_warning("first_tasks_and_shifts")
         read_only = True
 
     diet = UserDiet.query.filter_by(user_id = volunteer.id).first()
@@ -270,7 +270,7 @@ def meals(volunteer_hashid):
             # update de diet
             diet_form.populate_obj(diet)
             db.session.commit()
-            flash_info("S'han registrat els canvis en la teva dieta")
+            flash_info("data_saved")
             return redirect(request.full_path) # redirecció a mi mateix
 
         elif meals_form.validate_on_submit():
@@ -283,7 +283,7 @@ def meals(volunteer_hashid):
                     um.comments = ""
 
             db.session.commit()
-            flash_info("S'han registrat els canvis en els àpats")
+            flash_info("data_saved")
             return redirect(request.full_path) # redirecció a mi mateix
 
     return render_template('volunteer-meals.html',read_only=read_only,
@@ -324,12 +324,12 @@ def __create_meals_form(meals, user_meals):
 def rewards(volunteer_hashid):
     volunteer = load_volunteer(current_user,volunteer_hashid)
     if volunteer is None:
-        flash_error("Adreça incorrecta")
+        flash_error("wrong_address")
         return redirect(url_for('main_bp.init'))
 
     read_only = __is_read_only(current_user)
     if not volunteer.has_shifts:
-        flash_warning("Abans d'accedir a aquesta secció s'han de completar les Tasques i Torns")
+        flash_warning("first_tasks_and_shifts")
         read_only = True
 
     tickets = db.session.query(Ticket).join(UserTicket).filter(

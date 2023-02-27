@@ -4,29 +4,23 @@ from wtforms.validators import DataRequired, NumberRange
 from .helper import trim
 
 class AddWorkerForm(FlaskForm):
-    surname = StringField("Cognoms", filters = [trim], validators=[DataRequired()])
-    name = StringField("Nom", filters = [trim])
-    phone = StringField("Mòbil", filters = [trim])
-    shifts = SelectField(
-        "Torn preassignat", 
-        choices=[]
-    )
-    submit = SubmitField("Dona d'alta")
+    surname = StringField(filters = [trim], validators=[DataRequired()])
+    name = StringField(filters = [trim])
+    phone = StringField(filters = [trim])
+    shifts = SelectField(choices=[])
+    submit = SubmitField()
 
 class AddSomeWorkersForm(FlaskForm):
-    prefix = StringField("Prefix", filters = [trim], validators=[DataRequired()])
-    number = IntegerField("Nombre de persones treballadors", validators=[NumberRange(min=1,max=50)])
-    shifts = SelectField(
-        "Torn preassignat",
-        choices=[]
-    )
-    submit = SubmitField("Dona d'alta")
+    prefix = StringField(filters = [trim], validators=[DataRequired()])
+    number = IntegerField(validators=[NumberRange(min=1,max=50)])
+    shifts = SelectField(choices=[])
+    submit = SubmitField()
 
 class WorkerForm(FlaskForm):
-    surname = StringField("Cognoms", filters = [trim], validators=[DataRequired()])
-    name = StringField("Nom", filters = [trim])
-    phone = StringField("Mòbil", filters = [trim])
-    submit = SubmitField("Actualitza")
+    surname = StringField(filters = [trim], validators=[DataRequired()])
+    name = StringField(filters = [trim])
+    phone = StringField(filters = [trim])
+    submit = SubmitField()
 
 class AssignationsForm(FlaskForm):
-    submit = SubmitField("Guarda les assignacions")
+    submit = SubmitField()

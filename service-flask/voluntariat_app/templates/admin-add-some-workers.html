@@ -15,13 +15,13 @@
       <h2><small class="text-muted">{% block title %}Noves persones treballadores{% endblock %}</small></h2>
       <form role="form" method='POST'>
         {{ form.csrf_token }}
-        {{ text(form.prefix, placeholder="Prefix comú a totes les persones a afegir", 
+        {{ text(form.prefix, "Prefix", placeholder="Prefix comú a totes les persones a afegir", 
           description="S'afegiran amb el prefix seguit d'un número") }}
-        {{ text(form.number, placeholder="Nombre de persones a afegir") }}
-        {{ select(form.shifts, description="Assigna directament les noves persones treballadores a aquest torn") }}
+        {{ text(form.number, "Nombre de persones treballadores", placeholder="Nombre de persones a afegir") }}
+        {{ select(form.shifts, "Torn preassignat", description="Assigna directament les noves persones treballadores a aquest torn") }}
         <div class="btn-group">
           <a class="btn btn-secondary" href="/admin"> &#x3c;&#x3c; Torna enrera</a>
-          {{ form.submit(class='btn btn-success') }}
+          {{ form.submit(value="Dona d'alta", class='btn btn-success') }}
         </div>
       </form>
     </div>

@@ -8,11 +8,11 @@
       <h2>{% block title %}Incidencia{% endblock %}</h2>
       <form role="form" method='POST'>
         {{ form.csrf_token }}
-        {{ select(form.type) }}
-        {{ textarea(form.description, rows=8) }}
+        {{ select(form.type, "Tipus d'incidència") }}
+        {{ textarea(form.description, "Descripció de l'incidència", rows=8) }}
         <div class="btn-group">
           <a class="btn btn-secondary" href="/dashboard"> &#x3c;&#x3c; Torna enrera</a>
-          {{ form.submit(class='btn btn-success') }}
+          {{ form.submit(value="Envia l'incidència", class='btn btn-success') }}
         </div>
       </form>
     </div>

@@ -319,10 +319,6 @@ class RewardsManager:
         cash = 0
         cash_details = list()
 
-        if user.is_worker:
-            # els professionals no tenen tickets de begudes!
-            return (cash, cash_details)
-
         current_shifts = self.__get_current_shifts(user.id)
         for (t, s, us) in current_shifts:
             if s.reward > 0:
@@ -330,14 +326,14 @@ class RewardsManager:
                     zero_assignations = True
                     for (name, assigned) in zip(s.assignations, us.shift_assignations):
                         if assigned:
-                            cash_details.append(f"{t.name} - {s.name} - {name}: {s.reward} €")
+                            cash_details.append((f"{t.name} - {s.name} - {name}", s.reward))
                             cash += s.reward
                             zero_assignations = False
                         
                     if zero_assignations:
-                        cash_details.append(f"{t.name} - {s.name}: pendent d'assignació")
+                        cash_details.append((f"{t.name} - {s.name}", None))
                 else:
-                    cash_details.append(f"{t.name} - {s.name}: {s.reward} €")
+                    cash_details.append((f"{t.name} - {s.name})", s.reward))
                     cash += s.reward
 
         return (cash, cash_details)
