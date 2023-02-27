@@ -74,7 +74,7 @@
       <br/>
       {% if form.password %}
         <div class="form-group">
-          {{ form.password.label }}
+          {{ form.password.label("Contrasenya per apuntar-se a aquesta tasca") }}
           {{ form.password(placeholder='Aquesta tasca requereix una contrasenya',class='form-control') }}
           {% for error in form.password.errors %}
             <p class="form-error">{{ error }}</p>
@@ -85,7 +85,7 @@
       <div class="btn-group">
         <a class="btn btn-secondary" href="{{'/admin' if admin}}/p/{{ volunteer.hashid }}/tasks"> &#x3c;&#x3c; Torna enrera</a>
         {% if not read_only %}
-          {{ form.submit(class='btn btn-success') }}
+          {{ form.submit(value="Actualitza els teus torns", class='btn btn-success') }}
         {% else %}
         <a class="btn btn-danger" href="/incidence">Notifica una incidència</a>
         {% endif %}

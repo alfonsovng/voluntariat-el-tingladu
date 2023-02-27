@@ -4,63 +4,51 @@ from wtforms.validators import DataRequired, Length, EqualTo
 from .helper import trim
 
 class ProfileForm(FlaskForm):
-    name = StringField("Nom", filters = [trim], validators=[DataRequired()])
-    surname = StringField("Cognoms", filters = [trim], validators=[DataRequired()])
-    phone = StringField("Mòbil", filters = [trim])
-    purchased_ticket1 = StringField("Si ja tens l'entrada comprada, indica'ns el localitzador", filters = [trim])
-    purchased_ticket2 = StringField("Si ja tens l'entrada comprada, indica'ns el localitzador", filters = [trim])
-    purchased_ticket3 = StringField("Si ja tens l'entrada comprada, indica'ns el localitzador", filters = [trim])
-    purchased_ticket4 = StringField("Si ja tens l'entrada comprada, indica'ns el localitzador", filters = [trim])
-    electrician = BooleanField("Domines d'electricitat?")
-    submit = SubmitField("Actualiza les dades")
+    name = StringField(filters = [trim], validators=[DataRequired()])
+    surname = StringField(filters = [trim], validators=[DataRequired()])
+    phone = StringField(filters = [trim])
+    purchased_ticket1 = StringField(filters = [trim])
+    purchased_ticket2 = StringField(filters = [trim])
+    purchased_ticket3 = StringField(filters = [trim])
+    purchased_ticket4 = StringField(filters = [trim])
+    electrician = BooleanField()
+    submit = SubmitField()
 
 class ChangePasswordForm(FlaskForm):
     old_password = PasswordField(
-        "Contrasenya actual",
         validators=[
             DataRequired()
         ],
     )
     new_password = PasswordField(
-        "Nova contrasenya",
         validators=[
             DataRequired(),
-            Length(min=6, message="La nova contrasenya ha de tenir més de 6 caràcters"),
+            Length(min=6),
         ],
     )
     confirm = PasswordField(
-        "Confirma la nova contrasenya",
         validators=[
             DataRequired(),
-            EqualTo("new_password", message="Les contrasenyes han de ser iguals"),
+            EqualTo("new_password"),
         ],
     )
-    submit = SubmitField("Canvia la contrasenya")
+    submit = SubmitField()
 
 class ShiftsForm(FlaskForm):
-    submit = SubmitField("Actualitza els teus torns")
+    submit = SubmitField()
 
 class ShiftsFormWithPassword(FlaskForm):
-    submit = SubmitField("Actualitza els teus torns")
-    password = StringField(
-        "Contrasenya per apuntar-se a aquesta tasca",
-        validators=[DataRequired()]
-    )
+    submit = SubmitField()
+    password = StringField(validators=[DataRequired()])
 
 class DietForm(FlaskForm):
-    vegan = BooleanField("Dieta vegana")
-    vegetarian = BooleanField("Dieta vegetariana")
-    no_gluten = BooleanField("Dieta sense gluten")
-    no_lactose = BooleanField("Dieta sense lactosa")
-    comments = TextAreaField(
-        "Altres intoleràncies o al·lèrgies, o observacions que vulguis afegir", 
-        filters = [trim]
-    )
-    accept_conditions = BooleanField(
-        "Entenc que la cuina d'El Tingladu tindrà en compte les vostres especificitats alimentàries, però no podem garantir una adaptació completa a cada dieta",
-        validators=[DataRequired()]
-    )
-    submit = SubmitField("Actualitza la teva dieta")
+    vegan = BooleanField()
+    vegetarian = BooleanField()
+    no_gluten = BooleanField()
+    no_lactose = BooleanField()
+    comments = TextAreaField(filters = [trim])
+    accept_conditions = BooleanField(validators=[DataRequired()])
+    submit = SubmitField()
 
 class MealsForm(FlaskForm):
-    submit = SubmitField("Actualitza els teus àpats")
+    submit = SubmitField()

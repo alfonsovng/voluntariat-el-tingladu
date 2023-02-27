@@ -29,13 +29,16 @@ class Task:
 # Category values from https://www.w3schools.com/bootstrap4/bootstrap_alerts.asp
 #
 from flask import flash
-def flash_info(message:str) -> None:
-    flash(message=message, category='alert-info')
+def flash_info(message_id:str) -> None:
+    message = labels.get(message_id)
+    flash(message=message, category='alert-secondary')
 
-def flash_warning(message:str) -> None:
+def flash_warning(message_id:str) -> None:
+    message = labels.get(message_id)
     flash(message=message, category='alert-warning')
 
-def flash_error(message:str) -> None:
+def flash_error(message_id:str) -> None:
+    message = labels.get(message_id)
     flash(message=message, category='alert-error')
 
 
@@ -103,3 +106,29 @@ def get_timestamp():
     from datetime import datetime
     import time
     return datetime.fromtimestamp(time.time()).strftime("%Y%m%d%H%M%S")
+
+#
+# Labels
+#
+import configparser
+import os
+
+class LabelsManager:
+    
+    def __init__(self):
+        self.config = configparser.ConfigParser()
+
+        full_path = os.path.realpath(__file__)
+        current_directory = os.path.dirname(full_path)
+
+        self.config.read(current_directory + "/labels/texts.ini")
+        self.section = "CA" # TODO: fer multilanguage
+
+    def get(self, key):
+        value = self.config[self.section].get(key)
+        if value is None:
+            logger.warn(f"No s'ha trobat el label: {key}")
+            return key
+        return value
+
+labels = LabelsManager()

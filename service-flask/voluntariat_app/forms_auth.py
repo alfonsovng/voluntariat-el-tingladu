@@ -4,63 +4,54 @@ from wtforms.validators import DataRequired, Email, EqualTo, Length
 from .helper import trim
 
 class SignUpForm(FlaskForm):
-    name = StringField("Nom", validators=[DataRequired()], filters = [trim])
-    surname = StringField("Cognoms", validators=[DataRequired()], filters = [trim])
+    name = StringField(validators=[DataRequired()], filters = [trim])
+    surname = StringField(validators=[DataRequired()], filters = [trim])
     email = StringField(
-        "Email",
         validators=[
             Length(min=6),
-            Email(message="Introdueix una adreça de correu vàlida"),
+            Email(),
             DataRequired(),
         ],
         filters = [trim]
     )
-    dni = StringField("DNI", validators=[DataRequired()], filters = [trim])
-    phone = StringField("Mòbil", filters = [trim])
+    dni = StringField(validators=[DataRequired()], filters = [trim])
+    phone = StringField(filters = [trim])
     adult = BooleanField(
-        "Sóc major d'edat",
         validators=[DataRequired()]
     )
     store_email = BooleanField(
-        "Accepto rebre emails d'El Tingladu i que el meu email sigui emmagatzemat per a futurs esdeveniments",
         validators=[DataRequired()]
     )
     contract = BooleanField(
-        "Accepto l'acord de col·laboració voluntària amb El Tingladu",
         validators=[DataRequired()]
     )
-    submit = SubmitField("Registra't")
+    submit = SubmitField()
 
 class ForgottenPasswordForm(FlaskForm):
-    email = StringField(
-        "Email", validators=[DataRequired(), 
-        Email(message="Introdueix una adreça de correu vàlida")],
+    email = StringField(validators=[DataRequired()], 
         filters = [trim]
     )
-    submit = SubmitField("Restaura la contrasenya")
+    submit = SubmitField()
 
 class ResetPasswordForm(FlaskForm):
     password = PasswordField(
-        "Contrasenya",
         validators=[
             DataRequired(),
-            Length(min=6, message="La contrasenya ha de tenir més de 6 caràcters"),
+            Length(min=6),
         ],
     )
     confirm = PasswordField(
-        "Confirma la contrasenya",
         validators=[
             DataRequired(),
-            EqualTo("password", message="Les contrasenyes han de ser iguals"),
+            EqualTo("password"),
         ],
     )
-    submit = SubmitField("Canvia la contrasenya")
+    submit = SubmitField()
 
 class LoginForm(FlaskForm):
     email = StringField(
-        "Email", 
         validators=[DataRequired()],
         filters = [trim]
     )
-    password = PasswordField("Contrasenya", validators=[DataRequired()])
-    submit = SubmitField("Entra")
+    password = PasswordField(validators=[DataRequired()])
+    submit = SubmitField()

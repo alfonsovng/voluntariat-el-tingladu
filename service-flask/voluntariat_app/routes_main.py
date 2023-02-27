@@ -2,7 +2,7 @@ from flask import Blueprint, redirect, render_template, url_for
 from flask_login import current_user, login_required, logout_user
 from . import task_manager
 from .forms_message import IncidenceForm
-from .helper import flash_info
+from .helper import flash_info, labels
 from .plugin_gmail import TaskIncidenceEmail
 
 # Blueprint Configuration
@@ -21,6 +21,7 @@ def init():
 @login_required
 def incidence():
     form = IncidenceForm()
+    form.type.choices = labels.get("incidences_types").split(',')
     if form.validate_on_submit():
         incidence_type = form.type.data
         incidence_description = form.description.data
@@ -33,7 +34,7 @@ def incidence():
         )
         task_manager.add_task(email_task)
 
-        flash_info('Incidència registrada. En breu et donarem resposta.')
+        flash_info("incidence_saved")
         return redirect(url_for("main_bp.incidence"))
 
     return render_template('main-incidence.html',form=form,user=current_user)
@@ -48,6 +49,5 @@ def contact():
 @main_bp.route("/logout")
 @login_required
 def logout():
-    """User log-out logic."""
     logout_user()
     return redirect(url_for("auth_bp.login"))

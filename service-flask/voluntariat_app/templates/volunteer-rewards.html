@@ -37,8 +37,8 @@
     {% if cash_details %}
       <br />
       <dl>
-        {% for d in cash_details %}
-          <dt class="font-weight-normal text-ticket">{{d}}</dt>
+        {% for (label, c) in cash_details %}
+          <dt class="font-weight-normal text-ticket">{{label}}: {{ "pendent d'assignació" if c is none else "{0:d} €".format(c)}}</dt>
         {% endfor %}
       </dl>
       {% if cash > 0 %}

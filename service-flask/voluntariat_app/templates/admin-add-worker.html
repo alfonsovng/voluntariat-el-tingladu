@@ -15,14 +15,13 @@
       <h2><small class="text-muted">{% block title %}Nova persona treballadora{% endblock %}</small></h2>
       <form role="form" method='POST'>
         {{ form.csrf_token }}
-        {{ text(form.surname, placeholder="Cognoms de la nova persona treballadora", 
-          description="El llistat de persones s'ordena pels cognoms") }}
-        {{ text(form.name, placeholder="Nom de la nova persona treballadora (opcional)") }}
-        {{ text(form.phone, placeholder="Mòbil (opcional)") }}
-        {{ select(form.shifts, description="Assigna directament la nova persona treballadora a aquest torn") }}
+        {{ text(form.surname, "Cognoms", placeholder="Cognoms de la nova persona treballadora", description="El llistat de persones s'ordena pels cognoms") }}
+        {{ text(form.name, "Nom", placeholder="Nom de la nova persona treballadora (opcional)") }}
+        {{ text(form.phone, "Mòbil", placeholder="Mòbil (opcional)") }}
+        {{ select(form.shifts, "Torn preassignat", description="Assigna directament la nova persona treballadora a aquest torn") }}
         <div class="btn-group">
           <a class="btn btn-secondary" href="/admin"> &#x3c;&#x3c; Torna enrera</a>
-          {{ form.submit(class='btn btn-success') }}
+          {{ form.submit(value="Dona d'alta", class='btn btn-success') }}
         </div>
       </form>
     </div>

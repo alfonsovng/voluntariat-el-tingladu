@@ -9,20 +9,22 @@
     <h1>{% block title %}Registra't{% endblock %}</h1>
     <form role="form" method='POST'>
       {{ form.csrf_token }}
-      {{ text(form.name, placeholder="el teu nom") }}
-      {{ text(form.surname, placeholder="primer cognom i segon cognom") }}
-      {{ text(form.email, placeholder="el@teu.email") }}
-      {{ text(form.phone, placeholder="opcional, per tal millorar la comunicació") }}
-      {{ checkbox(form.adult, description="Has de confirmar que ets major d'edat per a poder col·laborar amb El Tingladu") }}
-      {{ checkbox(form.store_email, description = "Necessari per a col·laborar com a voluntariat amb els esdeveniments organitzats per El Tingladu. Tota la resta de dades personals (nom, cognoms i telèfon) s'esborran en acabar aquest esdeveniment") }}
-      {{ text(form.dni, placeholder="DNI obligatori per a validar el contracte de voluntariat") }}
+      {{ text(form.name, "Nom", placeholder="el teu nom") }}
+      {{ text(form.surname, "Cognoms", placeholder="primer cognom i segon cognom") }}
+      {{ text(form.email, "Email", placeholder="el@teu.email") }}
+      {{ text(form.phone, "Mòbil", placeholder="opcional, per tal millorar la comunicació") }}
+      {{ checkbox(form.adult, "Sóc major d'edat", description="Has de confirmar que ets major d'edat per a poder col·laborar amb El Tingladu") }}
+      {{ checkbox(form.store_email,  "Accepto rebre emails d'El Tingladu i que el meu email sigui emmagatzemat per a futurs esdeveniments", description = "Necessari per a col·laborar com a voluntariat amb els esdeveniments organitzats per El Tingladu. Tota la resta de dades personals (nom, cognoms i telèfon) s'esborran en acabar aquest esdeveniment") }}
+      {{ text(form.dni, "DNI", placeholder="DNI obligatori per a validar el contracte de voluntariat") }}
       <p><a href="/static/pdf/ACORD_VOLUNTARIAT_CANPISTRAUS_REVISAT_23.pdf">Contracte de voluntariat</a></p>
-      {{ checkbox(form.contract, description = "És necessari el teu DNI perquè tingui validesa el contracte de Voluntariat") }}
-      {{ form.submit(class='btn btn-lg btn-success') }}
+      {{ checkbox(form.contract, "Accepto l'acord de col·laboració voluntària amb El Tingladu", description = "És necessari el teu DNI perquè tingui validesa el contracte de Voluntariat") }}
+      {{ form.submit(value = "Registra't", class='btn btn-lg btn-success') }}
     </form>
     <p>
       <br />
       Ja tens un compte? <a href="/login">Entra</a>
+      <br />
+      Has oblidat la contrasenya? <a href="/forgotten-password">Restaura la teva contrasenya</a>
       <br />
       Problemes, dubtes? <a href="/contact">Contacta amb nosaltres</a>
     </p>

@@ -2,7 +2,7 @@ import smtplib
 from flask import url_for, render_template
 from email.message import EmailMessage
 from email.utils import formataddr
-from .helper import logger, get_timestamp
+from .helper import logger, get_timestamp, labels
 
 class GmailManager:
 
@@ -11,13 +11,13 @@ class GmailManager:
         self.smtp_server = "smtp.gmail.com"
         self.sender_email = None
         self.password = None
-        self.subject_prefix = "[VOLUNTARIAT EL TINGLADU] "
+        self.subject_prefix = labels.get("subject_prefix") + " "
         self.cc_incidences = []
         if app is not None:
             self.init_app(app)
 
     def init_app(self, app):
-        sender_name = "NO RESPONGUEU - Voluntariat El Tingladu"
+        sender_name = labels.get("sender_name")
         self.sender_email = app.config.get('GMAIL_ACCOUNT')
         self.sender_email_with_name = formataddr((sender_name, self.sender_email))
 
@@ -61,7 +61,7 @@ class TaskSignUpEmail(TaskEmail):
     def __init__(self, name, email, token):
         from . import params_manager
 
-        subject = 'Registre'
+        subject = labels.get("sign_up_subject")
         url = params_manager.external_url + url_for("auth_bp.reset", token = token)
         content = render_template("email/sign_up_email.txt", 
             name = name,
@@ -80,7 +80,7 @@ class TaskResetPasswordEmail(TaskEmail):
     def __init__(self, name, email, token):
         from . import params_manager
 
-        subject = 'Petició de canvi de contrasenya'
+        subject = labels.get("reset_password_subject")
         url = params_manager.external_url + url_for("auth_bp.reset", token = token)
         content = render_template("email/reset_password_email.txt", 
             name = name, 
@@ -99,7 +99,7 @@ class TaskConfirmPasswordChangeEmail(TaskEmail):
     def __init__(self, name, email):
         from . import params_manager
 
-        subject = 'Canvi de contrasenya efectuat'
+        subject = labels.get("confirm_password_change_subject")
         content = render_template("email/confirm_password_change_email.txt", 
             name = name,
             app_url = params_manager.external_url
@@ -118,7 +118,7 @@ class TaskIncidenceEmail(TaskEmail):
 
         str_date_time = get_timestamp()
 
-        subject = f'Incidència {str_date_time}-{incidence_user.id}'
+        subject = f'{labels.get("incidence_subject")} {str_date_time}-{incidence_user.id}'
         content = render_template("email/incidence_email.txt",
             incidence_user = incidence_user,
             incidence_type = incidence_type,
