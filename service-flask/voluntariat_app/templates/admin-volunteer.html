@@ -45,7 +45,7 @@
                                     <a class="btn btn-dark bg-profile" target="_blank" href="https://wa.me/{{volunteer.phone}}">Envia un WhatsApp</a> 
                                 </div>
                                 {% else %}
-                                <p class="text-secondary">Mòbil no proporcionat</p>
+                                <p class="text-secondary">Mòbil no proporcionat.</p>
                                 <div class="btn-group">
                                     <a class="btn btn-secondary bg-profile disabled" href="#">Truca al mòbil</a>
                                     <a class="btn btn-secondary bg-profile disabled" href="#">Envia un WhatsApp</a>
@@ -75,7 +75,7 @@
                                 {% endfor %}
                             </dl>
                             {% else %}
-                            <p class="font-italic">No hi ha tasques assignades i/o seleccionades</p>
+                            <p class="font-italic">No hi ha tasques assignades i/o seleccionades.</p>
                             {% endif %}
                             <a class="btn btn-dark bg-task text-white" href="/admin/p/{{volunteer.hashid}}/tasks">Les seves tasques i torns</a>
                         </td>
@@ -92,7 +92,7 @@
                                 {% endfor %}
                             </dl>
                             {% else %}
-                            <p class="font-italic">No hi ha àpats assignats i/o seleccionats</p>
+                            <p class="font-italic">No hi ha àpats assignats i/o seleccionats.</p>
                             {% endif %}
                             <a class="btn btn-dark bg-meal text-white" href="/admin/p/{{volunteer.hashid}}/meals">Els seus àpats i la seva dieta</a>
                         </td>
@@ -109,7 +109,7 @@
                                 {% endfor %}
                             </dl>
                             {% else %}
-                            <p class="font-italic">No hi ha entrades o acreditacions assignades</p>
+                            <p class="font-italic">No hi ha entrades o acreditacions assignades.</p>
                             {% endif %}
                             <a class="btn btn-dark bg-ticket text-white" href="/admin/p/{{volunteer.hashid}}/rewards">Les seves entrades i recompenses</a>
                         </td>

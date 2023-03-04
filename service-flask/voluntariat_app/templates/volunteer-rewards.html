@@ -29,7 +29,7 @@
       {% endfor %}
     </dl>
     {% else %}
-      <p class="font-italic text-ticket">No hi ha entrades o acreditacions assignades</p>
+      <p class="font-italic text-ticket">No hi ha entrades o acreditacions assignades.</p>
     {% endif %}
     <hr />
     <h4>Les teves recompenses</h4>
@@ -45,7 +45,7 @@
         <p class="font-weight-bolder text-ticket">Total: {{cash}} € en tiquets de consum</p>
       {% endif %}
     {% else %}
-      <p class="font-italic text-ticket">No hi ha recompenses assignades</p>
+      <p class="font-italic text-ticket">No hi ha recompenses assignades.</p>
     {% endif %}
     <hr />
     <a class="btn btn-secondary" href="{{'/admin' if admin}}/p/{{ volunteer.hashid }}"> &#x3c;&#x3c; Torna enrera</a>

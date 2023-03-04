@@ -10,7 +10,7 @@
             <div class="card">
                 <div class="card-body bg-admin">
                     <h2 class="card-title">Administració</h2>
-                    <p class="card-text">Consulta les dades introduïdes, modifica-les i fes exportacions a excel</p>
+                    <p class="card-text">Consulta les dades introduïdes, modifica-les i fes exportacions a excel.</p>
                     <a class="btn btn-lg btn-dark text-admin" href="/admin">Administra les dades introduïdes</a>
                 </div>
             </div>
@@ -34,7 +34,7 @@
                     {% endfor %}
                 </dl>
                 {% else %}
-                <p class="font-italic">No hi ha tasques assignades i/o seleccionades</p>
+                <p class="font-italic">No hi ha tasques assignades i/o seleccionades.</p>
                 {% endif %}
                 <a class="btn btn-lg btn-light text-task" href="/p/{{user.hashid}}/tasks">Les teves tasques i torns</a>
             </div>
@@ -51,7 +51,7 @@
                         {% endfor %}
                     </dl>
                     {% else %}
-                    <p class="font-italic">No hi ha àpats assignats i/o seleccionats</p>
+                    <p class="font-italic">No hi ha àpats assignats i/o seleccionats.</p>
                     {% endif %}
                     <a class="btn btn-lg btn-light text-meal" href="/p/{{user.hashid}}/meals">Els teus àpats i la teva dieta</a>
                 </div>
@@ -76,7 +76,7 @@
                         {% endfor %}
                     </dl>
                     {% else %}
-                    <p class="font-italic">No hi ha entrades assignades i/o seleccionades</p>
+                    <p class="font-italic">No hi ha entrades assignades i/o seleccionades.</p>
                     {% endif %}
                     <a class="btn btn-lg btn-light text-ticket" href="/p/{{user.hashid}}/rewards">Les teves entrades i recompenses</a>
                 </div>
@@ -92,7 +92,7 @@
         <div class="card">
             <div class="card-body bg-danger text-white">
                 <h4 class="card-title">Incidència</h4>
-                <p class="card-text">Notifica'ns qualsevol problema o comentari que tinguis</p>
+                <p class="card-text">Notifica'ns qualsevol problema o comentari que tinguis.</p>
                 <a class="btn btn-lg btn-light text-danger" href="/incidence">Notifica una incidència</a>
             </div>
         </div>

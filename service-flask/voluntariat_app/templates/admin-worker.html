@@ -45,7 +45,7 @@
                                     <a class="btn btn-dark bg-profile" target="_blank" href="https://wa.me/{{worker.phone}}">Envia un WhatsApp</a> 
                                 </div>
                                 {% else %}
-                                <p class="text-secondary">Mòbil no proporcionat</p>
+                                <p class="text-secondary">Mòbil no proporcionat.</p>
                                 <div class="btn-group">
                                     <a class="btn btn-secondary bg-profile disabled" href="#">Truca al mòbil</a>
                                     <a class="btn btn-secondary bg-profile disabled" href="#">Envia un WhatsApp</a>
@@ -64,7 +64,7 @@
                                 <p class="text-task">{{name}}</p>
                                 {% endfor %}
                             {% else %}
-                            <p class="font-italic">No hi ha tasques assignades i/o seleccionades</p>
+                            <p class="font-italic">No hi ha tasques assignades i/o seleccionades.</p>
                             {% endif %}
                             <a class="btn btn-dark bg-task text-white" href="/admin/p/{{worker.hashid}}/tasks">Les seves tasques i torns</a>
                         </td>
@@ -94,7 +94,7 @@
                                 <p class="text-ticket">{{name}}</p>
                                 {% endfor %}
                             {% else %}
-                            <p class="font-italic">No hi ha entrades assignades i/o seleccionades</p>
+                            <p class="font-italic">No hi ha entrades assignades i/o seleccionades.</p>
                             {% endif %}
                             <a class="btn btn-dark bg-ticket text-white" href="/admin/p/{{worker.hashid}}/rewards">Les seves entrades i recompenses</a>
                         </td>
