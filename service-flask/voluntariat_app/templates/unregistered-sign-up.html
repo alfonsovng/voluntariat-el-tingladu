@@ -16,7 +16,7 @@
       {{ checkbox(form.adult, "Sóc major d'edat", description="Has de confirmar que ets major d'edat per a poder col·laborar amb El Tingladu") }}
       {{ checkbox(form.store_email,  "Accepto rebre emails d'El Tingladu i que el meu email sigui emmagatzemat per a futurs esdeveniments", description = "Necessari per a col·laborar com a voluntariat amb els esdeveniments organitzats per El Tingladu. Tota la resta de dades personals (nom, cognoms i telèfon) s'esborran en acabar aquest esdeveniment") }}
       {{ text(form.dni, "DNI", placeholder="DNI obligatori per a validar el contracte de voluntariat") }}
-      <p><a href="/static/pdf/ACORD_VOLUNTARIAT_CANPISTRAUS_REVISAT_23.pdf">Contracte de voluntariat</a></p>
+      <p><a target="_blank" "/static/pdf/ACORD_VOLUNTARIAT_CANPISTRAUS_REVISAT_23.pdf">Contracte de voluntariat</a></p>
       {{ checkbox(form.contract, "Accepto l'acord de col·laboració voluntària amb El Tingladu", description = "És necessari el teu DNI perquè tingui validesa el contracte de Voluntariat") }}
       {{ form.submit(value = "Registra't", class='btn btn-lg btn-success') }}
     </form>

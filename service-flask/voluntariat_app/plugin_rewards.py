@@ -42,6 +42,8 @@ class Rewards15Anniversary(RewardsImpl):
             acreditacio_col_id = self._get_ticket_id(db, "ACREDITACIÓ COL·LABORADOR")
             acreditacio_globus_id = self._get_ticket_id(db, "ACREDITACIÓ GLOBUS")
             acreditacio_org_id = self._get_ticket_id(db, "ACREDITACIÓ ORGANITZACIÓ")
+            pulsera_so_id = self._get_ticket_id(db, "PULSERA SO")
+            pulsera_punt_lila_id = self._get_ticket_id(db, "PULSERA PUNT LILA")
 
             # tasques
             barres_id = self._get_task_id(db, "BARRES")
@@ -92,7 +94,7 @@ class Rewards15Anniversary(RewardsImpl):
                     so_id,
                     seguretat_id,
                     organitzacio_id,
-                    punt_lila_id,
+                    # punt_lila_id,
                 ])],
             ]
 
@@ -182,6 +184,40 @@ class Rewards15Anniversary(RewardsImpl):
                     organitzacio_id,
                     # punt_lila_id,
                 ])],
+                [pulsera_so_id,
+                frozenset([
+                    # barres_id,
+                    # cap_barres_id,
+                    # entrades_id,
+                    # tresoreria_id,
+                    # cuina_id,
+                    # globus_id,
+                    # electrics_id,
+                    # muntatge_id,
+                    # marxandatge_id,
+                    # comunicacio_id,
+                    so_id,
+                    # seguretat_id,
+                    # organitzacio_id,
+                    # punt_lila_id,
+                ])],
+                [pulsera_punt_lila_id,
+                frozenset([
+                    # barres_id,
+                    # cap_barres_id,
+                    # entrades_id,
+                    # tresoreria_id,
+                    # cuina_id,
+                    # globus_id,
+                    # electrics_id,
+                    # muntatge_id,
+                    # marxandatge_id,
+                    # comunicacio_id,
+                    # so_id,
+                    # seguretat_id,
+                    # organitzacio_id,
+                    punt_lila_id,
+                ])],
             ]
 
             logger.info(f"MEALS LIST: {self.meals_list}")
@@ -213,11 +249,6 @@ class Rewards15Anniversary(RewardsImpl):
         if len(current_shifts) == 0:
             return []
 
-        # els voluntaris no tenen l'àpat seleccionat per defecte
-        selected = False
-        if user.is_worker:
-            selected = True
-
         # amb un diccionari evito àpats duplicats
         meals_assigned = {}
         for (t, s, us) in current_shifts:
@@ -226,7 +257,7 @@ class Rewards15Anniversary(RewardsImpl):
                     meal = UserMeal(
                         user_id = user.id,
                         meal_id = meal_id,
-                        selected = selected
+                        selected = True
                     )
                     meals_assigned[meal_id] = meal
 
