@@ -47,8 +47,9 @@ class DietForm(FlaskForm):
     no_gluten = BooleanField()
     no_lactose = BooleanField()
     comments = TextAreaField(filters = [trim])
-    accept_conditions = BooleanField(validators=[DataRequired()])
+    accept_conditions_diet = BooleanField(validators=[DataRequired()])
     submit = SubmitField()
 
 class MealsForm(FlaskForm):
+    accept_conditions_meals = BooleanField(validators=[DataRequired()])
     submit = SubmitField()
