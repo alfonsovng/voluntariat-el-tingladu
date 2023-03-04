@@ -1,12 +1,12 @@
 Hola,
 
-s'ha notificat l'incidència següent:
+S'ha notificat la incidència següent:
 
 -----------------------------
 NOM: {{incidence_user.full_name}}
 EMAIL: {{incidence_user.email}}
 MÒBIL: {{incidence_user.phone}}
-TIPUS D'INCIDÊNCIA: {{incidence_type}}
+TIPUS D'INCIDÈNCIA: {{incidence_type}}
 DESCRIPCIÓ: {{incidence_description}}
 -----------------------------
 
@@ -15,4 +15,4 @@ Atentament,
 VOLUNTARIAT EL TINGLADU
 {{app_url}}
 -----------------------------
-No respongueu aquest missatge. Aquesta adreça electrònica només admet enviaments. Envia un email a voluntariat@eltingladu.cat per a contactar amb nosaltres.
+No respongueu aquest missatge. Aquesta adreça electrònica només admet enviaments. Envia un email a voluntariat@eltingladu.cat per contactar amb nosaltres.

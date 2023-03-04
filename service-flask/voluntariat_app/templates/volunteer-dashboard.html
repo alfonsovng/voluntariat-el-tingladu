@@ -10,7 +10,7 @@
             <div class="card">
                 <div class="card-body bg-admin">
                     <h2 class="card-title">Administració</h2>
-                    <p class="card-text">Consulta les dades introduïdes, modifíca-les i fes exportacions a excel.</p>
+                    <p class="card-text">Consulta les dades introduïdes, modifica-les i fes exportacions a excel</p>
                     <a class="btn btn-lg btn-dark text-admin" href="/admin">Administra les dades introduïdes</a>
                 </div>
             </div>
@@ -25,7 +25,7 @@
         <div class="card">
             <div class="card-body bg-task text-white card-text">
                 <h2 class="card-title">Tasques i torns</h2>
-                <p>Registra la teva disponibilitat indicant els torns on pots dur a terme fer les diferents tasques que fan possible El Tingladu.</p>
+                <p>Registra la teva disponibilitat indicant els torns on pots dur a terme les diferents tasques que fan possible El Tingladu.</p>
                 
                 {% if shifts %}
                 <dl>
@@ -43,7 +43,7 @@
             {% if user.has_shifts %}
                 <div class="card-body bg-meal text-white card-text">
                     <h2 class="card-title">Àpats i característiques de la teva dieta</h2>
-                    <p>Indica quins àpats faràs i notifica les característiques de la teva dieta, indicant al·lèrgies, intol·leràncies i/o d'altres dades importants.</p>
+                    <p>Indica quins àpats faràs i notifica les característiques de la teva dieta, indicant al·lèrgies, intoleràncies i/o d'altres dades importants.</p>
                     {% if meals %}
                     <dl>
                         {% for name in meals %}
@@ -59,7 +59,7 @@
                 <div class="card-body bg-meal text-white-50" data-toggle="tooltip" 
                     title="Abans d'accedir a aquesta secció has de completar les Tasques i Torns">
                     <h2 class="card-title">Àpats i característiques de la teva dieta</h2>
-                    <p class="card-text">Indica quins àpats faràs i notifica les característiques de la teva dieta, indicant al·lèrgies, intol·leràncies i/o d'altres dades importants.</p>
+                    <p class="card-text">Indica quins àpats faràs i notifica les característiques de la teva dieta, indicant al·lèrgies, intoleràncies i/o d'altres dades importants.</p>
                     <a class="btn btn-lg btn-light text-black-50 disabled" href="#">Els teus àpats i la teva dieta</a>
                 </div>
             {% endif %}
@@ -92,7 +92,7 @@
         <div class="card">
             <div class="card-body bg-danger text-white">
                 <h4 class="card-title">Incidència</h4>
-                <p class="card-text">Notifica'ns qualsevol problema o comentari que tinguis.</p>
+                <p class="card-text">Notifica'ns qualsevol problema o comentari que tinguis</p>
                 <a class="btn btn-lg btn-light text-danger" href="/incidence">Notifica una incidència</a>
             </div>
         </div>
