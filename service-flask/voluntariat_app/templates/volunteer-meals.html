@@ -28,13 +28,13 @@
           {{ checkbox_with_comments(meals_form["selected-"+ id], meals_form["comments-" + id], placeholder="Comentaris", read_only=read_only)}}
         {% endfor %}
         {% if not read_only %}
-          {{ checkbox(meals_form.accept_conditions_meals, "Entenc que la cuina d'El Tingladu tindrà en compte les meves especificitats alimentàries, però es podrà garantir una adaptació completa a cada dieta",
+          {{ checkbox(meals_form.accept_conditions_meals, "Entenc que la cuina d'El Tingladu tindrà en compte les meves especificitats alimentàries, però no es podrà garantir una adaptació completa a cada dieta",
               description = """
               Us demanem que:
               <br>
-              - Si marques vegetarià o vegà, quan demaneu l'àpat, ho recordeu al voluntariat de cuina. 
+              - Si marques l'opció vegetariana o vegana, quan demaneu l'àpat, ho recordeu al voluntariat de cuina. 
               <br>
-              - Si no has marcat vegetarià o vegà, no t'acullis a aquesta oferta el dia.
+              - Si no has marcat l'opció vegetariana o vegana, no t'acullis a aquesta oferta del dia.
               <br>
               - Si tens alguna al·lèrgia o intolerància, confirmis amb el voluntariat de cuina que el plat que menges no conté aquest(s) ingredient(s). 
               """,
@@ -49,7 +49,7 @@
     </form>
     <hr />
     <h4>La teva dieta</h4>
-    <h4><small class="text-muted">Notifica les característiques de la teva dieta, indicant al·lèrgies, intol·leràncies i altres dades importants.</small></h4>
+    <h4><small class="text-muted">Notifica les característiques de la teva dieta, indicant al·lèrgies, intoleràncies i altres dades importants.</small></h4>
     <form role="form" method='POST' class="{{'text-secondary' if read_only }}">
       {{ diet_form.csrf_token }}
       {% if meals_form.meal_ids %}
@@ -61,13 +61,13 @@
         {{ textarea(diet_form.comments, "Altres intoleràncies o al·lèrgies, o observacions que vulguis afegir", rows = 3, read_only = read_only)}}
       
         {% if not read_only %}
-          {{ checkbox(diet_form.accept_conditions_diet, "Entenc que la cuina d'El Tingladu tindrà en compte les meves especificitats alimentàries, però es podrà garantir una adaptació completa a cada dieta",
+          {{ checkbox(diet_form.accept_conditions_diet, "Entenc que la cuina d'El Tingladu tindrà en compte les meves especificitats alimentàries, però no es podrà garantir una adaptació completa a cada dieta",
               description = """
               Us demanem que:
               <br>
-              - Si marques vegetarià o vegà, quan demaneu l'àpat, ho recordeu al voluntariat de cuina. 
+              - Si marques l'opció vegetariana o vegana, quan demaneu l'àpat, ho recordeu al voluntariat de cuina. 
               <br>
-              - Si no has marcat vegetarià o vegà, no t'acullis a aquesta oferta el dia.
+              - Si no has marcat l'opció vegetariana o vegana, no t'acullis a aquesta oferta del dia.
               <br>
               - Si tens alguna al·lèrgia o intolerància, confirmis amb el voluntariat de cuina que el plat que menges no conté aquest(s) ingredient(s). 
               """,
