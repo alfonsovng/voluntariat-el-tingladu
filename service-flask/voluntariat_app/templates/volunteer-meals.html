@@ -58,7 +58,7 @@
         {{ checkbox(diet_form.vegetarian, "Dieta vegetariana", read_only = read_only)}}
         {{ checkbox(diet_form.no_gluten, "Dieta sense gluten", read_only = read_only)}}
         {{ checkbox(diet_form.no_lactose, "Dieta sense lactosa", read_only = read_only)}}
-        {{ textarea(diet_form.comments, "Altres intoleràncies o al·lèrgies, o observacions que vulguis afegir", rows = 3, read_only = read_only)}}
+        {{ textarea(diet_form.comments, "Altres intoleràncies o al·lèrgies, o observacions que vulguis afegir:", rows = 3, read_only = read_only)}}
       
         {% if not read_only %}
           {{ checkbox(diet_form.accept_conditions_diet, "Entenc que la cuina d'El Tingladu tindrà en compte les meves especificitats alimentàries, però no es podrà garantir una adaptació completa a cada dieta",
