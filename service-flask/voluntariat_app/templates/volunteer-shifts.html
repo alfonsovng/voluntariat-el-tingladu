@@ -86,8 +86,6 @@
         <a class="btn btn-secondary" href="{{'/admin' if admin}}/p/{{ volunteer.hashid }}/tasks"> &#x3c;&#x3c; Torna enrera</a>
         {% if not read_only %}
           {{ form.submit(value="Actualitza els teus torns", class='btn btn-success') }}
-        {% else %}
-        <a class="btn btn-danger" href="/incidence">Notifica una incidència</a>
         {% endif %}
       </div>
     </form>

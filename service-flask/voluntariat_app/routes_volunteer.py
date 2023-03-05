@@ -254,7 +254,9 @@ def meals(volunteer_hashid):
         return redirect(url_for('main_bp.init'))
 
     read_only = __is_read_only(current_user)
-    if not volunteer.has_shifts:
+    if read_only:
+        flash_info("read_only")
+    elif not volunteer.has_shifts:
         flash_warning("first_tasks_and_shifts")
         read_only = True
 
