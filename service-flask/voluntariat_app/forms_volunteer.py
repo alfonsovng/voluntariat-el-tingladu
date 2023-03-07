@@ -51,5 +51,5 @@ class DietForm(FlaskForm):
     submit = SubmitField()
 
 class MealsForm(FlaskForm):
-    accept_conditions_meals = BooleanField(validators=[DataRequired()])
+    # accept_conditions_meals = BooleanField(validators=[DataRequired()])
     submit = SubmitField()

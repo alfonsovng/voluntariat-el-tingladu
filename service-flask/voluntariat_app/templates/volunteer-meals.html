@@ -28,19 +28,6 @@
           {{ checkbox_with_comments(meals_form["selected-"+ id], meals_form["comments-" + id], placeholder="Comentaris", read_only=read_only)}}
         {% endfor %}
         {% if not read_only %}
-          {{ checkbox(meals_form.accept_conditions_meals, "Entenc que la cuina d'El Tingladu tindrà en compte les meves especificitats alimentàries, però no es podrà garantir una adaptació completa a cada dieta",
-              description = """
-              Us demanem que:
-              <br>
-              - Si marques l'opció vegetariana o vegana, quan demaneu l'àpat, ho recordeu al voluntariat de cuina. 
-              <br>
-              - Si no has marcat l'opció vegetariana o vegana, no t'acullis a aquesta oferta del dia.
-              <br>
-              - Si tens alguna al·lèrgia o intolerància, confirmis amb el voluntariat de cuina que el plat que menges no conté aquest(s) ingredient(s). 
-              """,
-              read_only = read_only
-            )
-          }}
           {{ meals_form.submit(value="Actualitza els teus àpats", class='btn btn-success') }}
         {% endif %}
       {% else %}
@@ -54,12 +41,77 @@
       {{ diet_form.csrf_token }}
       {% if meals_form.meal_ids %}
         <br />
+        <div class="form-group">
+          <div class="d-flex justify-content-start">
+            <div><input id="none" type="checkbox"></div>
+            <div>
+              <label for="none">Sense especificitats alimentàries</label>
+            </div>
+          </div>
+        </div>
+
         {{ checkbox(diet_form.vegan, "Dieta vegana", read_only = read_only)}}
         {{ checkbox(diet_form.vegetarian, "Dieta vegetariana", read_only = read_only)}}
         {{ checkbox(diet_form.no_gluten, "Dieta sense gluten", read_only = read_only)}}
         {{ checkbox(diet_form.no_lactose, "Dieta sense lactosa", read_only = read_only)}}
         {{ textarea(diet_form.comments, "Altres intoleràncies o al·lèrgies, o observacions que vulguis afegir:", rows = 3, read_only = read_only)}}
       
+        <script>
+          function none_must_be_checked() {
+            vegan = $('#vegan').is(':checked');
+            vegetarian = $('#vegetarian').is(':checked');
+            no_gluten = $('#no_gluten').is(':checked');
+            no_lactose = $('#no_lactose').is(':checked');
+
+            if (!vegan && !vegetarian && !no_gluten && !no_lactose) {
+              $("#none").prop('checked', true);
+            }
+          }
+          $('#none').change(function() {
+            if ($('#none').is(':checked')) {
+              $("#vegan").prop('checked', false);
+              $("#vegetarian").prop('checked', false);
+              $("#no_gluten").prop('checked', false);
+              $("#no_lactose").prop('checked', false);
+            }
+          });
+          $('#vegan').change(function() {
+            if ($('#vegan').is(':checked')) {
+              $("#none").prop('checked', false);
+              $("#vegetarian").prop('checked', false);
+            } else {
+              none_must_be_checked();
+            }
+          });
+          $('#vegetarian').change(function() {
+            if ($('#vegetarian').is(':checked')) {
+              $("#none").prop('checked', false);
+              $("#vegan").prop('checked', false);
+            } else {
+              none_must_be_checked();
+            }
+          });
+          $('#no_gluten').change(function() {
+            if ($('#no_gluten').is(':checked')) {
+              $("#none").prop('checked', false);
+            } else {
+              none_must_be_checked();
+            }
+          });
+          $('#no_lactose').change(function() {
+            if ($('#no_lactose').is(':checked')) {
+              $("#none").prop('checked', false);
+            } else {
+              none_must_be_checked();
+            }
+          });
+
+          $(document).ready(function() {
+            none_must_be_checked();
+          });
+       </script>
+
+
         {% if not read_only %}
           {{ checkbox(diet_form.accept_conditions_diet, "Entenc que la cuina d'El Tingladu tindrà en compte les meves especificitats alimentàries, però no es podrà garantir una adaptació completa a cada dieta",
               description = """
@@ -81,7 +133,7 @@
       {% endif %}
     </form>
     <hr />
-    <a class="btn btn-secondary" href="{{'/admin' if admin}}/p/{{ volunteer.hashid }}"> &#x3c;&#x3c; Torna enrera</a>
+    <a class="btn btn-secondary" href="{{'/admin' if admin}}/p/{{ volunteer.hashid }}"> &#x3c;&#x3c; Torna enrere</a>
   </div>
 </div>
 {% endblock %}
