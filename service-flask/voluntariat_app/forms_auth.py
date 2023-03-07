@@ -25,6 +25,9 @@ class SignUpForm(FlaskForm):
     contract = BooleanField(
         validators=[DataRequired()]
     )
+    data_protection = BooleanField(
+        validators=[DataRequired()]
+    )
     submit = SubmitField()
 
 class ForgottenPasswordForm(FlaskForm):
