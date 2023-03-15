@@ -48,10 +48,19 @@
           {% endfor %} -->
         </div>
         <div class="btn-group">
-          <a class="btn btn-secondary" href="/p/{{ volunteer.hashid }}"> &#x3c;&#x3c; Torna enrere</a>
           {{ form.submit(value="Actualiza les dades", class='btn btn-success') }}
         </div>
       </form>
+      <hr />
+      <div class="form-group">
+        <h4><small class="text-muted">Documentació d'interès</small></h4>
+        <ul>
+          <li><a target="_blank" href="/static/pdf/ACORD_VOLUNTARIAT_CANPISTRAUS_REVISAT_23.pdf">Acord de col·laboració voluntària amb El Tingladu</a></li>
+          <li><a target="_blank" href="/static/pdf/LOPD-i-RGPD-Voluntaris-El-Tingladu-APP_v1.pdf">Informació relativa a la protecció de les dades personals</a></li>
+        </ul>
+      </div>
+      <hr />
+      <a class="btn btn-secondary" href="/p/{{ volunteer.hashid }}"> &#x3c;&#x3c; Torna enrere</a>
     </div>
   </div>
 {% endblock %}
