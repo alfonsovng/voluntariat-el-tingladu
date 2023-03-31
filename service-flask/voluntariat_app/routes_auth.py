@@ -32,15 +32,17 @@ def signup(invitation_token):
     form = SignUpForm()
     # Validate sign up attempt
     if form.validate_on_submit():
-        existing_user = User.query.filter_by(email=form.email.data).first()
+        lowercase_email = form.email.data.lower()
+
+        existing_user = User.query.filter_by(email=lowercase_email).first()
         if existing_user is None:
 
-            logger.info(f"Nou voluntari: {form.email.data}")
+            logger.info(f"Nou voluntari: {lowercase_email}")
 
             user = User(
                 name=form.name.data,
                 surname=form.surname.data,
-                email=form.email.data,
+                email=lowercase_email,
                 dni=form.dni.data,
                 phone=form.phone.data,
                 role=UserRole.volunteer
@@ -60,7 +62,7 @@ def signup(invitation_token):
             db.session.commit() # guardem token i la dieta
            
             # send email to end signup
-            email_task = TaskSignUpEmail(name=form.name.data,email=form.email.data,token=token)
+            email_task = TaskSignUpEmail(name=form.name.data,email=lowercase_email,token=token)
             task_manager.add_task(email_task)
 
             flash_info("sign_up_successful")
@@ -80,7 +82,9 @@ def forgotten_password():
     form = ForgottenPasswordForm()
     # Validate sign up attempt
     if form.validate_on_submit():
-        existing_user = User.query.filter_by(email=form.email.data).first()
+        lowercase_email = form.email.data.lower()
+
+        existing_user = User.query.filter_by(email=lowercase_email).first()
         if existing_user is not None:
 
             token = hashid_manager.create_token(existing_user.id)
@@ -88,7 +92,7 @@ def forgotten_password():
             db.session.commit()  # add token
            
             # send email to reset password
-            email_task = TaskResetPasswordEmail(name=existing_user.name,email=form.email.data,token=token)
+            email_task = TaskResetPasswordEmail(name=existing_user.name,email=lowercase_email,token=token)
             task_manager.add_task(email_task)
 
             flash_info("reset_password_successful")
@@ -135,10 +139,12 @@ def login():
     form = LoginForm()
     # Validate login attempt
     if form.validate_on_submit():
-        existing_user = User.query.filter_by(email=form.email.data).first()
+        lowercase_email = form.email.data.lower()
+
+        existing_user = User.query.filter_by(email=lowercase_email).first()
         if existing_user and existing_user.check_password(password=form.password.data):
             
-            logger.info(f"Login: {form.email.data}")
+            logger.info(f"Login: {lowercase_email}")
 
             existing_user.change_password_token = None
             db.session.commit() # remove any existing token
