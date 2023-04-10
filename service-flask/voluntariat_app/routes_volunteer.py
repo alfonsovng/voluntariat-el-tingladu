@@ -159,6 +159,7 @@ def shifts(volunteer_hashid, task_hashid):
             __update_shifts(
                 volunteer = volunteer,
                 task_id = task_id,
+                current_user_is_admin = current_user.is_admin,
                 form = request.form
             )
             flash_info("data_saved")
@@ -179,7 +180,7 @@ def shifts(volunteer_hashid, task_hashid):
             user=current_user
         )
 
-def __update_shifts(volunteer, task_id, form):
+def __update_shifts(volunteer, task_id, current_user_is_admin, form):
     current_user_shifts = UserShift.query.filter(UserShift.user_id == volunteer.id).filter(
         text(f"""shift_id in (select id from shifts where task_id = {task_id})""")
     ).all()
@@ -198,13 +199,24 @@ def __update_shifts(volunteer, task_id, form):
             # l'esborrem
             db.session.delete(user_shift)
 
-    # ara afegim tots els quu hi ha a shift_id_selected
+    # ara afegim tots els qui hi ha a shift_id_selected
     for shift_id in shift_id_to_insert:
-        taked = db.session.execute(text(f"select count(*) from user_shifts where shift_id = {shift_id}")).scalar()
+
+        allow_user_shift = False
         shift = Shift.query.filter_by(id = shift_id).first()
 
-        # hi ha espai lliure!
-        if shift.slots <= 0 or shift.slots > taked:
+        if current_user_is_admin:
+            # els admins poden apuntar on sigui
+            allow_user_shift = True
+        elif shift.slots <= 0:
+            # és un torn sense "tope"
+            allow_user_shift = True
+        else:
+            # només si hi ha espai lliure!
+            taked = db.session.execute(text(f"select count(*) from user_shifts where shift_id = {shift_id}")).scalar()
+            allow_user_shift = shift.slots > taked
+
+        if allow_user_shift:
             comments = trim(form.get(f"user-comments-{shift_id}"))
             shift_assignations = [False for _ in shift.assignations]
             user_shift = UserShift(
