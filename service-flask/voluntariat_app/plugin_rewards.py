@@ -364,7 +364,7 @@ class RewardsManager:
                     if zero_assignations:
                         cash_details.append((f"{t.name} - {s.name}", None))
                 else:
-                    cash_details.append((f"{t.name} - {s.name})", s.reward))
+                    cash_details.append((f"{t.name} - {s.name}", s.reward))
                     cash += s.reward
 
         return (cash, cash_details)
