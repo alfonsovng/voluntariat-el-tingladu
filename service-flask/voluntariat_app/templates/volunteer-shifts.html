@@ -24,7 +24,7 @@
         </li>
         {% for shift,taked,selected,comments,assignations,shift_assignations in shifts_and_selected %}
           {% set disponibles = (shift.slots - taked) if shift.slots > 0 else 1 %}
-          {% set no_accessible = disponibles <= 0 and not selected %}
+          {% set no_accessible = disponibles <= 0 and not selected and not user.is_admin %}
         <li class="list-group-item {{'list-group-item-light' if no_accessible }}">
           <label for="{{shift.id}}-id" class="d-flex justify-content-start checkbox-with-hidden-texarea">
             <div>
