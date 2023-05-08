@@ -49,4 +49,7 @@ def create_app():
         # # Create Database Models
         # db.create_all()
 
+        # # Actualitza les recompenses si hi hagut algun canvi
+        # rewards_manager.update_all_rewards_and_commit()
+
         return app
