@@ -623,6 +623,42 @@ def rewards():
 
     return render_template('admin-cash.html',users_with_cash=users_with_cash,user=current_user)
 
+@admin_bp.route('/admin/excel_tickets_and_rewards')
+@login_required
+def excel_tickets_and_rewards():
+    if not current_user.is_admin:
+        flash_error("must_be_admin")
+        return redirect(url_for('volunteer_bp.dashboard'))
+    
+    select = """select t.name as ticket,
+        u.surname as cognoms, u.name as nom, 
+        case when u.role='worker' then '' else u.email end as email, 
+        u.phone as mòbil,
+        r.cash as "tickets consum"
+        from users as u 
+        join user_tickets as ut on u.id = ut.user_id
+        join tickets as t on t.id = ut.ticket_id
+        join (
+            select us.user_id, 
+            sum(s.reward*(case when array_length(us.shift_assignations,1) > 0 then (select sum(case when s then 1 else 0 end) from unnest(us.shift_assignations) s) else 1 end)) as cash
+            from shifts as s join user_shifts as us on s.id = us.shift_id group by user_id
+        ) as r 
+        on r.user_id = u.id
+        where ut.selected
+        order by t.id asc, cognoms asc, nom asc
+    """
+
+    file_name = hashid_manager.create_unique_file_name(
+        user_id = current_user.id,
+        name = "TICKETS_I_CONSUM",
+        extension = ".xlsx"
+    )
+    return generate_excel(
+        file_name=file_name,
+        select=select
+    )
+
+
 def generate_excel(file_name, select, params={}):
     with excel_manager.create_excel(file_name) as excel:
         rows = db.session.execute(text(select), params=params)
