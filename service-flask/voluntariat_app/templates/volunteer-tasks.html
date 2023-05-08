@@ -14,7 +14,13 @@
 <div class="row justify-content-md-center">
   <div class="col-md-8 col-lg-7 col-xl-6">
     <h2>{% block title %}Tasques{% endblock %}</h2>
-    <h2><small class="text-muted">{{ volunteer.full_name }}</small></h2>
+    <h2><small class="text-muted">
+      {% if admin %} 
+      <a href="/admin/p/{{ volunteer.hashid }}">{{ volunteer.full_name }}</a>
+      {% else  %}
+      {{ volunteer.full_name }}
+      {% endif %}
+    </small></h2>
     <div class="list-group">
       {% for t,n in tasks_and_number_of_shifts %}
         <a href="{{'/admin' if admin}}/p/{{ volunteer.hashid }}/tasks/{{t.hashid}}" 

@@ -15,7 +15,13 @@
 <div class="row justify-content-md-center">
   <div class="col-md-8 col-lg-7 col-xl-6">
     <h2>{% block title %}Torns{% endblock %}</h2>
-    <h2><small class="text-muted">{{ volunteer.full_name }}</small></h2>
+    <h2><small class="text-muted">
+      {% if admin %} 
+      <a href="/admin/p/{{ volunteer.hashid }}">{{ volunteer.full_name }}</a>
+      {% else  %}
+      {{ volunteer.full_name }}
+      {% endif %}
+    </small></h2>
     <form role="form" method='POST'>
       {{ form.csrf_token }}
       <ul class="list-group">

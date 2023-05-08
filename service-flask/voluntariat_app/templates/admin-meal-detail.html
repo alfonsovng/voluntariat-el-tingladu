@@ -33,14 +33,46 @@
                 <tbody>
                     {% for (u,ud,um) in users_with_diet_and_meals %}
                         <tr>
-                            <td>{{u.surname}}</td>
-                            <td>{{u.name}}</td>
-                            <td>{{um.comments}}</td>
-                            <td>{{"X" if ud.vegan}}</td>
-                            <td>{{"X" if ud.vegetarian}}</td>
-                            <td>{{"X" if ud.no_gluten}}</td>
-                            <td>{{"X" if ud.no_lactose}}</td>
-                            <td>{{ud.comments}}</td>
+                            <td>
+                                <a href="/admin/p/{{ u.hashid }}/meals?back={{request.path}}">
+                                    {{u.surname}}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/admin/p/{{ u.hashid }}/meals?back={{request.path}}">
+                                    {{u.name}}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/admin/p/{{ u.hashid }}/meals?back={{request.path}}">
+                                    {{um.comments}}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/admin/p/{{ u.hashid }}/meals?back={{request.path}}">
+                                    {{"X" if ud.vegan}}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/admin/p/{{ u.hashid }}/meals?back={{request.path}}">
+                                    {{"X" if ud.vegetarian}}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/admin/p/{{ u.hashid }}/meals?back={{request.path}}">
+                                    {{"X" if ud.no_gluten}}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/admin/p/{{ u.hashid }}/meals?back={{request.path}}">
+                                    {{"X" if ud.no_lactose}}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/admin/p/{{ u.hashid }}/meals?back={{request.path}}">
+                                    {{ud.comments}}
+                                </a>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>
