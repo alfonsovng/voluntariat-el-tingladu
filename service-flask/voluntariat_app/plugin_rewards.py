@@ -27,6 +27,11 @@ class RewardsImpl:
         id =  db.session.execute(text(f"select id from tasks where name = '{name}'")).one()[0] #it's a tuple
         logger.info(f"{self.__class__.__name__} - task:{name} = {id}")
         return id
+    
+    def _get_shift_id(self, db, task_id, name):
+        id =  db.session.execute(text(f"select id from shifts where task_id = {task_id} and name = '{name}'")).one()[0] #it's a tuple
+        logger.info(f"{self.__class__.__name__} - shift:{name} = {id}")
+        return id
 
 class Rewards15Anniversary(RewardsImpl):
 
@@ -44,6 +49,12 @@ class Rewards15Anniversary(RewardsImpl):
             acreditacio_org_id = self._get_ticket_id(db, "ACREDITACIÓ ORGANITZACIÓ")
             pulsera_so_id = self._get_ticket_id(db, "PULSERA SO")
             pulsera_punt_lila_id = self._get_ticket_id(db, "PULSERA PUNT LILA")
+            pulsera_cap_barres_s1_id = self._get_ticket_id(db, "PULSERA CAP T1 ROSA")
+            pulsera_cap_barres_s2_id = self._get_ticket_id(db, "PULSERA CAP T2 VERDA")
+            pulsera_barra_s1_id = self._get_ticket_id(db, "PULSERA BARRA T1 BLAVA")
+            pulsera_barra_s2_id = self._get_ticket_id(db, "PULSERA BARRA T2 LILA")
+            pulsera_barra_s3_id = self._get_ticket_id(db, "PULSERA BARRA T3 BLANCA")
+            pulsera_barra_s4_id = self._get_ticket_id(db, "PULSERA BARRA T4 TARONJA")
 
             # tasques
             barres_id = self._get_task_id(db, "BARRES")
@@ -61,7 +72,15 @@ class Rewards15Anniversary(RewardsImpl):
             organitzacio_id = self._get_task_id(db, "ORGANITZACIÓ")
             punt_lila_id = self._get_task_id(db, "PUNT LILA")
 
-            self.meals_list = [
+            # shifts
+            cap_barres_s1_id = self._get_shift_id(db, cap_barres_id, "DISSABTE: 18:00 - 23:00")
+            cap_barres_s2_id = self._get_shift_id(db, cap_barres_id, "DISSABTE: 23:00 - 04:00")
+            barres_s1_id = self._get_shift_id(db, barres_id, "DISSABTE: 18:00 - 19:30")
+            barres_s2_id = self._get_shift_id(db, barres_id, "DISSABTE: 19:30 - 22:30")
+            barres_s3_id = self._get_shift_id(db, barres_id, "DISSABTE: 22:30 - 01:30")
+            barres_s4_id = self._get_shift_id(db, barres_id, "DISSABTE: 01:30 - 04:30")
+
+            self.meals_by_task = [
                 [dinar_15_aniversari_id,
                 frozenset([
                     # barres_id,
@@ -98,7 +117,7 @@ class Rewards15Anniversary(RewardsImpl):
                 ])],
             ]
 
-            self.ticket_list = [
+            self.tickets_by_task = [
                 [entrada_15_aniversari_id,
                 frozenset([
                     barres_id,
@@ -118,8 +137,8 @@ class Rewards15Anniversary(RewardsImpl):
                 ])],
                 [pulsera_voluntari_id,
                 frozenset([
-                    barres_id,
-                    cap_barres_id,
+                    # barres_id,
+                    # cap_barres_id,
                     entrades_id,
                     # tresoreria_id,
                     # cuina_id,
@@ -220,8 +239,66 @@ class Rewards15Anniversary(RewardsImpl):
                 ])],
             ]
 
-            logger.info(f"MEALS LIST: {self.meals_list}")
-            logger.info(f"TICKETS LIST: {self.ticket_list}")
+            self.tickets_by_shift = [
+                [pulsera_cap_barres_s1_id,
+                frozenset([
+                    cap_barres_s1_id,
+                    # cap_barres_s2_id,
+                    # barres_s1_id,
+                    # barres_s2_id,
+                    # barres_s3_id,
+                    # barres_s4_id,
+                ])],
+                [pulsera_cap_barres_s2_id,
+                frozenset([
+                    # cap_barres_s1_id,
+                    cap_barres_s2_id,
+                    # barres_s1_id,
+                    # barres_s2_id,
+                    # barres_s3_id,
+                    # barres_s4_id,
+                ])],
+                [pulsera_barra_s1_id,
+                frozenset([
+                    # cap_barres_s1_id,
+                    # cap_barres_s2_id,
+                    barres_s1_id,
+                    # barres_s2_id,
+                    # barres_s3_id,
+                    # barres_s4_id,
+                ])],
+                [pulsera_barra_s2_id,
+                frozenset([
+                    # cap_barres_s1_id,
+                    # cap_barres_s2_id,
+                    # barres_s1_id,
+                    barres_s2_id,
+                    # barres_s3_id,
+                    # barres_s4_id,
+                ])],
+                [pulsera_barra_s3_id,
+                frozenset([
+                    # cap_barres_s1_id,
+                    # cap_barres_s2_id,
+                    # barres_s1_id,
+                    # barres_s2_id,
+                    barres_s3_id,
+                    # barres_s4_id,
+                ])],
+                [pulsera_barra_s4_id,
+                frozenset([
+                    # cap_barres_s1_id,
+                    # cap_barres_s2_id,
+                    # barres_s1_id,
+                    # barres_s2_id,
+                    # barres_s3_id,
+                    barres_s4_id,
+                ])],
+            ]
+
+            logger.info(f"MEALS BY TASK: {self.meals_by_task}")
+            logger.info(f"TICKETS BY TASK: {self.tickets_by_task}")
+            logger.info(f"TICKETS BY SHIFT: {self.tickets_by_shift}")
 
     def calculate_tickets(self, user, current_shifts):
         from .models import UserTicket
@@ -232,8 +309,18 @@ class Rewards15Anniversary(RewardsImpl):
         # amb un diccionari evito tickets duplicats
         tickets_assigned = {}
         for (t, s, us) in current_shifts:
-            for (ticket_id, task_id_set) in self.ticket_list:
+            # busco per tasques
+            for (ticket_id, task_id_set) in self.tickets_by_task:
                 if t.id in task_id_set:
+                    ticket = UserTicket(
+                        user_id = user.id,
+                        ticket_id = ticket_id,
+                        selected = True
+                    )
+                    tickets_assigned[ticket_id] = ticket
+            # i per torns
+            for (ticket_id, shift_id_set) in self.tickets_by_shift:
+                if s.id in shift_id_set:
                     ticket = UserTicket(
                         user_id = user.id,
                         ticket_id = ticket_id,
@@ -252,7 +339,7 @@ class Rewards15Anniversary(RewardsImpl):
         # amb un diccionari evito àpats duplicats
         meals_assigned = {}
         for (t, s, us) in current_shifts:
-            for (meal_id, task_id_set) in self.meals_list:
+            for (meal_id, task_id_set) in self.meals_by_task:
                 if t.id in task_id_set:
                     meal = UserMeal(
                         user_id = user.id,
@@ -275,8 +362,6 @@ class RewardsManager:
         self.rewards_instance =  globals()[dynamic_class_name](app, db)
 
     def update_rewards(self, user):
-        from .models import UserShift
-
         # miro quins torns fa l'usuari
         current_shifts = self.__get_current_shifts(user.id)
 
