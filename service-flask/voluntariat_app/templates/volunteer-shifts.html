@@ -1,6 +1,7 @@
 {% extends '_registered.html' %}
 
 {% set admin = request.path.startswith('/admin') %}
+{% set back = request.args.get('back') %}
 
 <!--
 {% block admin_css %}
@@ -83,7 +84,11 @@
       {% endif %}
       
       <div class="btn-group">
+        {% if admin and back %}
+        <a class="btn btn-secondary" href="{{ back }}"> &#x3c;&#x3c; Torna enrere</a>
+        {% else %}
         <a class="btn btn-secondary" href="{{'/admin' if admin}}/p/{{ volunteer.hashid }}/tasks"> &#x3c;&#x3c; Torna enrere</a>
+        {% endif %}
         {% if not read_only %}
           {{ form.submit(value="Actualitza els teus torns", class='btn btn-success') }}
         {% endif %}
