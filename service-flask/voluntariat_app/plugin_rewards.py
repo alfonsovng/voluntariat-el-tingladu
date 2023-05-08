@@ -361,15 +361,12 @@ class RewardsManager:
         logger.info(f"REWARDS_CLASS = {dynamic_class_name}")
         self.rewards_instance =  globals()[dynamic_class_name](app, db)
 
-    def update_all_rewards_and_commit(self):
+    def update_all_rewards(self):
         from .models import User
-        from . import db
 
         users = User.query.all()
         for user in users:
             self.update_rewards(user)
-
-        db.session.commit()
 
     def update_rewards(self, user):
         # miro quins torns fa l'usuari

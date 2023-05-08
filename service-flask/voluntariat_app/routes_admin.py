@@ -488,7 +488,7 @@ def tickets():
 
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
-        select = """select t.name as ticket,
+        select = """select t.name as entrada,
             u.surname as cognoms, u.name as nom, 
             case when u.role='worker' then '' else u.email end as email, 
             u.phone as mòbil
@@ -501,7 +501,7 @@ def tickets():
 
         file_name = hashid_manager.create_unique_file_name(
             user_id = current_user.id,
-            name = "TICKETS",
+            name = "ENTRADES",
             extension = ".xlsx"
         )
         return generate_excel(
@@ -534,7 +534,7 @@ def tickets_detail(ticket_id):
 
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
-        select = """select t.name as ticket,
+        select = """select t.name as entrada,
             u.surname as cognoms, u.name as nom, 
             case when u.role='worker' then '' else u.email end as email, 
             u.phone as mòbil
@@ -547,7 +547,7 @@ def tickets_detail(ticket_id):
 
         file_name = hashid_manager.create_unique_file_name(
             user_id = current_user.id,
-            name = f"TICKET {ticket_id}",
+            name = f"ENTRADA {ticket_id}",
             extension = ".xlsx"
         )
         return generate_excel(
@@ -623,6 +623,14 @@ def rewards():
 
     return render_template('admin-cash.html',users_with_cash=users_with_cash,user=current_user)
 
+@admin_bp.route('/admin/update-all-rewards')
+@login_required
+def update_all_rewards():
+    rewards_manager.update_all_rewards()
+    db.session.commit()
+    flash_info("data_saved")
+    return redirect(url_for('admin_bp.dashboard'))
+
 @admin_bp.route('/admin/excel_tickets_and_rewards')
 @login_required
 def excel_tickets_and_rewards():
@@ -630,10 +638,10 @@ def excel_tickets_and_rewards():
         flash_error("must_be_admin")
         return redirect(url_for('volunteer_bp.dashboard'))
     
-    select = """select t.name as ticket,
-        u.surname as cognoms, u.name as nom, 
+    select = """select u.surname as cognoms, u.name as nom, 
         case when u.role='worker' then '' else u.email end as email, 
         u.phone as mòbil,
+        t.name as entrada,
         r.cash as "tickets consum"
         from users as u 
         join user_tickets as ut on u.id = ut.user_id
@@ -645,7 +653,7 @@ def excel_tickets_and_rewards():
         ) as r 
         on r.user_id = u.id
         where ut.selected
-        order by t.id asc, cognoms asc, nom asc
+        order by cognoms asc, nom asc, t.id asc
     """
 
     file_name = hashid_manager.create_unique_file_name(
@@ -657,7 +665,6 @@ def excel_tickets_and_rewards():
         file_name=file_name,
         select=select
     )
-
 
 def generate_excel(file_name, select, params={}):
     with excel_manager.create_excel(file_name) as excel:
