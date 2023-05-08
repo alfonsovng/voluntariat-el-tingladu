@@ -51,7 +51,7 @@ def people():
             phone as mòbil, role as rol, 
             case when electrician then 'X' else '' end as electricitat,
             purchased_ticket1 as "entrada adquirida"
-            from users order by cognoms asc, nom asc
+            from users order by cognoms asc, nom asc, users.email asc
         """
         return generate_excel(file_name = file_name, select = select)
     else:
@@ -265,7 +265,7 @@ def shifts(task_id):
             join shifts as s on s.id = us.shift_id
             join tasks as t on t.id = s.task_id
             where t.id = :TASK_ID
-            order by s.id asc, cognoms asc, nom asc"""
+            order by s.id asc, cognoms asc, nom asc, u.email asc"""
 
         file_name = hashid_manager.create_unique_file_name(
             user_id = current_user.id,
@@ -332,7 +332,7 @@ def shift_detail(task_id, shift_id):
             join shifts as s on s.id = us.shift_id
             join tasks as t on t.id = s.task_id
             where s.id = :SHIFT_ID
-            order by cognoms asc, nom asc"""
+            order by cognoms asc, nom asc, u.email asc"""
 
         file_name = hashid_manager.create_unique_file_name(
             user_id = current_user.id,
@@ -396,7 +396,7 @@ def meals():
             join meals as m on m.id = um.meal_id
             join user_diets as ud on u.id = ud.user_id
             where um.selected
-            order by m.id asc, cognoms asc, nom asc
+            order by m.id asc, cognoms asc, nom asc, u.email asc
         """
 
         file_name = hashid_manager.create_unique_file_name(
@@ -449,7 +449,7 @@ def meal_detail(meal_id):
             join meals as m on m.id = um.meal_id
             join user_diets as ud on u.id = ud.user_id
             where m.id = :MEAL_ID and um.selected
-            order by cognoms asc, nom asc
+            order by cognoms asc, nom asc, u.email asc
         """
 
         file_name = hashid_manager.create_unique_file_name(
@@ -496,7 +496,7 @@ def tickets():
             join user_tickets as ut on u.id = ut.user_id
             join tickets as t on t.id = ut.ticket_id
             where ut.selected
-            order by t.id asc, cognoms asc, nom asc
+            order by t.id asc, cognoms asc, nom asc, u.email asc
         """
 
         file_name = hashid_manager.create_unique_file_name(
@@ -542,7 +542,7 @@ def tickets_detail(ticket_id):
             join user_tickets as ut on u.id = ut.user_id
             join tickets as t on t.id = ut.ticket_id
             where t.id = :TICKET_ID and ut.selected
-            order by t.id asc, cognoms asc, nom asc
+            order by t.id asc, cognoms asc, nom asc, u.email asc
         """
 
         file_name = hashid_manager.create_unique_file_name(
@@ -593,7 +593,7 @@ def rewards():
             ) as r 
             on r.user_id = u.id
             where r.cash > 0
-            order by cognoms asc, nom asc
+            order by cognoms asc, nom asc, u.email asc
         """
 
         file_name = hashid_manager.create_unique_file_name(
@@ -641,19 +641,22 @@ def excel_tickets_and_rewards():
     select = """select u.surname as cognoms, u.name as nom, 
         case when u.role='worker' then '' else u.email end as email, 
         u.phone as mòbil,
-        t.name as entrada,
+        t.entrades as entrades,
         r.cash as "tickets consum"
         from users as u 
-        join user_tickets as ut on u.id = ut.user_id
-        join tickets as t on t.id = ut.ticket_id
+        join (
+            select ut.user_id as user_id, array_to_string(array_agg(t.name),' + ') as entrades
+            from tickets as t
+            join user_tickets as ut on t.id = ut.ticket_id
+            where ut.selected
+            group by user_id
+        ) as t on u.id = t.user_id
         join (
             select us.user_id, 
             sum(s.reward*(case when array_length(us.shift_assignations,1) > 0 then (select sum(case when s then 1 else 0 end) from unnest(us.shift_assignations) s) else 1 end)) as cash
             from shifts as s join user_shifts as us on s.id = us.shift_id group by user_id
-        ) as r 
-        on r.user_id = u.id
-        where ut.selected
-        order by cognoms asc, nom asc, t.id asc
+        ) as r on r.user_id = u.id
+        order by cognoms asc, nom asc, u.email asc
     """
 
     file_name = hashid_manager.create_unique_file_name(
