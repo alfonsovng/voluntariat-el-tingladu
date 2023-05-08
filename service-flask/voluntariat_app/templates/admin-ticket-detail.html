@@ -29,10 +29,26 @@
                 <tbody>
                     {% for (u,ut) in users_with_tickets %}
                         <tr>
-                            <td>{{u.surname}}</td>
-                            <td>{{u.name}}</td>
-                            <td>{{u.email if not u.is_worker}}</td>
-                            <td>{{u.phone}}</td>
+                            <td>
+                                <a href="/admin/p/{{ u.hashid }}/rewards?back={{request.path}}">
+                                    {{u.surname}}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/admin/p/{{ u.hashid }}/rewards?back={{request.path}}">
+                                    {{u.name}}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/admin/p/{{ u.hashid }}/rewards?back={{request.path}}">
+                                    {{u.email if not u.is_worker}}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/admin/p/{{ u.hashid }}/rewards?back={{request.path}}">
+                                    {{u.phone}}
+                                </a>
+                            </td>
                         </tr>
                     {% endfor %}
                 </tbody>

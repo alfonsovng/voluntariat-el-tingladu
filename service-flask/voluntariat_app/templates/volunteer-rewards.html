@@ -1,6 +1,7 @@
 {% extends '_registered.html' %}
 
 {% set admin = request.path.startswith('/admin') %}
+{% set back = request.args.get('back') %}
 
 <!--
 {% block admin_css %}
@@ -17,7 +18,13 @@
 <div class="row justify-content-md-center">
   <div class="col-md-8 col-lg-7 col-xl-6">
     <h2>{% block title %}Entrades, acreditacions i recompenses{% endblock %}</h2>
-    <h2><small class="text-muted">{{ volunteer.full_name }}</small></h2>
+    <h2><small class="text-muted">
+      {% if admin %} 
+      <a href="/admin/p/{{ volunteer.hashid }}">{{ volunteer.full_name }}</a>
+      {% else  %}
+      {{ volunteer.full_name }}
+      {% endif %}
+    </small></h2>
     <hr />
     <h4>Les teves entrades i acreditacions</h4>
     <h4><small class="text-muted">Entrades i/o acreditacions assignades segons les teves tasques i torns</small></h4>
@@ -48,7 +55,11 @@
       <p class="font-italic text-ticket">No hi ha recompenses assignades.</p>
     {% endif %}
     <hr />
+    {% if admin and back %}
+    <a class="btn btn-secondary" href="{{ back }}"> &#x3c;&#x3c; Torna enrere</a>
+    {% else %}
     <a class="btn btn-secondary" href="{{'/admin' if admin}}/p/{{ volunteer.hashid }}"> &#x3c;&#x3c; Torna enrere</a>
+    {% endif %}
   </div>
 </div>
 {% endblock %}
