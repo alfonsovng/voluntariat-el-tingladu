@@ -71,6 +71,7 @@ class Rewards15Anniversary(RewardsImpl):
             seguretat_id = self._get_task_id(db, "SEGURETAT")
             organitzacio_id = self._get_task_id(db, "ORGANITZACIÓ")
             punt_lila_id = self._get_task_id(db, "PUNT LILA")
+            suport_id = self._get_task_id(db, "SUPORT")
 
             # shifts
             cap_barres_s1_id = self._get_shift_id(db, cap_barres_id, "DISSABTE: 18:00 - 23:00")
@@ -97,6 +98,7 @@ class Rewards15Anniversary(RewardsImpl):
                     # seguretat_id,
                     organitzacio_id,
                     # punt_lila_id,
+                    # suport_id
                 ])],
                 [sopar_15_aniversari_id,
                 frozenset([
@@ -114,6 +116,7 @@ class Rewards15Anniversary(RewardsImpl):
                     seguretat_id,
                     organitzacio_id,
                     # punt_lila_id,
+                    suport_id
                 ])],
             ]
 
@@ -134,6 +137,7 @@ class Rewards15Anniversary(RewardsImpl):
                     # seguretat_id,
                     # organitzacio_id,
                     # punt_lila_id,
+                    suport_id
                 ])],
                 [pulsera_voluntari_id,
                 frozenset([
@@ -151,6 +155,7 @@ class Rewards15Anniversary(RewardsImpl):
                     # seguretat_id,
                     # organitzacio_id,
                     # punt_lila_id,
+                    # suport_id
                 ])],
                 [acreditacio_col_id,
                 frozenset([
@@ -168,6 +173,7 @@ class Rewards15Anniversary(RewardsImpl):
                     # seguretat_id,
                     # organitzacio_id,
                     # punt_lila_id,
+                    # suport_id
                 ])],
                 [acreditacio_globus_id,
                 frozenset([
@@ -185,6 +191,7 @@ class Rewards15Anniversary(RewardsImpl):
                     # seguretat_id,
                     # organitzacio_id,
                     # punt_lila_id,
+                    # suport_id
                 ])],
                 [acreditacio_org_id,
                 frozenset([
@@ -202,6 +209,7 @@ class Rewards15Anniversary(RewardsImpl):
                     # seguretat_id,
                     organitzacio_id,
                     # punt_lila_id,
+                    # suport_id
                 ])],
                 [pulsera_so_id,
                 frozenset([
@@ -219,6 +227,7 @@ class Rewards15Anniversary(RewardsImpl):
                     # seguretat_id,
                     # organitzacio_id,
                     # punt_lila_id,
+                    # suport_id
                 ])],
                 [pulsera_punt_lila_id,
                 frozenset([
@@ -236,6 +245,7 @@ class Rewards15Anniversary(RewardsImpl):
                     # seguretat_id,
                     # organitzacio_id,
                     punt_lila_id,
+                    # suport_id
                 ])],
             ]
 
