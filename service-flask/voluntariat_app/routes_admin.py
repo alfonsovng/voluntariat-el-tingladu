@@ -50,7 +50,9 @@ def people():
             case when role='worker' then '' else dni end as dni, 
             phone as mòbil, role as rol, 
             case when electrician then 'X' else '' end as electricitat,
-            purchased_ticket1 as "entrada adquirida"
+            purchased_ticket1 as "entrada adquirida 1",
+            purchased_ticket2 as "entrada adquirida 2",
+            purchased_ticket3 as "entrada adquirida 3"
             from users order by cognoms asc, nom asc, users.email asc
         """
         return generate_excel(file_name = file_name, select = select)
