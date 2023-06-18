@@ -149,3 +149,24 @@ class TaskMessageEmail(TaskEmail):
             subject = subject,
             content = content
         )
+
+
+class TaskYourShiftsEmail(TaskEmail):
+    def __init__(self, user, body):
+        from . import params_manager
+
+        str_date_time = get_timestamp()
+
+        email = user.email
+        subject = f'{labels.get("your_shifts_subject")} {str_date_time}'
+        content = render_template("email/your_shifts_email.txt",
+            name = user.name,
+            body = body,
+            app_url = params_manager.external_url
+        )
+
+        super().__init__(
+            receiver_emails = [email],
+            subject = subject,
+            content = content
+        )
