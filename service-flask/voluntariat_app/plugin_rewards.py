@@ -33,7 +33,7 @@ class RewardsImpl:
         logger.info(f"{self.__class__.__name__} - shift:{name} = {id}")
         return id
 
-class Rewards15Anniversary(RewardsImpl):
+class Rewards15Edition(RewardsImpl):
 
     def __init__(self, app, db):
         with app.app_context():
