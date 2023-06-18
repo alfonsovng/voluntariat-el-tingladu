@@ -5,9 +5,8 @@ services:
   postgres:
     image: postgres:15.3
     restart: "no"
-    environment:
-      POSTGRES_PASSWORD: demo
-      PGDATA: /var/lib/postgresql/data/pgdata
+    env_file:
+      - ./.env
     ports:
       - 127.0.0.1:5432:5432
     volumes:
