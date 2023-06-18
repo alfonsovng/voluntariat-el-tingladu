@@ -35,6 +35,7 @@ class User(UserMixin, db.Model):
     electrician = db.Column(db.Boolean, nullable=False, default=False, server_default=text("FALSE"))
     role = db.Column(db.Enum(UserRole, name='users_role'), nullable=False)
     change_password_token = db.Column(db.String)
+    last_shift_change_at = db.Column(db.DateTime(timezone=True))
     # aliased pq quan fem join de user amb user_shifts no doni problemes
     has_shifts = db.column_property(exists().where(aliased(UserShift,name="user_shifts_to_count_them").user_id==id))
 
