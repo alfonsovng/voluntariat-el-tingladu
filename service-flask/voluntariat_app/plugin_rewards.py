@@ -388,6 +388,9 @@ class RewardsManager:
         self.__update_tickets(user, current_shifts)
         self.__update_meals(user, current_shifts)
 
+        # actualitzo el last_change_at de l'usuari
+        self.__update_user(user)
+
     def __get_current_shifts(self, user_id):
         from .models import UserShift, Shift, Task
         from . import db
@@ -449,6 +452,13 @@ class RewardsManager:
     def __get_first_with_filter(self, lambda_filter, list):
         filtered_list = filter(lambda_filter, list)
         return next(iter(filtered_list), None)
+    
+    def __update_user(self, user):
+        from . import db
+        from sqlalchemy.sql import func
+
+        user.last_shift_change_at = func.now()
+        db.session.add(user)
 
     def calculate_cash(self, user):
         cash = 0

@@ -56,7 +56,8 @@ def signup(invitation_token):
             # create token with the user id
             token = hashid_manager.create_token(user.id)
             user.change_password_token = token
-
+            db.session.add(user)
+            
             # guardo la informació de la seva dieta
             db.session.add(UserDiet(user_id = user.id))
 

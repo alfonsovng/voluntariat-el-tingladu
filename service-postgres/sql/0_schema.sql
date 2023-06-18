@@ -254,7 +254,9 @@ CREATE TABLE public.users (
     purchased_ticket4 character varying DEFAULT ''::character varying NOT NULL,
     electrician boolean DEFAULT false NOT NULL,
     role public.users_role NOT NULL,
-    change_password_token character varying
+    change_password_token character varying,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    last_shift_change_at TIMESTAMPTZ
 );
 
 
