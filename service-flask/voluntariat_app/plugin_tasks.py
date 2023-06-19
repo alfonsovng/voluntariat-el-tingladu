@@ -2,7 +2,7 @@ import threading
 import queue
 import time
 
-from .helper import logger
+from .helper import logger, Task
 
 class TaskManager:
     
@@ -16,6 +16,7 @@ class TaskManager:
     def init_app(self, app):
         pause_between_tasks = app.config.get('TASKS_PAUSE', self.pause_between_tasks)
         self.pause_between_tasks = pause_between_tasks
+        self.cron_task = CronTask(app, self.task_queue)
 
         # Turn-on the worker thread
         threading.Thread(target=self.worker, name='TaskManagerThread', daemon=True).start()
@@ -36,3 +37,51 @@ class TaskManager:
                     logger.warning(f'Tasca amb error: {e}')
             except:
                 time.sleep(self.pause_between_tasks)
+                self.add_task(self.cron_task)
+
+class CronTask(Task):
+
+    def __init__(self, app, task_queue):
+        super().__init__()
+        self.__app = app
+        self.__task_queue = task_queue
+
+    def do_it(self):
+        from datetime import timedelta
+        from sqlalchemy import update, text
+        from sqlalchemy.sql import func
+        from sqlalchemy.orm import Session
+        from .models import User
+        from . import db
+        from .plugin_gmail import TaskYourShiftsEmail
+
+        with self.__app.app_context():
+
+            logger.info("Comprovant si hi ha usuaris als que notificar els seus torns")
+
+            users = User.query.filter((User.last_shift_change_at+timedelta(hours=1)) < func.now())
+
+            for user_with_shifts in users:
+
+                logger.info(f"Comprovant usuari {user_with_shifts}...")
+
+                with Session(db.engine) as session: # creo una sessió exclusiva
+                    with session.begin():
+                        result = session.execute(
+                            update(User)
+                                .values(last_shift_change_at=None)
+                                .where(User.last_shift_change_at == user_with_shifts.last_shift_change_at)
+                                .where(User.id == user_with_shifts.id)
+                        )
+                        # m'asseguro que s'ha fet l'update, per a evitar molts emails en un entorn multithread
+                        if result.rowcount == 1:
+                            # envio un email dels torns apuntats!
+                            logger.info(f"Email amb els torns a l'usuari {user_with_shifts}")
+
+                            shifts = [s for s in session.execute(text(f"""select t.name || ': ' || s.name 
+                                from tasks as t 
+                                join shifts as s on t.id = s.task_id 
+                                join user_shifts as us on us.shift_id = s.id 
+                                where us.user_id = {user_with_shifts.id}""")).scalars()]
+
+                            self.__task_queue.put_nowait(TaskYourShiftsEmail(user_with_shifts, shifts))

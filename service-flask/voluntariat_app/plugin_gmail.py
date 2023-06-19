@@ -152,10 +152,12 @@ class TaskMessageEmail(TaskEmail):
 
 
 class TaskYourShiftsEmail(TaskEmail):
-    def __init__(self, user, body):
+    def __init__(self, user, shifts):
         from . import params_manager
 
         str_date_time = get_timestamp()
+
+        body = "\n".join(shifts)
 
         email = user.email
         subject = f'{labels.get("your_shifts_subject")} {str_date_time}'
