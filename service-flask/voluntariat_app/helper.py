@@ -11,6 +11,7 @@ def __create_logger():
 
 logger = __create_logger()
 
+
 #
 # Task interface
 # totes les tasques que volem fer de manera asíncrona, com enviar un email,
@@ -106,6 +107,7 @@ def get_timestamp():
     from datetime import datetime
     import time
     return datetime.fromtimestamp(time.time()).strftime("%Y%m%d%H%M%S")
+
 
 #
 # Labels
