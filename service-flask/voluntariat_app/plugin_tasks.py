@@ -16,7 +16,7 @@ class TaskManager:
     def init_app(self, app):
         pause_between_tasks = app.config.get('TASKS_PAUSE', self.pause_between_tasks)
         self.pause_between_tasks = pause_between_tasks
-        self.cron_task = CronTask(app, self.task_queue)
+        self.shifts_email_task = ShiftsEmail(app, self.task_queue)
 
         # Turn-on the worker thread
         threading.Thread(target=self.worker, name='TaskManagerThread', daemon=True).start()
@@ -37,9 +37,9 @@ class TaskManager:
                     logger.warning(f'Tasca amb error: {e}')
             except:
                 time.sleep(self.pause_between_tasks)
-                self.add_task(self.cron_task)
+                self.add_task(self.shifts_email_task)
 
-class CronTask(Task):
+class ShiftsEmail(Task):
 
     def __init__(self, app, task_queue):
         super().__init__()
@@ -51,7 +51,7 @@ class CronTask(Task):
         from sqlalchemy import update, text
         from sqlalchemy.sql import func
         from sqlalchemy.orm import Session
-        from .models import User
+        from .models import User, UserRole
         from . import db
         from .plugin_gmail import TaskYourShiftsEmail
 
@@ -59,7 +59,7 @@ class CronTask(Task):
 
             logger.info("Comprovant si hi ha usuaris als que notificar els seus torns")
 
-            users = User.query.filter((User.last_shift_change_at+timedelta(hours=1)) < func.now())
+            users = User.query.filter(User.role != UserRole.worker).filter((User.last_shift_change_at+timedelta(minutes=10)) < func.now())
 
             for user_with_shifts in users:
 
