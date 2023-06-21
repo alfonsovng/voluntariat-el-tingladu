@@ -49,12 +49,19 @@ def people():
             case when role='worker' then '' else email end as email, 
             case when role='worker' then '' else dni end as dni, 
             phone as mòbil, role as rol, 
+            case when shifts.n > 0 then 'X' else '' end as "amb torns",
             case when electrician then 'X' else '' end as electricitat,
             purchased_ticket1 as "entrada adquirida 1",
             purchased_ticket2 as "entrada adquirida 2",
             purchased_ticket3 as "entrada adquirida 3"
-            from users order by cognoms asc, nom asc, users.email asc
+            from users 
+            left join (select user_id, count(*) as n from user_shifts group by user_id) as shifts
+            on shifts.user_id = users.id
+            order by cognoms asc, nom asc, users.email asc
         """
+
+        # select u.surname as cognoms, u.name as nom, u.email, c.n from users as u left join (select user_id, count(*) > 0 then 'X' else '' end  as n from user_shifts group by user_id) as c on c.user_id = u.id order by email;
+
         return generate_excel(file_name = file_name, select = select)
     else:
         volunteers = User.query.order_by(User.surname.asc(), User.name.asc()).all()
