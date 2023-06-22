@@ -1,16 +1,17 @@
 nom,descripció,contrasenya,no voluntaris
-BARRES,Barres,"",FALSE
-CAP BARRES,Cap de barres,maresme,FALSE
-ENTRADES,Entrades,urgell,FALSE
-TRESORERIA,Tresoreria,safor,FALSE
-CUINA,Cuina,nevada,FALSE
-GLOBUS,Globus,vallespir,FALSE
-ELÈCTRICS,Elèctrics,costera,FALSE
-MUNTATGE,Muntatge,"",FALSE
-MARXANDATGE,Marxandatge,matarranya,FALSE
-COMUNICACIÓ,Comunicació,bages,FALSE
-SO,So,"",TRUE
-SEGURETAT,Seguretat,"",TRUE
-ORGANITZACIÓ,Organització,garrotxa,FALSE
-PUNT LILA,Punt Lila,"",TRUE
+BARRES,Voluntariat de barres,"",FALSE
+SUBCAPS,Supcaps de barres,puput,FALSE
+ENTRADES,Voluntariat d'entrades,oca,FALSE
+TRESORERIA,Voluntariat de tresoreria,falciot,FALSE
+CUINA,Voluntariat de cuina,perdiu,FALSE
+GLOBUS,Voluntariat de Globus,pardal,FALSE
+ELÈCTRICS,Voluntariat elèctrics,cucut,FALSE
+MUNTATGE,Voluntariat de muntatge,"",FALSE
+MARXANDATGE,Voluntariat de marxandatge,corb,FALSE
+COMUNICACIÓ,Voluntariat de comunicació,martinet,FALSE
+SO,Persones professionals del So,"",TRUE
+SEGURETAT,Persones professionals de Seguretat,"",TRUE
+ORGANITZACIÓ,Voluntariat d'organització,aligot,FALSE
+PUNT LILA,Persones professionals del Punt Lila,"",TRUE
+PHOTOCALL,Voluntariat del photocall,corriol,FALSE
 SUPORT,Gent de suport del centre obert,"",TRUE

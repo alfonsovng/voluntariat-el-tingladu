@@ -265,7 +265,7 @@ def shifts(task_id):
 
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
-        select = """select t.name as tasca, s.name as torn,
+        select = """select t.name as tasca, s.day as torn,
             u.surname as cognoms, u.name as nom, 
             case when u.role='worker' then '' else u.email end as email, 
             u.phone as mòbil, us.comments as "obs torn" 
@@ -331,7 +331,7 @@ def shift_detail(task_id, shift_id):
         for (i, name) in enumerate(shift.assignations, start=1):
             assignations_select.write(f""",case when us.shift_assignations[{i}] then 'X' else '' end as "{name}"\n""")
 
-        select = f"""select t.name as tasca, s.name as torn,
+        select = f"""select t.name as tasca, s.day as torn,
             u.surname as cognoms, u.name as nom, 
             case when u.role='worker' then '' else u.email end as email, 
             u.phone as mòbil, us.comments as "obs torn"

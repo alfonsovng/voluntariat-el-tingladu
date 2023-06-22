@@ -1,0 +1,37 @@
+{% extends '_registered.html' %}
+
+{% set admin = request.path.startswith('/admin') %}
+
+<!--
+{% block admin_css %}
+{% if admin %}
+<link href="/static/css/voluntariat_app_admin.css" rel="stylesheet">
+{% endif %}
+{% endblock %}
+-->
+
+{% block content %}
+<div class="row justify-content-md-center">
+  <div class="col-md-8 col-lg-7 col-xl-6">
+    <h2>{% block title %}{{task.name}}{% endblock %}</h2>
+    <h2><small class="text-muted">
+      {% if admin %} 
+      <a href="/admin/p/{{ volunteer.hashid }}">{{ volunteer.full_name }}</a>
+      {% else  %}
+      {{ volunteer.full_name }}
+      {% endif %}
+    </small></h2>
+    <div class="list-group">
+      {% for day in days %}
+        <a href="{{'/admin' if admin}}/p/{{ volunteer.hashid }}/tasks/{{task.hashid}}/{{day | urlencode}}" 
+          class="list-group-item">
+          <h4>{{day}}</h4> 
+          <h4><small>{{task.description}}</small></h4>
+        </a>
+      {% endfor %}
+    </div>
+    <br />
+    <a class="btn btn-secondary" href="{{'/admin' if admin}}/p/{{ volunteer.hashid }}"> &#x3c;&#x3c; Torna enrere</a>
+  </div>
+</div>
+{% endblock %}

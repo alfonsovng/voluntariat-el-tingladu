@@ -85,7 +85,7 @@ class Shift(db.Model):
     __tablename__ = "shifts"
     id = db.Column(db.Integer, primary_key=True)
     task_id = db.Column(db.Integer, db.ForeignKey("tasks.id"), nullable=False)
-    name = db.Column(db.String, nullable=False)
+    day = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
     slots = db.Column(db.Integer, nullable=False, server_default=text("0")) # 0 significa sense límits
     assignations = db.Column(ARRAY(db.String), nullable=False, server_default='{}') # opcions que assigna l'admin

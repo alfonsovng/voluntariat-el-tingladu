@@ -75,7 +75,7 @@ ALTER SEQUENCE public.meals_id_seq OWNED BY public.meals.id;
 CREATE TABLE public.shifts (
     id integer NOT NULL,
     task_id integer NOT NULL,
-    name character varying NOT NULL,
+    day character varying NOT NULL,
     description character varying DEFAULT ''::character varying NOT NULL,
     slots integer DEFAULT 0 NOT NULL,
     assignations character varying[] DEFAULT '{}'::character varying[] NOT NULL,

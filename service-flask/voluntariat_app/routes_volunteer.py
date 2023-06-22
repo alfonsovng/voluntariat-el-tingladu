@@ -7,6 +7,7 @@ from .plugin_gmail import TaskConfirmPasswordChangeEmail
 from .models import Task, Shift, UserShift, UserDiet, UserMeal, Meal, Ticket, UserTicket
 from sqlalchemy import text
 from sqlalchemy.dialects.postgresql import ARRAY
+from urllib.request import pathname2url
 
 # Blueprint Configuration
 volunteer_bp = Blueprint(
@@ -127,7 +128,35 @@ def tasks(volunteer_hashid):
 @volunteer_bp.route('/admin/p/<volunteer_hashid>/tasks/<task_hashid>', methods=["GET", "POST"])
 @volunteer_bp.route('/p/<volunteer_hashid>/tasks/<task_hashid>', methods=["GET", "POST"])
 @login_required
-def shifts(volunteer_hashid, task_hashid):
+def task(volunteer_hashid, task_hashid):
+    volunteer = load_volunteer(current_user,volunteer_hashid)
+    if volunteer is None:
+        flash_error("wrong_address")
+        return redirect(url_for('main_bp.init'))
+    
+    task_id = hashid_manager.get_task_id_from_hashid(task_hashid)
+    if task_id is None:
+        flash_error("wrong_address")
+        return redirect(url_for('main_bp.init'))
+
+    task = Task.query.filter_by(id = task_id).first()
+    if task is None:
+        flash_error("wrong_address")
+        return redirect(url_for('main_bp.init'))
+    
+    days = [s for s in db.session.execute(text(f"""select day from                                       
+        (select day, min(id) as min_id from shifts where task_id = {task_id} group by day) 
+        t order by min_id""")).scalars()]
+
+    if len(days) == 1:
+        return redirect(request.path + "/" + pathname2url(days[0]))
+
+    return render_template('volunteer-task.html',task=task, days=days,volunteer=volunteer,user=current_user)
+
+@volunteer_bp.route('/admin/p/<volunteer_hashid>/tasks/<task_hashid>/<day>', methods=["GET", "POST"])
+@volunteer_bp.route('/p/<volunteer_hashid>/tasks/<task_hashid>/<day>', methods=["GET", "POST"])
+@login_required
+def shifts(volunteer_hashid, task_hashid, day):
     volunteer = load_volunteer(current_user,volunteer_hashid)
     if volunteer is None:
         flash_error("wrong_address")
@@ -166,7 +195,7 @@ def shifts(volunteer_hashid, task_hashid):
 
         return redirect(request.full_path)
     else:
-        shifts_and_selected = __select_shifts_and_selected(volunteer_id=volunteer.id, task_id=task_id)
+        shifts_and_selected = __select_shifts_and_selected(volunteer_id=volunteer.id, task_id=task_id, day=day)
 
         if read_only:
             flash_info("read_only")
@@ -236,7 +265,7 @@ def __update_shifts(volunteer, task_id, current_user_is_admin, form):
 
     db.session.commit()
 
-def __select_shifts_and_selected(volunteer_id, task_id):
+def __select_shifts_and_selected(volunteer_id, task_id, day):
     # subquery que calcula, donat un usuari i una tasca, si ha seleccionat el torn (t/f) i les possibles observacions que ha posat
     selected_shifts_subquery = text(f"""
         select s.id as shift_id, COALESCE(c.taked,0) as taked, user_id is not null as selected, u.comments as comments, s.assignations as assignations, u.shift_assignations as shift_assignations 
@@ -245,7 +274,7 @@ def __select_shifts_and_selected(volunteer_id, task_id):
         on s.id = u.shift_id left join 
             (select shift_id, count(*) as taked from user_shifts group by shift_id) as c 
         on s.id = c.shift_id
-        where s.task_id = {task_id}
+        where s.task_id = {task_id} and s.day = '{day}'
     """).columns(shift_id=db.Integer,taked=db.Integer,selected=db.Boolean, comments=db.String, assignations=ARRAY(db.String), shift_assignations=ARRAY(db.Boolean)).subquery("selected_shifts_subquery")
 
     return db.session.query(
