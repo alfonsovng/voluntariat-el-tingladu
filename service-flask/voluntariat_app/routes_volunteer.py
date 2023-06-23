@@ -143,15 +143,16 @@ def task(volunteer_hashid, task_hashid):
     if task is None:
         flash_error("wrong_address")
         return redirect(url_for('main_bp.init'))
-    
-    days = [s for s in db.session.execute(text(f"""select day from                                       
-        (select day, min(id) as min_id from shifts where task_id = {task_id} group by day) 
-        t order by min_id""")).scalars()]
+       
+    days_and_number_of_shifts = [s for s in db.session.execute(text(f"""select s.day, count(us.user_id) 
+        from shifts as s 
+        left join (select shift_id, user_id from user_shifts where user_id = {volunteer.id}) as us 
+        on us.shift_id = s.id where s.task_id = {task_id} group by s.day order by s.day"""))]
 
-    if len(days) == 1:
-        return redirect(request.path + "/" + pathname2url(days[0]))
+    if len(days_and_number_of_shifts) == 1:
+        return redirect(request.path + "/" + pathname2url(days_and_number_of_shifts[0][0]))
 
-    return render_template('volunteer-task.html',task=task, days=days,volunteer=volunteer,user=current_user)
+    return render_template('volunteer-task.html',task=task, days_and_number_of_shifts=days_and_number_of_shifts,volunteer=volunteer,user=current_user)
 
 @volunteer_bp.route('/admin/p/<volunteer_hashid>/tasks/<task_hashid>/<day>', methods=["GET", "POST"])
 @volunteer_bp.route('/p/<volunteer_hashid>/tasks/<task_hashid>/<day>', methods=["GET", "POST"])
@@ -188,6 +189,7 @@ def shifts(volunteer_hashid, task_hashid, day):
             __update_shifts(
                 volunteer = volunteer,
                 task_id = task_id,
+                day = day,
                 current_user_is_admin = current_user.is_admin,
                 form = request.form
             )
@@ -209,9 +211,9 @@ def shifts(volunteer_hashid, task_hashid, day):
             user=current_user
         )
 
-def __update_shifts(volunteer, task_id, current_user_is_admin, form):
+def __update_shifts(volunteer, task_id, day, current_user_is_admin, form):
     current_user_shifts = UserShift.query.filter(UserShift.user_id == volunteer.id).filter(
-        text(f"""shift_id in (select id from shifts where task_id = {task_id})""")
+        text(f"""shift_id in (select id from shifts where task_id = {task_id} and day = '{day}')""")
     ).all()
 
     shift_id_to_insert = set((int(id) for id in form.getlist("shifts")))

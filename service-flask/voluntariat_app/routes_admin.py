@@ -184,8 +184,8 @@ def __insert_worker(admin_id, surname, name, phone, shift_id):
 
 def get_list_shifts():
     no_shifts = [(0, labels.get("worker_without_shifts"))]
-    db_shifts = [(id, t + ": " + s) for (id, t, s) in 
-        db.session.execute(text(f"""select s.id, t.name, s.name 
+    db_shifts = [(id, t + ": " + s1 + ", " + s2) for (id, t, s1, s2) in 
+        db.session.execute(text(f"""select s.id, t.name, s.day, s.description
             from tasks as t
             join shifts as s on t.id = s.task_id 
             order by t.id asc, s.id asc""")).all()
@@ -265,7 +265,7 @@ def shifts(task_id):
 
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
-        select = """select t.name as tasca, s.day as torn,
+        select = """select t.name as tasca, s.day as dia, s.description as descripció,
             u.surname as cognoms, u.name as nom, 
             case when u.role='worker' then '' else u.email end as email, 
             u.phone as mòbil, us.comments as "obs torn" 
@@ -331,7 +331,7 @@ def shift_detail(task_id, shift_id):
         for (i, name) in enumerate(shift.assignations, start=1):
             assignations_select.write(f""",case when us.shift_assignations[{i}] then 'X' else '' end as "{name}"\n""")
 
-        select = f"""select t.name as tasca, s.day as torn,
+        select = f"""select t.name as tasca, s.day as dia, s.description as descripció,
             u.surname as cognoms, u.name as nom, 
             case when u.role='worker' then '' else u.email end as email, 
             u.phone as mòbil, us.comments as "obs torn"

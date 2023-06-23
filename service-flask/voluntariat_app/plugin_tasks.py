@@ -78,7 +78,7 @@ class ShiftsEmail(Task):
                             # envio un email dels torns apuntats!
                             logger.info(f"Email amb els torns a l'usuari {user_with_shifts}")
 
-                            shifts = [s for s in session.execute(text(f"""select t.name || ': ' || s.name 
+                            shifts = [s for s in session.execute(text(f"""select t.name || ': ' || s.day || ', ' || s.description
                                 from tasks as t 
                                 join shifts as s on t.id = s.task_id 
                                 join user_shifts as us on us.shift_id = s.id 
