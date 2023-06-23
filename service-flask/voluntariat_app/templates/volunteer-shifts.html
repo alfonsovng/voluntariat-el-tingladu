@@ -24,15 +24,15 @@
     </small></h2>
     <form role="form" method='POST'>
       {{ form.csrf_token }}
-      <ul class="list-group">
-        <li class="list-group-item list-group-item-dark">
+      <div class="list-group">
+        <div class="list-group-item list-group-item-dark">
           <h4>{{task.name}}</h4>
           <h4><small>{{ task.description }}</small></h4>
-        </li>
+        </div>
         {% for shift,taked,selected,comments,assignations,shift_assignations in shifts_and_selected %}
           {% set disponibles = (shift.slots - taked) if shift.slots > 0 else 1 %}
           {% set no_accessible = disponibles <= 0 and not selected and not user.is_admin %}
-        <li class="list-group-item {{'list-group-item-light' if no_accessible }}">
+        <div class="list-group-item {{'list-group-item-light' if no_accessible }}">
           <label for="{{shift.id}}-id" class="d-flex justify-content-start checkbox-with-hidden-texarea">
             <div>
               {% if no_accessible %}
@@ -75,9 +75,9 @@
             </div>
           </label>
 
-        </li>
+        </div>
         {% endfor %}
-      </ul>
+      </div>
       <br/>
       {% if form.password %}
         <div class="form-group">

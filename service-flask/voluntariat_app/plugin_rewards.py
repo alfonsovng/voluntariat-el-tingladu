@@ -36,280 +36,212 @@ class RewardsImpl:
 class Rewards15Edition(RewardsImpl):
 
     def __init__(self, app, db):
-        pass
-        # with app.app_context():
-        #     # àpats
-        #     dinar_15_aniversari_id = self._get_meal_id(db, "DINAR DE DISSABTE")
-        #     sopar_15_aniversari_id = self._get_meal_id(db, "SOPAR DE DISSABTE")
+        with app.app_context():
+            # àpats
+            sopar_dijous_id = self._get_meal_id(db, "SOPAR DE DIJOUS")
+            sopar_divendres_id = self._get_meal_id(db, "SOPAR DE DIVENDRES")
+            sopar_dissabte_id = self._get_meal_id(db, "SOPAR DE DISSABTE")
 
-        #     # entrades i acreditacions
-        #     entrada_15_aniversari_id = self._get_ticket_id(db, "ENTRADA DE DISSABTE")
-        #     pulsera_voluntari_id = self._get_ticket_id(db, "PULSERA VOLUNTARI")
-        #     acreditacio_col_id = self._get_ticket_id(db, "ACREDITACIÓ COL·LABORADOR")
-        #     acreditacio_globus_id = self._get_ticket_id(db, "ACREDITACIÓ GLOBUS")
-        #     acreditacio_org_id = self._get_ticket_id(db, "ACREDITACIÓ ORGANITZACIÓ")
-        #     pulsera_so_id = self._get_ticket_id(db, "PULSERA SO")
-        #     pulsera_punt_lila_id = self._get_ticket_id(db, "PULSERA PUNT LILA")
-        #     pulsera_cap_barres_s1_id = self._get_ticket_id(db, "PULSERA CAP T1 ROSA")
-        #     pulsera_cap_barres_s2_id = self._get_ticket_id(db, "PULSERA CAP T2 VERDA")
-        #     pulsera_barra_s1_id = self._get_ticket_id(db, "PULSERA BARRA T1 BLAVA")
-        #     pulsera_barra_s2_id = self._get_ticket_id(db, "PULSERA BARRA T2 LILA")
-        #     pulsera_barra_s3_id = self._get_ticket_id(db, "PULSERA BARRA T3 BLANCA")
-        #     pulsera_barra_s4_id = self._get_ticket_id(db, "PULSERA BARRA T4 TARONJA")
+            # entrades i acreditacions
+            entrada_dijous_id = self._get_ticket_id(db, "ENTRADA DE DIJOUS")
+            entrada_divendres_id = self._get_ticket_id(db, "ENTRADA DE DIVENDRES")
+            entrada_dissabte_id = self._get_ticket_id(db, "ENTRADA DE DISSABTE")
+            abonament_id = self._get_ticket_id(db, "ABONAMENT TRES DIES")
+            voluntari_dijous_id = self._get_ticket_id(db, "VOLUNTARI DE DIJOUS")
+            voluntari_divendres_id = self._get_ticket_id(db, "VOLUNTARI DE DIVENDRES")
+            voluntari_dissabte_id = self._get_ticket_id(db, "VOLUNTARI DE DISSABTE")
+            acreditacio_col_laborador_id = self._get_ticket_id(db, "ACREDITACIÓ COL·LABORADOR")
+            acreditacio_globus_id = self._get_ticket_id(db, "ACREDITACIÓ GLOBUS")
+            acreditacio_organitzacio_id = self._get_ticket_id(db, "ACREDITACIÓ ORGANITZACIÓ")
+            acreditacio_treballador_id = self._get_ticket_id(db, "ACREDITACIÓ TREBALLADOR")
+            acreditacio_punt_lila_i_food_truck_id = self._get_ticket_id(db, "ACREDITACIÓ PUNT LILA I FOOD TRUCK")
 
-        #     # tasques
-        #     barres_id = self._get_task_id(db, "BARRES")
-        #     cap_barres_id = self._get_task_id(db, "CAP BARRES")
-        #     entrades_id = self._get_task_id(db, "ENTRADES")
-        #     tresoreria_id = self._get_task_id(db, "TRESORERIA")
-        #     cuina_id = self._get_task_id(db, "CUINA")
-        #     globus_id = self._get_task_id(db, "GLOBUS")
-        #     electrics_id = self._get_task_id(db, "ELÈCTRICS")
-        #     muntatge_id = self._get_task_id(db, "MUNTATGE")
-        #     marxandatge_id = self._get_task_id(db, "MARXANDATGE")
-        #     comunicacio_id = self._get_task_id(db, "COMUNICACIÓ")
-        #     so_id = self._get_task_id(db, "SO")
-        #     seguretat_id = self._get_task_id(db, "SEGURETAT")
-        #     organitzacio_id = self._get_task_id(db, "ORGANITZACIÓ")
-        #     punt_lila_id = self._get_task_id(db, "PUNT LILA")
-        #     suport_id = self._get_task_id(db, "SUPORT")
+            # tasques
+            barres_id = self._get_task_id(db, "BARRES")
+            subcaps_barres_id = self._get_task_id(db, "SUBCAPS DE BARRES")
+            entrades_id = self._get_task_id(db, "ENTRADES")
+            marxandatge_id = self._get_task_id(db, "MARXANDATGE")
+            cuina_id = self._get_task_id(db, "CUINA")
+            globus_id = self._get_task_id(db, "GLOBUS")
+            photocall_id = self._get_task_id(db, "PHOTOCALL")
+            tresoreria_id = self._get_task_id(db, "TRESORERIA")
+            muntatge_id = self._get_task_id(db, "MUNTATGE")
+            suport_id = self._get_task_id(db, "SUPORT")
+            organitzacio_id = self._get_task_id(db, "ORGANITZACIÓ")
+            comunicacio_id = self._get_task_id(db, "COMUNICACIÓ")
+            electrics_id = self._get_task_id(db, "ELÈCTRICS")
+            so_id = self._get_task_id(db, "SO")
+            seguretat_id = self._get_task_id(db, "SEGURETAT")
+            punt_lila_i_food_truck_id = self._get_task_id(db, "PUNT LILA I FOOD TRUCK")
 
-        #     # shifts
-        #     cap_barres_s1_id = self._get_shift_id(db, cap_barres_id, "DISSABTE: 18:00 - 23:00")
-        #     cap_barres_s2_id = self._get_shift_id(db, cap_barres_id, "DISSABTE: 23:00 - 04:00")
-        #     barres_s1_id = self._get_shift_id(db, barres_id, "DISSABTE: 18:00 - 19:30")
-        #     barres_s2_id = self._get_shift_id(db, barres_id, "DISSABTE: 19:30 - 22:30")
-        #     barres_s3_id = self._get_shift_id(db, barres_id, "DISSABTE: 22:30 - 01:30")
-        #     barres_s4_id = self._get_shift_id(db, barres_id, "DISSABTE: 01:30 - 04:30")
+            self.tasques_amb_entrada_del_dia = frozenset([
+                barres_id,
+                subcaps_barres_id,
+                entrades_id,
+                marxandatge_id,
+                cuina_id,
+                globus_id,
+                photocall_id,
+                tresoreria_id,
+                # muntatge_id,
+                # suport_id,
+                # organitzacio_id,
+                # comunicacio_id,
+                # electrics_id,
+                # so_id,
+                # seguretat_id,
+                # punt_lila_i_food_truck_id,
+            ])
 
-        #     self.meals_by_task = [
-        #         [dinar_15_aniversari_id,
-        #         frozenset([
-        #             # barres_id,
-        #             # cap_barres_id,
-        #             # entrades_id,
-        #             # tresoreria_id,
-        #             # cuina_id,
-        #             # globus_id,
-        #             # electrics_id,
-        #             # muntatge_id,
-        #             # marxandatge_id,
-        #             # comunicacio_id,
-        #             so_id,
-        #             # seguretat_id,
-        #             organitzacio_id,
-        #             # punt_lila_id,
-        #             # suport_id
-        #         ])],
-        #         [sopar_15_aniversari_id,
-        #         frozenset([
-        #             barres_id,
-        #             cap_barres_id,
-        #             entrades_id,
-        #             tresoreria_id,
-        #             cuina_id,
-        #             globus_id,
-        #             electrics_id,
-        #             # muntatge_id,
-        #             marxandatge_id,
-        #             comunicacio_id,
-        #             so_id,
-        #             seguretat_id,
-        #             organitzacio_id,
-        #             # punt_lila_id,
-        #             suport_id
-        #         ])],
-        #     ]
+            self.tasques_amb_voluntari_del_dia = frozenset([
+                barres_id,
+                subcaps_barres_id,
+                entrades_id,
+                marxandatge_id,
+                # cuina_id,
+                # globus_id,
+                photocall_id,
+                # tresoreria_id,
+                # muntatge_id,
+                # suport_id,
+                # organitzacio_id,
+                # comunicacio_id,
+                # electrics_id,
+                # so_id,
+                # seguretat_id,
+                # punt_lila_i_food_truck_id,
+            ])
 
-        #     self.tickets_by_task = [
-        #         [entrada_15_aniversari_id,
-        #         frozenset([
-        #             # barres_id,
-        #             # cap_barres_id,
-        #             # entrades_id,
-        #             # tresoreria_id,
-        #             # cuina_id,
-        #             # globus_id,
-        #             electrics_id,
-        #             muntatge_id,
-        #             marxandatge_id,
-        #             # comunicacio_id,
-        #             # so_id,
-        #             # seguretat_id,
-        #             # organitzacio_id,
-        #             # punt_lila_id,
-        #             suport_id
-        #         ])],
-        #         [pulsera_voluntari_id,
-        #         frozenset([
-        #             # barres_id,
-        #             # cap_barres_id,
-        #             entrades_id,
-        #             # tresoreria_id,
-        #             # cuina_id,
-        #             # globus_id,
-        #             # electrics_id,
-        #             # muntatge_id,
-        #             # marxandatge_id,
-        #             # comunicacio_id,
-        #             # so_id,
-        #             # seguretat_id,
-        #             # organitzacio_id,
-        #             # punt_lila_id,
-        #             # suport_id
-        #         ])],
-        #         [acreditacio_col_id,
-        #         frozenset([
-        #             # barres_id,
-        #             # cap_barres_id,
-        #             # entrades_id,
-        #             tresoreria_id,
-        #             cuina_id,
-        #             # globus_id,
-        #             # electrics_id,
-        #             # muntatge_id,
-        #             # marxandatge_id,
-        #             comunicacio_id,
-        #             # so_id,
-        #             # seguretat_id,
-        #             # organitzacio_id,
-        #             # punt_lila_id,
-        #             # suport_id
-        #         ])],
-        #         [acreditacio_globus_id,
-        #         frozenset([
-        #             # barres_id,
-        #             # cap_barres_id,
-        #             # entrades_id,
-        #             # tresoreria_id,
-        #             # cuina_id,
-        #             globus_id,
-        #             # electrics_id,
-        #             # muntatge_id,
-        #             # marxandatge_id,
-        #             # comunicacio_id,
-        #             # so_id,
-        #             # seguretat_id,
-        #             # organitzacio_id,
-        #             # punt_lila_id,
-        #             # suport_id
-        #         ])],
-        #         [acreditacio_org_id,
-        #         frozenset([
-        #             # barres_id,
-        #             # cap_barres_id,
-        #             # entrades_id,
-        #             # tresoreria_id,
-        #             # cuina_id,
-        #             # globus_id,
-        #             # electrics_id,
-        #             # muntatge_id,
-        #             # marxandatge_id,
-        #             # comunicacio_id,
-        #             # so_id,
-        #             # seguretat_id,
-        #             organitzacio_id,
-        #             # punt_lila_id,
-        #             # suport_id
-        #         ])],
-        #         [pulsera_so_id,
-        #         frozenset([
-        #             # barres_id,
-        #             # cap_barres_id,
-        #             # entrades_id,
-        #             # tresoreria_id,
-        #             # cuina_id,
-        #             # globus_id,
-        #             # electrics_id,
-        #             # muntatge_id,
-        #             # marxandatge_id,
-        #             # comunicacio_id,
-        #             so_id,
-        #             # seguretat_id,
-        #             # organitzacio_id,
-        #             # punt_lila_id,
-        #             # suport_id
-        #         ])],
-        #         [pulsera_punt_lila_id,
-        #         frozenset([
-        #             # barres_id,
-        #             # cap_barres_id,
-        #             # entrades_id,
-        #             # tresoreria_id,
-        #             # cuina_id,
-        #             # globus_id,
-        #             # electrics_id,
-        #             # muntatge_id,
-        #             # marxandatge_id,
-        #             # comunicacio_id,
-        #             # so_id,
-        #             # seguretat_id,
-        #             # organitzacio_id,
-        #             punt_lila_id,
-        #             # suport_id
-        #         ])],
-        #     ]
+            self.tasques_amb_sopar_del_dia = frozenset([
+                barres_id,
+                subcaps_barres_id,
+                entrades_id,
+                marxandatge_id,
+                cuina_id,
+                globus_id,
+                photocall_id,
+                tresoreria_id,
+                # muntatge_id,
+                # suport_id,
+                # organitzacio_id,
+                # comunicacio_id,
+                # electrics_id,
+                # so_id,
+                # seguretat_id,
+                # punt_lila_i_food_truck_id,
+            ])
 
-        #     self.tickets_by_shift = [
-        #         [pulsera_cap_barres_s1_id,
-        #         frozenset([
-        #             cap_barres_s1_id,
-        #             # cap_barres_s2_id,
-        #             # barres_s1_id,
-        #             # barres_s2_id,
-        #             # barres_s3_id,
-        #             # barres_s4_id,
-        #         ])],
-        #         [pulsera_cap_barres_s2_id,
-        #         frozenset([
-        #             # cap_barres_s1_id,
-        #             cap_barres_s2_id,
-        #             # barres_s1_id,
-        #             # barres_s2_id,
-        #             # barres_s3_id,
-        #             # barres_s4_id,
-        #         ])],
-        #         [pulsera_barra_s1_id,
-        #         frozenset([
-        #             # cap_barres_s1_id,
-        #             # cap_barres_s2_id,
-        #             barres_s1_id,
-        #             # barres_s2_id,
-        #             # barres_s3_id,
-        #             # barres_s4_id,
-        #         ])],
-        #         [pulsera_barra_s2_id,
-        #         frozenset([
-        #             # cap_barres_s1_id,
-        #             # cap_barres_s2_id,
-        #             # barres_s1_id,
-        #             barres_s2_id,
-        #             # barres_s3_id,
-        #             # barres_s4_id,
-        #         ])],
-        #         [pulsera_barra_s3_id,
-        #         frozenset([
-        #             # cap_barres_s1_id,
-        #             # cap_barres_s2_id,
-        #             # barres_s1_id,
-        #             # barres_s2_id,
-        #             barres_s3_id,
-        #             # barres_s4_id,
-        #         ])],
-        #         [pulsera_barra_s4_id,
-        #         frozenset([
-        #             # cap_barres_s1_id,
-        #             # cap_barres_s2_id,
-        #             # barres_s1_id,
-        #             # barres_s2_id,
-        #             # barres_s3_id,
-        #             barres_s4_id,
-        #         ])],
-        #     ]
+            self.tasques_amb_tots_els_sopars = frozenset([
+                # barres_id,
+                # subcaps_barres_id,
+                # entrades_id,
+                # marxandatge_id,
+                # cuina_id,
+                # globus_id,
+                # photocall_id,
+                # tresoreria_id,
+                # muntatge_id,
+                suport_id,
+                organitzacio_id,
+                comunicacio_id,
+                # electrics_id,
+                so_id,
+                seguretat_id,
+                # punt_lila_i_food_truck_id,
+            ])
 
-        #     logger.info(f"MEALS BY TASK: {self.meals_by_task}")
-        #     logger.info(f"TICKETS BY TASK: {self.tickets_by_task}")
-        #     logger.info(f"TICKETS BY SHIFT: {self.tickets_by_shift}")
+            self.acreditacions = [
+                [acreditacio_col_laborador_id, frozenset([
+                    # barres_id,
+                    # subcaps_barres_id,
+                    # entrades_id,
+                    # marxandatge_id,
+                    cuina_id,
+                    # globus_id,
+                    # photocall_id,
+                    tresoreria_id,
+                    # muntatge_id,
+                    # suport_id,
+                    # organitzacio_id,
+                    comunicacio_id,
+                    # electrics_id,
+                    # so_id,
+                    # seguretat_id,
+                    # punt_lila_i_food_truck_id,
+                ])],
+                [acreditacio_globus_id, frozenset([
+                    # barres_id,
+                    # subcaps_barres_id,
+                    # entrades_id,
+                    # marxandatge_id,
+                    # cuina_id,
+                    globus_id,
+                    # photocall_id,
+                    # tresoreria_id,
+                    # muntatge_id,
+                    # suport_id,
+                    # organitzacio_id,
+                    # comunicacio_id,
+                    # electrics_id,
+                    # so_id,
+                    # seguretat_id,
+                    # punt_lila_i_food_truck_id,
+                ])],
+                [acreditacio_organitzacio_id, frozenset([
+                    # barres_id,
+                    # subcaps_barres_id,
+                    # entrades_id,
+                    # marxandatge_id,
+                    # cuina_id,
+                    # globus_id,
+                    # photocall_id,
+                    # tresoreria_id,
+                    # muntatge_id,
+                    # suport_id,
+                    organitzacio_id,
+                    # comunicacio_id,
+                    # electrics_id,
+                    # so_id,
+                    # seguretat_id,
+                    # punt_lila_i_food_truck_id,
+                ])],
+                [acreditacio_treballador_id, frozenset([
+                    # barres_id,
+                    # subcaps_barres_id,
+                    # entrades_id,
+                    # marxandatge_id,
+                    # cuina_id,
+                    # globus_id,
+                    # photocall_id,
+                    # tresoreria_id,
+                    # muntatge_id,
+                    # suport_id,
+                    # organitzacio_id,
+                    # comunicacio_id,
+                    # electrics_id,
+                    so_id,
+                    seguretat_id,
+                    # punt_lila_i_food_truck_id,
+                ])],
+                [acreditacio_punt_lila_i_food_truck_id, frozenset([
+                    # barres_id,
+                    # subcaps_barres_id,
+                    # entrades_id,
+                    # marxandatge_id,
+                    # cuina_id,
+                    # globus_id,
+                    # photocall_id,
+                    # tresoreria_id,
+                    # muntatge_id,
+                    # suport_id,
+                    # organitzacio_id,
+                    # comunicacio_id,
+                    # electrics_id,
+                    # so_id,
+                    # seguretat_id,
+                    punt_lila_i_food_truck_id,
+                ])],
+            ]
 
     def calculate_tickets(self, user, current_shifts):
         return []

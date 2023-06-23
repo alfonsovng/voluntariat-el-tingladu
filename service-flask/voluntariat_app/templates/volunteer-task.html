@@ -13,7 +13,7 @@
 {% block content %}
 <div class="row justify-content-md-center">
   <div class="col-md-8 col-lg-7 col-xl-6">
-    <h2>{% block title %}{{task.name}}{% endblock %}</h2>
+    <h2>{% block title %}Tasca{% endblock %}</h2>
     <h2><small class="text-muted">
       {% if admin %} 
       <a href="/admin/p/{{ volunteer.hashid }}">{{ volunteer.full_name }}</a>
@@ -22,11 +22,14 @@
       {% endif %}
     </small></h2>
     <div class="list-group">
+      <div class="list-group-item list-group-item-dark">
+        <h4>{{task.name}}</h4>
+        <h4><small>{{ task.description }}</small></h4>
+      </div>
       {% for day, n in days_and_number_of_shifts %}
         <a href="{{'/admin' if admin}}/p/{{ volunteer.hashid }}/tasks/{{task.hashid}}/{{day | urlencode}}" 
           class="list-group-item {% if n>0 %}list-group-item-success {% endif %}">
           <h4>{{day}}</h4> 
-          <h4><small>{{task.description}}</small></h4>
           <h4><span class="badge badge-info">torns seleccionats: {{n}}</span></h4>
         </a>
       {% endfor %}
