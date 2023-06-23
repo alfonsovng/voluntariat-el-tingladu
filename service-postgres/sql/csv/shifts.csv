@@ -11,12 +11,12 @@ BARRES,22-06 DISSABTE,"Horari de 18:15 a 20:00",12,8,"{BARRA 1, BARRA 2, BARRA 3
 BARRES,22-06 DISSABTE,"Horari de 19:45 a 22:45",36,15,"{BARRA 1, BARRA 2, BARRA 3}"
 BARRES,22-06 DISSABTE,"Horari de 22:30 a 01:30",36,15,"{BARRA 1, BARRA 2, BARRA 3}"
 BARRES,22-06 DISSABTE,"Horari de 01:15 a 04:15",36,15,"{BARRA 1, BARRA 2, BARRA 3}"
-SUBCAPS DE BARRA,20-06 DIJOUS,"Horari de 18:00 a 23:00",10,20,"{BARRA 1, BARRA 2, BARRA 3}"
-SUBCAPS DE BARRA,20-06 DIJOUS,"Horari de 23:00 a 03:30",10,20,"{BARRA 1, BARRA 2, BARRA 3}"
-SUBCAPS DE BARRA,21-06 DIVENDRES,"Horari de 18:15 a 23:15",10,20,"{BARRA 1, BARRA 2, BARRA 3}"
-SUBCAPS DE BARRA,21-06 DIVENDRES,"Horari de 23:15 a 04:15",10,20,"{BARRA 1, BARRA 2, BARRA 3}"
-SUBCAPS DE BARRA,22-06 DISSABTE,"Horari de 18:15 a 23:15",10,20,"{BARRA 1, BARRA 2, BARRA 3}"
-SUBCAPS DE BARRA,22-06 DISSABTE,"Horari de 23:15 a 04:15",10,20,"{BARRA 1, BARRA 2, BARRA 3}"
+SUBCAPS DE BARRES,20-06 DIJOUS,"Horari de 18:00 a 23:00",10,20,"{BARRA 1, BARRA 2, BARRA 3}"
+SUBCAPS DE BARRES,20-06 DIJOUS,"Horari de 23:00 a 03:30",10,20,"{BARRA 1, BARRA 2, BARRA 3}"
+SUBCAPS DE BARRES,21-06 DIVENDRES,"Horari de 18:15 a 23:15",10,20,"{BARRA 1, BARRA 2, BARRA 3}"
+SUBCAPS DE BARRES,21-06 DIVENDRES,"Horari de 23:15 a 04:15",10,20,"{BARRA 1, BARRA 2, BARRA 3}"
+SUBCAPS DE BARRES,22-06 DISSABTE,"Horari de 18:15 a 23:15",10,20,"{BARRA 1, BARRA 2, BARRA 3}"
+SUBCAPS DE BARRES,22-06 DISSABTE,"Horari de 23:15 a 04:15",10,20,"{BARRA 1, BARRA 2, BARRA 3}"
 ENTRADES,20-06 DIJOUS,"Horari de 17:30 a 20:30",6,20,{}
 ENTRADES,20-06 DIJOUS,"Horari de 18:30 a 21:30",8,20,{}
 ENTRADES,20-06 DIJOUS,"Horari de 20:30 a 23:30",6,20,{}
@@ -44,17 +44,17 @@ GLOBUS,22-06 DISSABTE,Tasques d'el·laboració del Globus en torn únic,8,0,{}
 PHOTOCALL,20-06 DIJOUS,Tasques de photocall,5,15,{}
 PHOTOCALL,21-06 DIVENDRES,Tasques de photocall,5,15,{}
 PHOTOCALL,22-06 DISSABTE,Tasques de photocall,5,15,{}
-SUPORT,20-06 DIJOUS,Tasques de suport per part de gent del centre obert,20,15,{}
-SUPORT,21-06 DIVENDRES,Tasques de suport per part de gent del centre obert,20,15,{}
-SUPORT,22-06 DISSABTE,Tasques de suport per part de gent del centre obert,20,15,{}
+TRESORERIA,20-06 DIJOUS,Tasques de tresoreria,8,0,{}
+TRESORERIA,21-06 DIVENDRES,Tasques de tresoreria,8,0,{}
+TRESORERIA,22-06 DISSABTE,Tasques de tresoreria,8,0,{}
 MUNTATGE,18-06 DIMARTS,Horari de 17:00 a 20:00,10,10,{}
 MUNTATGE,19-06 DIMECRES,Horari de 10:00 a 13:00,10,10,{}
 MUNTATGE,19-06 DIMECRES,Horari de 17:00 a 20:00,10,10,{}
 MUNTATGE,20-06 DIJOUS,Horari de 10:00 a 13:00,5,10,{}
-COMUNICACIÓ,COMUNICACIÓ,Tasques de comunicació,10,0,{}
-TRESORERIA,TRESORERIA,Tasques de tresoreria,8,0,{}
+SUPORT,SUPORT,Tasques de suport per part de gent del centre obert,20,15,{}
 ORGANITZACIÓ,ORGANITZACIÓ,Tasques d'organització,30,0,{}
-ELÈCTRICS,ELÈCTRICS,Els torns s'assignaran posteriorment,10,15,"{19-06 DIMECRES,20-06 DIJOUS,21-06 DIVENDRES}"
+COMUNICACIÓ,COMUNICACIÓ,Tasques de comunicació,10,0,{}
+ELÈCTRICS,ELÈCTRICS,Els torns s'assignaran posteriorment,10,15,"{17-06 DILLUNS,18-06 DIMARTS,19-06 DIMECRES}"
 SO,SO,Professionals del so,20,0,{}
 SEGURETAT,SEGURETAT,Professionals de la seguretat,30,0,{}
-PUNT LILA,PUNT LILA,Professionals del punt lila,5,0,{}
+PUNT LILA I FOOD TRUCK,PUNT LILA I FOOD TRUCK,Professionals del Punt Lila i les Food Trucks,0,0,{}
