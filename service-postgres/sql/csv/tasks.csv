@@ -1,17 +1,17 @@
 nom,descripció,contrasenya,no voluntaris
 BARRES,Voluntariat de barres,"",FALSE
-SUBCAPS,Supcaps de barres,puput,FALSE
+SUBCAPS DE BARRA,Supcaps de barres,puput,FALSE
 ENTRADES,Voluntariat d'entrades,oca,FALSE
-TRESORERIA,Voluntariat de tresoreria,falciot,FALSE
+MARXANDATGE,Voluntariat de marxandatge,corb,FALSE
 CUINA,Voluntariat de cuina,perdiu,FALSE
 GLOBUS,Voluntariat de Globus,pardal,FALSE
-ELÈCTRICS,Voluntariat elèctrics,cucut,FALSE
-MUNTATGE,Voluntariat de muntatge,"",FALSE
-MARXANDATGE,Voluntariat de marxandatge,corb,FALSE
-COMUNICACIÓ,Voluntariat de comunicació,martinet,FALSE
-SO,Persones professionals del So,"",TRUE
-SEGURETAT,Persones professionals de Seguretat,"",TRUE
-ORGANITZACIÓ,Voluntariat d'organització,aligot,FALSE
-PUNT LILA,Persones professionals del Punt Lila,"",TRUE
 PHOTOCALL,Voluntariat del photocall,corriol,FALSE
 SUPORT,Gent de suport del centre obert,"",TRUE
+MUNTATGE,Voluntariat de muntatge,"",FALSE
+COMUNICACIÓ,Voluntariat de comunicació,martinet,FALSE
+TRESORERIA,Voluntariat de tresoreria,falciot,FALSE
+ORGANITZACIÓ,Voluntariat d'organització,aligot,FALSE
+ELÈCTRICS,Voluntariat elèctrics,cucut,FALSE
+SO,Persones professionals del So,"",TRUE
+SEGURETAT,Persones professionals de Seguretat,"",TRUE
+PUNT LILA,Persones professionals del Punt Lila,"",TRUE

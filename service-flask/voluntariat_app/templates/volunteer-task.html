@@ -22,16 +22,17 @@
       {% endif %}
     </small></h2>
     <div class="list-group">
-      {% for day in days %}
+      {% for day, n in days_and_number_of_shifts %}
         <a href="{{'/admin' if admin}}/p/{{ volunteer.hashid }}/tasks/{{task.hashid}}/{{day | urlencode}}" 
-          class="list-group-item">
+          class="list-group-item {% if n>0 %}list-group-item-success {% endif %}">
           <h4>{{day}}</h4> 
           <h4><small>{{task.description}}</small></h4>
+          <h4><span class="badge badge-info">torns seleccionats: {{n}}</span></h4>
         </a>
       {% endfor %}
     </div>
     <br />
-    <a class="btn btn-secondary" href="{{'/admin' if admin}}/p/{{ volunteer.hashid }}"> &#x3c;&#x3c; Torna enrere</a>
+    <a class="btn btn-secondary" href="{{'/admin' if admin}}/p/{{ volunteer.hashid }}/tasks"> &#x3c;&#x3c; Torna enrere</a>
   </div>
 </div>
 {% endblock %}

@@ -1,65 +1,60 @@
 tasca,dia,descripcio,límit,recompensa,assignacions fetes per un admin
-BARRES,DIJOUS,"Dijous 20 de juliol, de 18:15 a 20:00",12,8,"{BARRA 1, BARRA 2, BARRA 3}"
-BARRES,DIJOUS,"Dijous 20 de juliol, de 19:45 a 22:45",36,15,"{BARRA 1, BARRA 2, BARRA 3}"
-BARRES,DIJOUS,"Dijous 20 de juliol, de 22:30 a 01:30",36,15,"{BARRA 1, BARRA 2, BARRA 3}"
-BARRES,DIJOUS,"Dijous 20 de juliol, de 01:15 a 03:15",36,10,"{BARRA 1, BARRA 2, BARRA 3}"
-BARRES,DIVENDRES,"Divendres 21 de juliol, de 18:15 a 20:00",12,8,"{BARRA 1, BARRA 2, BARRA 3}"
-BARRES,DIVENDRES,"Divendres 21 de juliol, de 19:45 a 22:45",36,15,"{BARRA 1, BARRA 2, BARRA 3}"
-BARRES,DIVENDRES,"Divendres 21 de juliol, de 22:30 a 01:30",36,15,"{BARRA 1, BARRA 2, BARRA 3}"
-BARRES,DIVENDRES,"Divendres 21 de juliol, de 01:15 a 04:15",36,15,"{BARRA 1, BARRA 2, BARRA 3}"
-BARRES,DISSABTE,"Dissabte 22 de juliol, de 18:15 a 20:00",12,8,"{BARRA 1, BARRA 2, BARRA 3}"
-BARRES,DISSABTE,"Dissabte 22 de juliol, de 19:45 a 22:45",36,15,"{BARRA 1, BARRA 2, BARRA 3}"
-BARRES,DISSABTE,"Dissabte 22 de juliol, de 22:30 a 01:30",36,15,"{BARRA 1, BARRA 2, BARRA 3}"
-BARRES,DISSABTE,"Dissabte 22 de juliol, de 01:15 a 04:15",36,15,"{BARRA 1, BARRA 2, BARRA 3}"
-SUBCAPS,DIJOUS,"Dijous 20 de juliol, de 18:00 a 23:00",10,20,"{BARRA 1, BARRA 2, BARRA 3}"
-SUBCAPS,DIJOUS,"Dijous 20 de juliol, de 23:00 a 03:30",10,20,"{BARRA 1, BARRA 2, BARRA 3}"
-SUBCAPS,DIVENDRES,"Divendres 21 de juliol, de 18:15 a 23:15",10,20,"{BARRA 1, BARRA 2, BARRA 3}"
-SUBCAPS,DIVENDRES,"Divendres 21 de juliol, de 23:15 a 04:15",10,20,"{BARRA 1, BARRA 2, BARRA 3}"
-SUBCAPS,DISSABTE,"Dissabte 22 de juliol, de 18:15 a 23:15",10,20,"{BARRA 1, BARRA 2, BARRA 3}"
-SUBCAPS,DISSABTE,"Dissabte 22 de juliol, de 23:15 a 04:15",10,20,"{BARRA 1, BARRA 2, BARRA 3}"
-ENTRADES,DIJOUS,"Dijous 20 de juliol, de 17:30 a 20:30",6,20,"{}"
-ENTRADES,DIJOUS,"Dijous 20 de juliol, de 18:30 a 21:30",8,20,"{}"
-ENTRADES,DIJOUS,"Dijous 20 de juliol, de 20:30 a 23:30",6,20,"{}"
-ENTRADES,DIJOUS,"Dijous 20 de juliol, de 23:30 a 02:00",6,20,"{}"
-ENTRADES,DIVENDRES,"Divendres 21 de juliol, de 17:30 a 20:30",6,20,"{}"
-ENTRADES,DIVENDRES,"Divendres 21 de juliol, de 18:30 a 21:30",8,20,"{}"
-ENTRADES,DIVENDRES,"Divendres 21 de juliol, de 20:30 a 23:30",6,20,"{}"
-ENTRADES,DIVENDRES,"Divendres 21 de juliol, de 23:30 a 02:00",6,20,"{}"
-ENTRADES,DISSABTE,"Dissabte 22 de juliol, de 17:30 a 20:30",6,20,"{}"
-ENTRADES,DISSABTE,"Dissabte 22 de juliol, de 18:30 a 21:30",8,20,"{}"
-ENTRADES,DISSABTE,"Dissabte 22 de juliol, de 20:30 a 23:30",6,20,"{}"
-ENTRADES,DISSABTE,"Dissabte 22 de juliol, de 23:30 a 02:00",6,20,"{}"
-MARXANDATGE,DIJOUS,Dijous 20 de juliol de 18:00 a 21:00,2,15,"{}"
-MARXANDATGE,DIJOUS,Dijous 20 de juliol de 21:00 a 00:00,2,15,"{}"
-MARXANDATGE,DIVENDRES,Divendres 21 de juliol de 18:00 a 21:00,2,15,"{}"
-MARXANDATGE,DIVENDRES,Divendres 21 de juliol de 21:00 a 00:00,2,15,"{}"
-MARXANDATGE,DISSABTE,Dissabte 22 de juliol de 18:00 a 21:00,2,15,"{}"
-MARXANDATGE,DISSABTE,Dissabte 22 de juliol de 21:00 a 00:00,2,15,"{}"
-CUINA,DIJOUS,Tasques de cuina en torn únic,12,0,"{}"
-CUINA,DIVENDRES,Tasques de cuina en torn únic,12,0,"{}"
-CUINA,DISSABTE,Tasques de cuina en torn únic,12,0,"{}"
-GLOBUS,DIJOUS,Tasques d'el·laboració del Globus en torn únic,8,0,"{}"
-GLOBUS,DIVENDRES,Tasques d'el·laboració del Globus en torn únic,8,0,"{}"
-GLOBUS,DISSABTE,Tasques d'el·laboració del Globus en torn únic,8,0,"{}"
-PUNT LILA,DIJOUS,Tasques de punt lila,5,0,"{}"
-PUNT LILA,DIVENDRES,Tasques de punt lila,5,0,"{}"
-PUNT LILA,DISSABTE,Tasques de punt lila,5,0,"{}"
-PHOTOCALL,DIJOUS,Tasques de photocall,10,15,"{}"
-PHOTOCALL,DIVENDRES,Tasques de photocall,10,15,"{}"
-PHOTOCALL,DISSABTE,Tasques de photocall,10,15,"{}"
-SUPORT,DIJOUS,Tasques de suport per part de gent del centre obert,20,15,"{}"
-SUPORT,DIVENDRES,Tasques de suport per part de gent del centre obert,20,15,"{}"
-SUPORT,DISSABTE,Tasques de suport per part de gent del centre obert,20,15,"{}"
-MUNTATGE,DILLUNS,Dilluns 17 de juliol de 17:00 a 20:00,10,10,"{}"
-MUNTATGE,DIMARTS,Dimarts 18 de juliol de 10:00 a 13:00,10,10,"{}"
-MUNTATGE,DIMARTS,Dimarts 18 de juliol de 17:00 a 20:00,10,10,"{}"
-MUNTATGE,DIMECRES,Dimecres 19 de juliol de 10:00 a 13:00,10,10,"{}"
-COMUNICACIÓ,DIJOUS,Tasques de comunicació,10,0,"{}"
-COMUNICACIÓ,DIVENDRES,Tasques de comunicació,10,0,"{}"
-COMUNICACIÓ,DISSABTE,Tasques de comunicació,10,0,"{}"
-TRESORERIA,TRESORERIA,Tasques de tresoreria,8,0,"{}"
-COMUNICACIÓ,COMUNICACIÓ,Tasques de comunicació,10,0,"{}"
-ORGANITZACIÓ,ORGANITZACIÓ,Tasques d'organització,30,0,"{}"
-ELÈCTRICS,ELÈCTRICS,Els torns s'assignaran posteriorment,10,15,"{DIMECRES,DIJOUS,DIVENDRES}"
-SO,SO,Tasques de so en torn únic,20,0,"{}"
-SEGURETAT,SEGURETAT,Tasques de seguretat en torn únic,30,0,"{}"
+BARRES,20-06 DIJOUS,"Horari de 18:15 a 20:00",12,8,"{BARRA 1, BARRA 2, BARRA 3}"
+BARRES,20-06 DIJOUS,"Horari de 19:45 a 22:45",36,15,"{BARRA 1, BARRA 2, BARRA 3}"
+BARRES,20-06 DIJOUS,"Horari de 22:30 a 01:30",36,15,"{BARRA 1, BARRA 2, BARRA 3}"
+BARRES,20-06 DIJOUS,"Horari de 01:15 a 03:15",36,10,"{BARRA 1, BARRA 2, BARRA 3}"
+BARRES,21-06 DIVENDRES,"Horari de 18:15 a 20:00",12,8,"{BARRA 1, BARRA 2, BARRA 3}"
+BARRES,21-06 DIVENDRES,"Horari de 19:45 a 22:45",36,15,"{BARRA 1, BARRA 2, BARRA 3}"
+BARRES,21-06 DIVENDRES,"Horari de 22:30 a 01:30",36,15,"{BARRA 1, BARRA 2, BARRA 3}"
+BARRES,21-06 DIVENDRES,"Horari de 01:15 a 04:15",36,15,"{BARRA 1, BARRA 2, BARRA 3}"
+BARRES,22-06 DISSABTE,"Horari de 18:15 a 20:00",12,8,"{BARRA 1, BARRA 2, BARRA 3}"
+BARRES,22-06 DISSABTE,"Horari de 19:45 a 22:45",36,15,"{BARRA 1, BARRA 2, BARRA 3}"
+BARRES,22-06 DISSABTE,"Horari de 22:30 a 01:30",36,15,"{BARRA 1, BARRA 2, BARRA 3}"
+BARRES,22-06 DISSABTE,"Horari de 01:15 a 04:15",36,15,"{BARRA 1, BARRA 2, BARRA 3}"
+SUBCAPS DE BARRA,20-06 DIJOUS,"Horari de 18:00 a 23:00",10,20,"{BARRA 1, BARRA 2, BARRA 3}"
+SUBCAPS DE BARRA,20-06 DIJOUS,"Horari de 23:00 a 03:30",10,20,"{BARRA 1, BARRA 2, BARRA 3}"
+SUBCAPS DE BARRA,21-06 DIVENDRES,"Horari de 18:15 a 23:15",10,20,"{BARRA 1, BARRA 2, BARRA 3}"
+SUBCAPS DE BARRA,21-06 DIVENDRES,"Horari de 23:15 a 04:15",10,20,"{BARRA 1, BARRA 2, BARRA 3}"
+SUBCAPS DE BARRA,22-06 DISSABTE,"Horari de 18:15 a 23:15",10,20,"{BARRA 1, BARRA 2, BARRA 3}"
+SUBCAPS DE BARRA,22-06 DISSABTE,"Horari de 23:15 a 04:15",10,20,"{BARRA 1, BARRA 2, BARRA 3}"
+ENTRADES,20-06 DIJOUS,"Horari de 17:30 a 20:30",6,20,{}
+ENTRADES,20-06 DIJOUS,"Horari de 18:30 a 21:30",8,20,{}
+ENTRADES,20-06 DIJOUS,"Horari de 20:30 a 23:30",6,20,{}
+ENTRADES,20-06 DIJOUS,"Horari de 23:30 a 02:00",6,20,{}
+ENTRADES,21-06 DIVENDRES,"Horari de 17:30 a 20:30",6,20,{}
+ENTRADES,21-06 DIVENDRES,"Horari de 18:30 a 21:30",8,20,{}
+ENTRADES,21-06 DIVENDRES,"Horari de 20:30 a 23:30",6,20,{}
+ENTRADES,21-06 DIVENDRES,"Horari de 23:30 a 02:00",6,20,{}
+ENTRADES,22-06 DISSABTE,"Horari de 17:30 a 20:30",6,20,{}
+ENTRADES,22-06 DISSABTE,"Horari de 18:30 a 21:30",8,20,{}
+ENTRADES,22-06 DISSABTE,"Horari de 20:30 a 23:30",6,20,{}
+ENTRADES,22-06 DISSABTE,"Horari de 23:30 a 02:00",6,20,{}
+MARXANDATGE,20-06 DIJOUS,Horari de 18:00 a 21:00,2,15,{}
+MARXANDATGE,20-06 DIJOUS,Horari de 21:00 a 00:00,2,15,{}
+MARXANDATGE,21-06 DIVENDRES,Horari de 18:00 a 21:00,2,15,{}
+MARXANDATGE,21-06 DIVENDRES,Horari de 21:00 a 00:00,2,15,{}
+MARXANDATGE,22-06 DISSABTE,Horari de 18:00 a 21:00,2,15,{}
+MARXANDATGE,22-06 DISSABTE,Horari de 21:00 a 00:00,2,15,{}
+CUINA,20-06 DIJOUS,Tasques de cuina en torn únic,12,0,{}
+CUINA,21-06 DIVENDRES,Tasques de cuina en torn únic,12,0,{}
+CUINA,22-06 DISSABTE,Tasques de cuina en torn únic,12,0,{}
+GLOBUS,20-06 DIJOUS,Tasques d'el·laboració del Globus en torn únic,8,0,{}
+GLOBUS,21-06 DIVENDRES,Tasques d'el·laboració del Globus en torn únic,8,0,{}
+GLOBUS,22-06 DISSABTE,Tasques d'el·laboració del Globus en torn únic,8,0,{}
+PHOTOCALL,20-06 DIJOUS,Tasques de photocall,5,15,{}
+PHOTOCALL,21-06 DIVENDRES,Tasques de photocall,5,15,{}
+PHOTOCALL,22-06 DISSABTE,Tasques de photocall,5,15,{}
+SUPORT,20-06 DIJOUS,Tasques de suport per part de gent del centre obert,20,15,{}
+SUPORT,21-06 DIVENDRES,Tasques de suport per part de gent del centre obert,20,15,{}
+SUPORT,22-06 DISSABTE,Tasques de suport per part de gent del centre obert,20,15,{}
+MUNTATGE,18-06 DIMARTS,Horari de 17:00 a 20:00,10,10,{}
+MUNTATGE,19-06 DIMECRES,Horari de 10:00 a 13:00,10,10,{}
+MUNTATGE,19-06 DIMECRES,Horari de 17:00 a 20:00,10,10,{}
+MUNTATGE,20-06 DIJOUS,Horari de 10:00 a 13:00,5,10,{}
+COMUNICACIÓ,COMUNICACIÓ,Tasques de comunicació,10,0,{}
+TRESORERIA,TRESORERIA,Tasques de tresoreria,8,0,{}
+ORGANITZACIÓ,ORGANITZACIÓ,Tasques d'organització,30,0,{}
+ELÈCTRICS,ELÈCTRICS,Els torns s'assignaran posteriorment,10,15,"{19-06 DIMECRES,20-06 DIJOUS,21-06 DIVENDRES}"
+SO,SO,Professionals del so,20,0,{}
+SEGURETAT,SEGURETAT,Professionals de la seguretat,30,0,{}
+PUNT LILA,PUNT LILA,Professionals del punt lila,5,0,{}

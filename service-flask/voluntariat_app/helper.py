@@ -74,7 +74,7 @@ def get_shifts_meals_and_tickets(user_id):
     from . import db
     from sqlalchemy import text
 
-    shifts = [s for s in db.session.execute(text(f"""select t.name || ': ' || s.day 
+    shifts = [s for s in db.session.execute(text(f"""select t.name || ': ' || s.day || ', ' || s.description
         from tasks as t 
         join shifts as s on t.id = s.task_id 
         join user_shifts as us on us.shift_id = s.id 
