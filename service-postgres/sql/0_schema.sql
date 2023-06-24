@@ -40,6 +40,7 @@ SET default_table_access_method = heap;
 CREATE TABLE public.meals (
     id integer NOT NULL,
     name character varying NOT NULL,
+    day character varying NOT NULL,
     description character varying DEFAULT ''::character varying NOT NULL
 );
 
@@ -151,6 +152,7 @@ ALTER SEQUENCE public.tasks_id_seq OWNED BY public.tasks.id;
 CREATE TABLE public.tickets (
     id integer NOT NULL,
     name character varying NOT NULL,
+    day character varying NOT NULL,
     description character varying NOT NULL
 );
 
@@ -230,7 +232,7 @@ ALTER TABLE public.user_shifts OWNER TO postgres;
 CREATE TABLE public.user_tickets (
     user_id integer NOT NULL,
     ticket_id integer NOT NULL,
-    selected boolean DEFAULT false NOT NULL
+    alternative_ticket_ids integer[] NOT NULL
 );
 
 

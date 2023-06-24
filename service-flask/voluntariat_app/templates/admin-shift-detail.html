@@ -24,7 +24,7 @@
                         </tr>
                         <tr>
                             <th colspan="5">
-                                {{shift.day}}: {{shift.description}} {{"[" + shift.reward|string() + " €]" if shift.reward > 0}}
+                                {{shift.description}} {{"[" + shift.reward|string() + " €]" if shift.reward > 0}}
                             </th>
                             {% for name in shift.assignations %}
                             <th class="text-secondary text-center">{{ name }}</th>

@@ -1,13 +1,18 @@
-nom,descripció
-ENTRADA DE DIJOUS,Entrada de dijous d'El Tingladu
-ENTRADA DE DIVENDRES,Entrada de divendres d'El Tingladu
-ENTRADA DE DISSABTE,Entrada de dissabte d'El Tingladu
-ABONAMENT TRES DIES,Abonament pels tres dies d'El Tingladu
-VOLUNTARI DE DIJOUS,Pulsera de voluntari per dijous
-VOLUNTARI DE DIVENDRES,Pulsera de voluntari per divendres
-VOLUNTARI DE DISSABTE,Pulsera de voluntari per dissabte
-ACREDITACIÓ COL·LABORADOR,"Voluntariat de cuina, comunicació i tresoreria" 
-ACREDITACIÓ GLOBUS,Voluntariat de Globus
-ACREDITACIÓ ORGANITZACIÓ,Voluntariat d'organització
-ACREDITACIÓ TREBALLADOR,Professionals de so i seguretat
-ACREDITACIÓ PUNT LILA I FOOD TRUCK,Professionals del punt lila i les food truck
+nom,dia,descripció
+ENTRADA DE DIJOUS,20-06 DIJOUS,Entrada de dijous d'El Tingladu
+ENTRADA DE DIVENDRES,21-06 DIVENDRES,Entrada de divendres d'El Tingladu
+ENTRADA DE DISSABTE,22-06 DISSABTE,Entrada de dissabte d'El Tingladu
+ABONAMENT TRES DIES,"",Abonament pels tres dies d'El Tingladu
+VOLUNTARI DE DIJOUS,20-06 DIJOUS,Pulsera de voluntari per dijous
+VOLUNTARI DE DIVENDRES,21-06 DIVENDRES,Pulsera de voluntari per divendres
+VOLUNTARI DE DISSABTE,22-06 DISSABTE,Pulsera de voluntari per dissabte
+COL·LABORADOR DE DIJOUS,20-06 DIJOUS,"Voluntariat de cuina, comunicació i tresoreria"
+COL·LABORADOR DE DIVENDRES,21-06 DIVENDRES,"Voluntariat de cuina, comunicació i tresoreria" 
+COL·LABORADOR DE DISSABTE,22-06 DISSABTE,"Voluntariat de cuina, comunicació i tresoreria" 
+GLOBUS DE DIJOUS,20-06 DIJOUS,Voluntariat de Globus
+GLOBUS DE DIVENDRES,21-06 DIVENDRES,Voluntariat de Globus
+GLOBUS DE DISSABTE,22-06 DISSABTE,Voluntariat de Globus
+ENTRADA AVUI DE SUPORT,"",Entrada del dia d'avui per la gent del centre obert
+ACREDITACIÓ ORGANITZACIÓ,"",Voluntariat d'organització
+ACREDITACIÓ TREBALLADOR,"",Professionals de so i seguretat
+ACREDITACIÓ PUNT LILA I FOOD TRUCK,"",Professionals del punt lila i les food truck

@@ -86,7 +86,7 @@ def get_shifts_meals_and_tickets(user_id):
     tickets = [t for t in db.session.execute(text(f"""select t.name 
         from tickets as t 
         join user_tickets as ut on t.id=ut.ticket_id 
-        where ut.selected and ut.user_id = {user_id}""")).scalars()]
+        where ut.user_id = {user_id}""")).scalars()]
 
     return (shifts, meals, tickets)
 

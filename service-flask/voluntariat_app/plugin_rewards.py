@@ -37,6 +37,11 @@ class Rewards15Edition(RewardsImpl):
 
     def __init__(self, app, db):
         with app.app_context():
+            # dies
+            dijous = "20-06 DIJOUS"
+            divendres = "21-06 DIVENDRES"
+            dissabte = "22-06 DISSABTE"
+
             # àpats
             sopar_dijous_id = self._get_meal_id(db, "SOPAR DE DIJOUS")
             sopar_divendres_id = self._get_meal_id(db, "SOPAR DE DIVENDRES")
@@ -46,12 +51,17 @@ class Rewards15Edition(RewardsImpl):
             entrada_dijous_id = self._get_ticket_id(db, "ENTRADA DE DIJOUS")
             entrada_divendres_id = self._get_ticket_id(db, "ENTRADA DE DIVENDRES")
             entrada_dissabte_id = self._get_ticket_id(db, "ENTRADA DE DISSABTE")
-            abonament_id = self._get_ticket_id(db, "ABONAMENT TRES DIES")
             voluntari_dijous_id = self._get_ticket_id(db, "VOLUNTARI DE DIJOUS")
             voluntari_divendres_id = self._get_ticket_id(db, "VOLUNTARI DE DIVENDRES")
             voluntari_dissabte_id = self._get_ticket_id(db, "VOLUNTARI DE DISSABTE")
-            acreditacio_col_laborador_id = self._get_ticket_id(db, "ACREDITACIÓ COL·LABORADOR")
-            acreditacio_globus_id = self._get_ticket_id(db, "ACREDITACIÓ GLOBUS")
+            col_dijous_id = self._get_ticket_id(db, "COL·LABORADOR DE DIJOUS")
+            col_divendres_id = self._get_ticket_id(db, "COL·LABORADOR DE DIJOUS")
+            col_dissabte_id = self._get_ticket_id(db, "COL·LABORADOR DE DISSABTE")
+            globus_dijous_id = self._get_ticket_id(db, "GLOBUS DE DIJOUS")
+            globus_divendres_id = self._get_ticket_id(db, "GLOBUS DE DIJOUS")
+            globus_dissabte_id = self._get_ticket_id(db, "GLOBUS DE DISSABTE")
+            abonament_id = self._get_ticket_id(db, "ABONAMENT TRES DIES")
+            acreditacio_suport_id = self._get_ticket_id(db, "ENTRADA AVUI DE SUPORT")
             acreditacio_organitzacio_id = self._get_ticket_id(db, "ACREDITACIÓ ORGANITZACIÓ")
             acreditacio_treballador_id = self._get_ticket_id(db, "ACREDITACIÓ TREBALLADOR")
             acreditacio_punt_lila_i_food_truck_id = self._get_ticket_id(db, "ACREDITACIÓ PUNT LILA I FOOD TRUCK")
@@ -74,84 +84,101 @@ class Rewards15Edition(RewardsImpl):
             seguretat_id = self._get_task_id(db, "SEGURETAT")
             punt_lila_i_food_truck_id = self._get_task_id(db, "PUNT LILA I FOOD TRUCK")
 
-            self.tasques_amb_entrada_del_dia = frozenset([
-                barres_id,
-                subcaps_barres_id,
-                entrades_id,
-                marxandatge_id,
-                cuina_id,
-                globus_id,
-                photocall_id,
-                tresoreria_id,
-                # muntatge_id,
-                # suport_id,
-                # organitzacio_id,
-                # comunicacio_id,
-                # electrics_id,
-                # so_id,
-                # seguretat_id,
-                # punt_lila_i_food_truck_id,
-            ])
+            self.assignacio_apats = [
+                [{  # sopar del dia que ajuden
+                    dijous: sopar_dijous_id,
+                    divendres: sopar_divendres_id,
+                    dissabte: sopar_dissabte_id,
+                }, frozenset([
+                    barres_id,
+                    subcaps_barres_id,
+                    entrades_id,
+                    marxandatge_id,
+                    cuina_id,
+                    globus_id,
+                    photocall_id,
+                    tresoreria_id,
+                    # muntatge_id,
+                    # suport_id,
+                    # organitzacio_id,
+                    comunicacio_id,
+                    # electrics_id,
+                    # so_id,
+                    # seguretat_id,
+                    # punt_lila_i_food_truck_id,
+                ])],
+                [[  # els 3 sopars
+                    sopar_dijous_id, sopar_divendres_id, sopar_dissabte_id
+                ],frozenset([
+                    # barres_id,
+                    # subcaps_barres_id,
+                    # entrades_id,
+                    # marxandatge_id,
+                    # cuina_id,
+                    # globus_id,
+                    # photocall_id,
+                    # tresoreria_id,
+                    # muntatge_id,
+                    suport_id,
+                    organitzacio_id,
+                    # comunicacio_id,
+                    # electrics_id,
+                    so_id,
+                    seguretat_id,
+                    # punt_lila_i_food_truck_id,
+                ])]
+            ]
 
-            self.tasques_amb_voluntari_del_dia = frozenset([
-                barres_id,
-                subcaps_barres_id,
-                entrades_id,
-                marxandatge_id,
-                # cuina_id,
-                # globus_id,
-                photocall_id,
-                # tresoreria_id,
-                # muntatge_id,
-                # suport_id,
-                # organitzacio_id,
-                # comunicacio_id,
-                # electrics_id,
-                # so_id,
-                # seguretat_id,
-                # punt_lila_i_food_truck_id,
-            ])
-
-            self.tasques_amb_sopar_del_dia = frozenset([
-                barres_id,
-                subcaps_barres_id,
-                entrades_id,
-                marxandatge_id,
-                cuina_id,
-                globus_id,
-                photocall_id,
-                tresoreria_id,
-                # muntatge_id,
-                # suport_id,
-                # organitzacio_id,
-                # comunicacio_id,
-                # electrics_id,
-                # so_id,
-                # seguretat_id,
-                # punt_lila_i_food_truck_id,
-            ])
-
-            self.tasques_amb_tots_els_sopars = frozenset([
-                # barres_id,
-                # subcaps_barres_id,
-                # entrades_id,
-                # marxandatge_id,
-                # cuina_id,
-                # globus_id,
-                # photocall_id,
-                # tresoreria_id,
-                # muntatge_id,
-                suport_id,
-                organitzacio_id,
-                comunicacio_id,
-                # electrics_id,
-                so_id,
-                seguretat_id,
-                # punt_lila_i_food_truck_id,
-            ])
-
-            self.acreditacions = [
-                [acreditacio_col_laborador_id, frozenset([
+            self.assignacio_tickets = [
+                [{  # entrada del dia que ajuden
+                    dijous: entrada_dijous_id,
+                    divendres: entrada_divendres_id,
+                    dissabte: entrada_dissabte_id,
+                }, frozenset([
+                    barres_id,
+                    subcaps_barres_id,
+                    entrades_id,
+                    marxandatge_id,
+                    cuina_id,
+                    globus_id,
+                    photocall_id,
+                    tresoreria_id,
+                    # muntatge_id,
+                    # suport_id,
+                    # organitzacio_id,
+                    comunicacio_id,
+                    # electrics_id,
+                    # so_id,
+                    # seguretat_id,
+                    # punt_lila_i_food_truck_id,
+                ])],
+                [{  # voluntari del dia que ajuden
+                    dijous: voluntari_dijous_id,
+                    divendres: voluntari_divendres_id,
+                    dissabte: voluntari_dissabte_id,
+                }, frozenset([
+                    barres_id,
+                    subcaps_barres_id,
+                    entrades_id,
+                    marxandatge_id,
+                    # cuina_id,
+                    # globus_id,
+                    photocall_id,
+                    # tresoreria_id,
+                    # muntatge_id,
+                    # suport_id,
+                    # organitzacio_id,
+                    # comunicacio_id,
+                    # electrics_id,
+                    # so_id,
+                    # seguretat_id,
+                    # punt_lila_i_food_truck_id,
+                ])],
+                [{  # col·laborador del dia que ajuden
+                    dijous: col_dijous_id,
+                    divendres: col_divendres_id,
+                    dissabte: col_dissabte_id,
+                }, frozenset([
                     # barres_id,
                     # subcaps_barres_id,
                     # entrades_id,
@@ -169,7 +196,11 @@ class Rewards15Edition(RewardsImpl):
                     # seguretat_id,
                     # punt_lila_i_food_truck_id,
                 ])],
-                [acreditacio_globus_id, frozenset([
+                [{  # globus del dia que ajudenx
+                    dijous: globus_dijous_id,
+                    divendres: globus_divendres_id,
+                    dissabte: globus_dissabte_id,
+                }, frozenset([
                     # barres_id,
                     # subcaps_barres_id,
                     # entrades_id,
@@ -187,7 +218,29 @@ class Rewards15Edition(RewardsImpl):
                     # seguretat_id,
                     # punt_lila_i_food_truck_id,
                 ])],
-                [acreditacio_organitzacio_id, frozenset([
+                [[  # suport (en realitat serà l’entrada del dia)
+                    acreditacio_suport_id
+                ], frozenset([
+                    # barres_id,
+                    # subcaps_barres_id,
+                    # entrades_id,
+                    # marxandatge_id,
+                    # cuina_id,
+                    # globus_id,
+                    # photocall_id,
+                    # tresoreria_id,
+                    # muntatge_id,
+                    suport_id,
+                    # organitzacio_id,
+                    # comunicacio_id,
+                    # electrics_id,
+                    # so_id,
+                    # seguretat_id,
+                    # punt_lila_i_food_truck_id,
+                ])],
+                [[  # organització
+                    acreditacio_organitzacio_id
+                ], frozenset([
                     # barres_id,
                     # subcaps_barres_id,
                     # entrades_id,
@@ -205,7 +258,10 @@ class Rewards15Edition(RewardsImpl):
                     # seguretat_id,
                     # punt_lila_i_food_truck_id,
                 ])],
-                [acreditacio_treballador_id, frozenset([
+                [[
+                    # treballador
+                    acreditacio_treballador_id
+                ], frozenset([
                     # barres_id,
                     # subcaps_barres_id,
                     # entrades_id,
@@ -223,7 +279,9 @@ class Rewards15Edition(RewardsImpl):
                     seguretat_id,
                     # punt_lila_i_food_truck_id,
                 ])],
-                [acreditacio_punt_lila_i_food_truck_id, frozenset([
+                [[  # punt lila I food truck
+                    acreditacio_punt_lila_i_food_truck_id
+                ], frozenset([
                     # barres_id,
                     # subcaps_barres_id,
                     # entrades_id,
@@ -243,57 +301,89 @@ class Rewards15Edition(RewardsImpl):
                 ])],
             ]
 
+            # ids que necessito
+            self.entrada_dijous_id = entrada_dijous_id
+            self.entrada_divendres_id = entrada_divendres_id
+            self.entrada_dissabte_id = entrada_dissabte_id
+            self.abonament_id = abonament_id
+
+
     def calculate_tickets(self, user, current_shifts):
-        return []
-        # from .models import UserTicket
+        from .models import UserTicket
 
-        # if len(current_shifts) == 0:
-        #     return []
-        
-        # # amb un diccionari evito tickets duplicats
-        # tickets_assigned = {}
-        # for (t, s, us) in current_shifts:
-        #     # busco per tasques
-        #     for (ticket_id, task_id_set) in self.tickets_by_task:
-        #         if t.id in task_id_set:
-        #             ticket = UserTicket(
-        #                 user_id = user.id,
-        #                 ticket_id = ticket_id,
-        #                 selected = True
-        #             )
-        #             tickets_assigned[ticket_id] = ticket
-        #     # i per torns
-        #     for (ticket_id, shift_id_set) in self.tickets_by_shift:
-        #         if s.id in shift_id_set:
-        #             ticket = UserTicket(
-        #                 user_id = user.id,
-        #                 ticket_id = ticket_id,
-        #                 selected = True
-        #             )
-        #             tickets_assigned[ticket_id] = ticket
+        if len(current_shifts) == 0:
+            return []
 
-        # return tickets_assigned.values()
+        # amb un diccionari evito àpats duplicats
+        tickets_assigned = {}
+        def add_ticket(ticket_id):
+            ticket = UserTicket(
+                user_id = user.id,
+                ticket_id = ticket_id,
+                alternative_ticket_ids = []
+            )
+            tickets_assigned[ticket_id] = ticket
+
+        for (t, s, us) in current_shifts:
+            # reviso si es globus, subcaps o electrics, per donar "entrades variables"
+            
+
+            for the_tickets, shift_id_set in self.assignacio_tickets:
+                if t.id in shift_id_set:
+                    if type(the_tickets) is dict:
+                        # és un diccionari, miro el dia
+                        ticket_id = the_tickets[s.day]
+                        if ticket_id is None:
+                            logger.warning(f"UNKNOW DAY {s.day} of shift#{s.id}")
+                        else:
+                            add_ticket(ticket_id)
+                    else:
+                        # és una llista
+                        for ticket_id in the_tickets:
+                            add_ticket(ticket_id)
+
+        # Moment de neteja... si té entrada 3 dies, es canvia per abonament
+        if self.entrada_dijous_id in tickets_assigned and self.entrada_divendres_id in tickets_assigned and self.entrada_dissabte_id in tickets_assigned:
+            del tickets_assigned[self.entrada_dijous_id]
+            del tickets_assigned[self.entrada_divendres_id]
+            del tickets_assigned[self.entrada_dissabte_id]
+
+            add_ticket(self.abonament_id)
+
+        return tickets_assigned.values()
 
     def calculate_meals(self, user, current_shifts):
-        return []
-        # from .models import UserMeal
+        from .models import UserMeal
 
-        # if len(current_shifts) == 0:
-        #     return []
+        if len(current_shifts) == 0:
+            return []
+        
+        # amb un diccionari evito àpats duplicats
+        meals_assigned = {}
+        def add_meal(meal_id):
+            meal = UserMeal(
+                user_id = user.id,
+                meal_id = meal_id,
+                selected = True
+            )
+            meals_assigned[meal_id] = meal
 
-        # # amb un diccionari evito àpats duplicats
-        # meals_assigned = {}
-        # for (t, s, us) in current_shifts:
-        #     for (meal_id, task_id_set) in self.meals_by_task:
-        #         if t.id in task_id_set:
-        #             meal = UserMeal(
-        #                 user_id = user.id,
-        #                 meal_id = meal_id,
-        #                 selected = True
-        #             )
-        #             meals_assigned[meal_id] = meal
+        for (t, s, us) in current_shifts:
+            for the_meals, shift_id_set in self.assignacio_apats:
+                if t.id in shift_id_set:
+                    if type(the_meals) is dict:
+                        # és un diccionari, miro el dia
+                        meal_id = the_meals[s.day]
+                        if meal_id is None:
+                            logger.warning(f"UNKNOW DAY {s.day} of shift#{s.id}")
+                        else:
+                            add_meal(meal_id)
+                    else:
+                        # és una llista
+                        for meal_id in the_meals:
+                            add_meal(meal_id)
 
-        # return meals_assigned.values()
+        return meals_assigned.values()
 
 class RewardsManager:
     
@@ -351,10 +441,10 @@ class RewardsManager:
         db.session.add_all(merged_tickets)
 
     def __merge_tickets(self, current_tickets, new_tickets):
-        for ticket in new_tickets:
-            existing_ticket = self.__get_first_with_filter(lambda t:t.ticket_id == ticket.ticket_id, current_tickets)
-            if existing_ticket:
-                ticket.selected = existing_ticket.selected
+        # for ticket in new_tickets:
+        #     existing_ticket = self.__get_first_with_filter(lambda t:t.ticket_id == ticket.ticket_id, current_tickets)
+        #     if existing_ticket:
+        #         ticket.selected = existing_ticket.selected
 
         return new_tickets
 
@@ -406,14 +496,14 @@ class RewardsManager:
                     zero_assignations = True
                     for (name, assigned) in zip(s.assignations, us.shift_assignations):
                         if assigned:
-                            cash_details.append((f"{t.name} - {s.name} - {name}", s.reward))
+                            cash_details.append((f"{t.name} - {s.description} - {name}", s.reward))
                             cash += s.reward
                             zero_assignations = False
                         
                     if zero_assignations:
-                        cash_details.append((f"{t.name} - {s.name}", None))
+                        cash_details.append((f"{t.name} - {s.description}", None))
                 else:
-                    cash_details.append((f"{t.name} - {s.name}", s.reward))
+                    cash_details.append((f"{t.name} - {s.description}", s.reward))
                     cash += s.reward
 
         return (cash, cash_details)
