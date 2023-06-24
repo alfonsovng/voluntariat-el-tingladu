@@ -122,6 +122,11 @@ def tasks(volunteer_hashid):
         ).order_by(
             Task.id.asc()
         )
+
+        # a mes, si no s'ha apuntat a cap tasca, no pot fer muntatge
+        # FIXME!!!!
+        if not volunteer.has_shifts:
+            tasks_and_number_of_shifts = [(t,n) for (t,n) in tasks_and_number_of_shifts if t.name != 'MUNTATGE']
                 
     return render_template('volunteer-tasks.html',tasks_and_number_of_shifts=tasks_and_number_of_shifts,volunteer=volunteer,user=current_user)
 
@@ -263,6 +268,18 @@ def __update_shifts(volunteer, task_id, day, current_user_is_admin, form):
             db.session.add(user_shift)
         else:
             flash_warning("not_all_shifts")
+
+    # su sols té tasques de muntatge i no és admin, tot fora
+    if not current_user_is_admin:
+        db.session.commit()
+        # FIXME: Dependencia xunga amb la tasca de MUNTATGE
+        no_muntatge = db.session.execute(text(f"""select count(*) from user_shifts as us 
+            join shifts as s on us.shift_id = s.id
+            join tasks as t on s.task_id = t.id
+            where us.user_id = {volunteer.id} and t.name != 'MUNTATGE'""")).scalar()
+        if no_muntatge == 0:
+            # esborro les possibles tasques de muntatge que té
+            db.session.execute(text(f"""delete from user_shifts where user_id = {volunteer.id}"""))
 
     # actualitzo tickets, àpats i acreditacions
     rewards_manager.update_rewards(
