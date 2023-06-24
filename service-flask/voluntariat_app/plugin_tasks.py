@@ -59,7 +59,7 @@ class ShiftsEmail(Task):
 
             logger.info("Comprovant si hi ha usuaris als que notificar els seus torns")
 
-            users = User.query.filter(User.role != UserRole.worker).filter((User.last_shift_change_at+timedelta(minutes=10)) < func.now())
+            users = User.query.filter(User.role != UserRole.worker).filter((User.last_shift_change_at+timedelta(hours=2)) < func.now())
 
             for user_with_shifts in users:
 
@@ -78,7 +78,7 @@ class ShiftsEmail(Task):
                             # envio un email dels torns apuntats!
                             logger.info(f"Email amb els torns a l'usuari {user_with_shifts}")
 
-                            shifts = [s for s in session.execute(text(f"""select t.name || ': ' || s.day || ', ' || s.description
+                            shifts = [s for s in session.execute(text(f"""select t.name || ': ' || s.description
                                 from tasks as t 
                                 join shifts as s on t.id = s.task_id 
                                 join user_shifts as us on us.shift_id = s.id 

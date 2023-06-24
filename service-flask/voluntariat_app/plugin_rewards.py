@@ -307,6 +307,9 @@ class Rewards15Edition(RewardsImpl):
             self.entrada_dissabte_id = entrada_dissabte_id
             self.abonament_id = abonament_id
 
+            self.electrics_id = electrics_id
+            self.globus_id = globus_id
+            self.subcaps_barres_id = subcaps_barres_id
 
     def calculate_tickets(self, user, current_shifts):
         from .models import UserTicket
@@ -325,9 +328,6 @@ class Rewards15Edition(RewardsImpl):
             tickets_assigned[ticket_id] = ticket
 
         for (t, s, us) in current_shifts:
-            # reviso si es globus, subcaps o electrics, per donar "entrades variables"
-            
-
             for the_tickets, shift_id_set in self.assignacio_tickets:
                 if t.id in shift_id_set:
                     if type(the_tickets) is dict:
@@ -342,6 +342,44 @@ class Rewards15Edition(RewardsImpl):
                         for ticket_id in the_tickets:
                             add_ticket(ticket_id)
 
+        def add_variable_ticket():
+            free_days = []
+            if self.entrada_dijous_id not in tickets_assigned:
+                free_days.append(self.entrada_dijous_id)
+            if self.entrada_divendres_id not in tickets_assigned:
+                free_days.append(self.entrada_divendres_id)
+            if self.entrada_dissabte_id not in tickets_assigned:
+                free_days.append(self.entrada_dissabte_id)
+
+            if len(free_days) > 0:
+                ticket = UserTicket(
+                    user_id = user.id,
+                    ticket_id = free_days[0],
+                    alternative_ticket_ids = free_days[1:]
+                )
+                tickets_assigned[free_days[0]] = ticket
+
+        # reviso si es globus, subcaps o electrics, per donar "entrades variables"
+        num_globus_tasks = sum(1 for (t, s, us) in current_shifts if t.id == self.globus_id)
+        if num_globus_tasks == 1:
+            add_variable_ticket()
+        elif num_globus_tasks > 1:
+            # dos tickets variables, amb el propi ticket del dia que treballa, suposarà un abonament
+            add_variable_ticket()
+            add_variable_ticket()
+
+        num_subcaps_tasks = sum(1 for (t, s, us) in current_shifts if t.id == self.subcaps_barres_id)
+        if num_subcaps_tasks == 2:
+            add_variable_ticket()
+        elif num_subcaps_tasks > 3:
+            # dos tickets variables, amb el propi ticket del dia que treballa, suposarà un abonament
+            add_variable_ticket()
+            add_variable_ticket()
+
+        num_electric_tasks = sum(1 for (t, s, us) in current_shifts if t.id == self.electrics_id)
+        if num_electric_tasks > 0:
+            add_variable_ticket()
+                
         # Moment de neteja... si té entrada 3 dies, es canvia per abonament
         if self.entrada_dijous_id in tickets_assigned and self.entrada_divendres_id in tickets_assigned and self.entrada_dissabte_id in tickets_assigned:
             del tickets_assigned[self.entrada_dijous_id]
