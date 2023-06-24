@@ -390,7 +390,7 @@ def meals():
 
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
-        select = """select m.name as àpat,
+        select = """select m.day as dia, m.name as àpat,
             u.surname as cognoms, u.name as nom, 
             case when u.role='worker' then '' else u.email end as email, 
             u.phone as mòbil,
@@ -443,7 +443,7 @@ def meal_detail(meal_id):
 
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
-        select = """select m.name as àpat,
+        select = """select m.day as dia, m.name as àpat,
             u.surname as cognoms, u.name as nom, 
             case when u.role='worker' then '' else u.email end as email, 
             u.phone as mòbil,
@@ -504,7 +504,6 @@ def tickets():
             from users as u 
             join user_tickets as ut on u.id = ut.user_id
             join tickets as t on t.id = ut.ticket_id
-            where ut.selected
             order by t.id asc, cognoms asc, nom asc, u.email asc
         """
 
@@ -520,7 +519,7 @@ def tickets():
 
     count_subquery = sqlalchemy.text(f"""
         select ticket_id, count(user_id) as n_tickets
-        from user_tickets where selected
+        from user_tickets
         group by ticket_id
     """).columns(ticket_id=db.Integer,n_tickets=db.Integer).subquery("count_subquery")
 
@@ -550,7 +549,7 @@ def tickets_detail(ticket_id):
             from users as u 
             join user_tickets as ut on u.id = ut.user_id
             join tickets as t on t.id = ut.ticket_id
-            where t.id = :TICKET_ID and ut.selected
+            where t.id = :TICKET_ID
             order by t.id asc, cognoms asc, nom asc, u.email asc
         """
 
@@ -572,8 +571,6 @@ def tickets_detail(ticket_id):
 
     users_with_tickets = db.session.query(User, UserTicket).join(UserTicket).filter(
         UserTicket.ticket_id == ticket_id
-    ).filter(
-        UserTicket.selected
     ).order_by(User.surname.asc(), User.name.asc()).all()
 
     return render_template('admin-ticket-detail.html',
@@ -657,7 +654,6 @@ def excel_tickets_and_rewards():
             select ut.user_id as user_id, array_to_string(array_agg(t.name),' + ') as entrades
             from tickets as t
             join user_tickets as ut on t.id = ut.ticket_id
-            where ut.selected
             group by user_id
         ) as t on u.id = t.user_id
         join (

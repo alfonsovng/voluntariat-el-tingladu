@@ -150,14 +150,18 @@ def task(volunteer_hashid, task_hashid):
         on us.shift_id = s.id where s.task_id = {task_id} group by s.day order by s.day"""))]
 
     if len(days_and_number_of_shifts) == 1:
-        return redirect(request.path + "/" + pathname2url(days_and_number_of_shifts[0][0]))
+        return redirect(request.path + "/shifts?day=" + pathname2url(days_and_number_of_shifts[0][0]))
 
     return render_template('volunteer-task.html',task=task, days_and_number_of_shifts=days_and_number_of_shifts,volunteer=volunteer,user=current_user)
 
-@volunteer_bp.route('/admin/p/<volunteer_hashid>/tasks/<task_hashid>/<day>', methods=["GET", "POST"])
-@volunteer_bp.route('/p/<volunteer_hashid>/tasks/<task_hashid>/<day>', methods=["GET", "POST"])
+@volunteer_bp.route('/admin/p/<volunteer_hashid>/tasks/<task_hashid>/shifts', methods=["GET", "POST"])
+@volunteer_bp.route('/p/<volunteer_hashid>/tasks/<task_hashid>/shifts', methods=["GET", "POST"])
 @login_required
-def shifts(volunteer_hashid, task_hashid, day):
+def shifts(volunteer_hashid, task_hashid):
+    day = request.args.get("day")
+    if day is None:
+        day = ""
+
     volunteer = load_volunteer(current_user,volunteer_hashid)
     if volunteer is None:
         flash_error("wrong_address")
@@ -379,8 +383,6 @@ def rewards(volunteer_hashid):
 
     tickets = db.session.query(Ticket).join(UserTicket).filter(
         UserTicket.user_id == volunteer.id
-    ).filter(
-        UserTicket.selected
     ).order_by(UserTicket.ticket_id.asc()).all()
 
     (cash, cash_details) = rewards_manager.calculate_cash(volunteer)

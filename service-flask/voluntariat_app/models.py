@@ -104,6 +104,7 @@ class Meal(db.Model):
     __tablename__ = "meals"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=True, nullable=False)
+    day = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False, server_default='') #'' es un possible valor
 
 class UserMeal(db.Model):
@@ -117,10 +118,11 @@ class Ticket(db.Model):
     __tablename__ = "tickets"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=True, nullable=False)
+    day = db.Column(db.String, nullable=False)
     description = db.Column(db.String, nullable=False) #'' es un possible valor
 
 class UserTicket(db.Model):
     __tablename__ = "user_tickets"
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
     ticket_id = db.Column(db.Integer, db.ForeignKey("tickets.id"), primary_key=True)
-    selected = db.Column(db.Boolean, nullable=False, default=False, server_default=text("FALSE"))
+    alternative_ticket_ids = db.Column(ARRAY(db.Integer), nullable=False, server_default='{}')
