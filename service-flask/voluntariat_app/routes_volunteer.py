@@ -2,7 +2,7 @@ from flask import Blueprint, redirect, render_template, url_for, request
 from flask_login import current_user, login_required
 from .helper import flash_error, flash_info, load_volunteer, flash_warning, trim, get_shifts_meals_and_tickets
 from . import db, task_manager, params_manager, rewards_manager, hashid_manager
-from .forms_volunteer import ProfileForm, ChangePasswordForm, ShiftsForm, ShiftsFormWithPassword, DietForm, MealsForm
+from .forms_volunteer import ProfileForm, ChangePasswordForm, ShiftsForm, ShiftsFormWithPassword, DietForm, MealsForm, TicketsForm
 from .plugin_gmail import TaskConfirmPasswordChangeEmail
 from .models import Task, Shift, UserShift, UserDiet, UserMeal, Meal, Ticket, UserTicket
 from sqlalchemy import text
@@ -398,17 +398,45 @@ def rewards(volunteer_hashid):
         flash_warning("first_tasks_and_shifts")
         read_only = True
 
-    tickets = db.session.query(Ticket).join(UserTicket).filter(
-        UserTicket.user_id == volunteer.id
-    ).order_by(UserTicket.ticket_id.asc()).all()
+    volunteer_tickets = db.session.query(UserTicket).filter(
+            UserTicket.user_id == volunteer.id
+        ).order_by(UserTicket.ticket_id.asc()).all()
+    
+    form = TicketsForm()
+    if not read_only and form.validate_on_submit():
+        # canvio els tickets seleccionats
+        for ut in volunteer_tickets:
+            new_ticket_id_raw = request.form.get(f"ticket-{ut.ticket_id}")
+            if new_ticket_id_raw is not None:
+                new_ticket_id = int(new_ticket_id_raw)
+                if new_ticket_id != ut.ticket_id and new_ticket_id in ut.ticket_id_options:
+                    ut.ticket_id = new_ticket_id
+                    db.session.add(ut)
 
-    (cash, cash_details) = rewards_manager.calculate_cash(volunteer)
+        db.session.commit()
+        flash_info("data_saved")
+        return redirect(request.full_path) # redirecció a mi mateix
+    else:
+        (cash, cash_details) = rewards_manager.calculate_cash(volunteer)
 
-    return render_template('volunteer-rewards.html',read_only=read_only,
-        tickets = tickets,
-        cash = cash, cash_details = cash_details,
-        volunteer = volunteer, user = current_user
-    )
+        all_tickets = {id:name for (id, name) in db.session.execute(text(f"""select id, name from tickets"""))}
+        tickets = [(ut.ticket_id, [(id, all_tickets[id]) for id in ut.ticket_id_options]) for ut in volunteer_tickets]
+
+        # si no hi ha opcions, no mostro el botó de submit
+        any_options = False
+        for (id, options) in tickets:
+            if len(options) > 1:
+                any_options = True
+                break
+
+        return render_template('volunteer-rewards.html',
+            form = form,
+            read_only = read_only,
+            any_options = any_options,
+            tickets = tickets,
+            cash = cash, cash_details = cash_details,
+            volunteer = volunteer, user = current_user
+        )
 
 def __is_read_only(current_user):
     return not params_manager.allow_modifications and not current_user.is_admin

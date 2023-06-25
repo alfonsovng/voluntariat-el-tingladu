@@ -30,11 +30,21 @@
     <h4><small class="text-muted">Entrades i/o acreditacions assignades segons les teves tasques i torns</small></h4>
     {% if tickets %}
     <br />
-    <dl>
-      {% for t in tickets %}
-        <dt class="text-ticket">{{t.name}}</dt>
-      {% endfor %}
-    </dl>
+    <form role="form" method='POST'>
+      {{ form.csrf_token }}
+      <dl>
+        {% for ticket_id, options in tickets %}
+          <select class="form-control" name="ticket-{{ticket_id}}" {{ 'disabled' if options|length <= 1 }}>
+            {% for k,v in options %}
+            <option value="{{k}}" {{'selected' if ticket_id == k }}>{{v}}</option>
+            {% endfor %}
+          </select>
+        {% endfor %}
+      </dl>
+      {% if any_options and not read_only %}
+        {{ form.submit(value="Actualitza les teves entrades", class='btn btn-success') }}
+      {% endif %}
+    </form>
     {% else %}
       <p class="font-italic text-ticket">No hi ha entrades o acreditacions assignades.</p>
     {% endif %}
