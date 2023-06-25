@@ -323,7 +323,7 @@ class Rewards15Edition(RewardsImpl):
             ticket = UserTicket(
                 user_id = user.id,
                 ticket_id = ticket_id,
-                alternative_ticket_ids = []
+                ticket_id_options = [ticket_id]
             )
             tickets_assigned[ticket_id] = ticket
 
@@ -342,7 +342,14 @@ class Rewards15Edition(RewardsImpl):
                         for ticket_id in the_tickets:
                             add_ticket(ticket_id)
 
-        def add_variable_ticket():
+
+        def add_entrades_tres_dies():
+            # el poso com a 3 entrades pq posterioment es converteixen en abonament
+            add_ticket(self.entrada_dijous_id)
+            add_ticket(self.entrada_divendres_id)
+            add_ticket(self.entrada_dissabte_id)
+            
+        def add_entrada_variable():
             free_days = []
             if self.entrada_dijous_id not in tickets_assigned:
                 free_days.append(self.entrada_dijous_id)
@@ -355,30 +362,26 @@ class Rewards15Edition(RewardsImpl):
                 ticket = UserTicket(
                     user_id = user.id,
                     ticket_id = free_days[0],
-                    alternative_ticket_ids = free_days[1:]
+                    ticket_id_options = free_days
                 )
                 tickets_assigned[free_days[0]] = ticket
 
         # reviso si es globus, subcaps o electrics, per donar "entrades variables"
         num_globus_tasks = sum(1 for (t, s, us) in current_shifts if t.id == self.globus_id)
         if num_globus_tasks == 1:
-            add_variable_ticket()
+            add_entrada_variable()
         elif num_globus_tasks > 1:
-            # dos tickets variables, amb el propi ticket del dia que treballa, suposarà un abonament
-            add_variable_ticket()
-            add_variable_ticket()
+            add_entrades_tres_dies()
 
         num_subcaps_tasks = sum(1 for (t, s, us) in current_shifts if t.id == self.subcaps_barres_id)
         if num_subcaps_tasks == 2:
-            add_variable_ticket()
+            add_entrada_variable()
         elif num_subcaps_tasks > 3:
-            # dos tickets variables, amb el propi ticket del dia que treballa, suposarà un abonament
-            add_variable_ticket()
-            add_variable_ticket()
+            add_entrades_tres_dies()
 
         num_electric_tasks = sum(1 for (t, s, us) in current_shifts if t.id == self.electrics_id)
         if num_electric_tasks > 0:
-            add_variable_ticket()
+            add_entrada_variable()
                 
         # Moment de neteja... si té entrada 3 dies, es canvia per abonament
         if self.entrada_dijous_id in tickets_assigned and self.entrada_divendres_id in tickets_assigned and self.entrada_dissabte_id in tickets_assigned:
@@ -388,6 +391,16 @@ class Rewards15Edition(RewardsImpl):
 
             add_ticket(self.abonament_id)
 
+        # Reviso solapaments d'entrades variables, màxim pot haver 2, i si hi ha 2, deixem sols 1
+        there_is_one = False
+        for (key, value) in tickets_assigned.items():
+            if (key == self.entrada_dijous_id or key == self.entrada_divendres_id or key == self.entrada_dissabte_id) and len(value.ticket_id_options) > 1:
+                if there_is_one:
+                    del tickets_assigned[key]
+                    break
+                else:
+                    there_is_one = True
+                 
         return tickets_assigned.values()
 
     def calculate_meals(self, user, current_shifts):
@@ -479,10 +492,10 @@ class RewardsManager:
         db.session.add_all(merged_tickets)
 
     def __merge_tickets(self, current_tickets, new_tickets):
-        # for ticket in new_tickets:
-        #     existing_ticket = self.__get_first_with_filter(lambda t:t.ticket_id == ticket.ticket_id, current_tickets)
-        #     if existing_ticket:
-        #         ticket.selected = existing_ticket.selected
+        for ticket in new_tickets:
+            existing_ticket = self.__get_first_with_filter(lambda t:t.ticket_id_options == ticket.ticket_id_options, current_tickets)
+            if existing_ticket:
+                ticket.ticket_id = existing_ticket.ticket_id
 
         return new_tickets
 
