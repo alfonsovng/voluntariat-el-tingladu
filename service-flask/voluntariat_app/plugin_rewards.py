@@ -7,6 +7,9 @@ class RewardsImpl:
 
     def calculate_meals(self, user, current_shifts):
         raise NotImplementedError
+    
+    def calculate_cash(self, current_tickets, current_shifts):
+        raise NotImplementedError
 
     def _get_meal_id(self, db, name):
         id = db.session.execute(text(f"select id from meals where name = '{name}'")).one()[0] #it's a tuple
@@ -38,9 +41,9 @@ class Rewards15Edition(RewardsImpl):
     def __init__(self, app, db):
         with app.app_context():
             # dies
-            dijous = "20-06 DIJOUS"
-            divendres = "21-06 DIVENDRES"
-            dissabte = "22-06 DISSABTE"
+            self.dijous = "20-06 DIJOUS"
+            self.divendres = "21-06 DIVENDRES"
+            self.dissabte = "22-06 DISSABTE"
 
             # àpats
             sopar_dijous_id = self._get_meal_id(db, "SOPAR DE DIJOUS")
@@ -86,9 +89,9 @@ class Rewards15Edition(RewardsImpl):
 
             self.assignacio_apats = [
                 [{  # sopar del dia que ajuden
-                    dijous: sopar_dijous_id,
-                    divendres: sopar_divendres_id,
-                    dissabte: sopar_dissabte_id,
+                    self.dijous: sopar_dijous_id,
+                    self.divendres: sopar_divendres_id,
+                    self.dissabte: sopar_dissabte_id,
                 }, frozenset([
                     barres_id,
                     subcaps_barres_id,
@@ -131,9 +134,9 @@ class Rewards15Edition(RewardsImpl):
 
             self.assignacio_tickets = [
                 [{  # entrada del dia que ajuden
-                    dijous: entrada_dijous_id,
-                    divendres: entrada_divendres_id,
-                    dissabte: entrada_dissabte_id,
+                    self.dijous: entrada_dijous_id,
+                    self.divendres: entrada_divendres_id,
+                    self.dissabte: entrada_dissabte_id,
                 }, frozenset([
                     barres_id,
                     subcaps_barres_id,
@@ -153,9 +156,9 @@ class Rewards15Edition(RewardsImpl):
                     # punt_lila_i_food_truck_id,
                 ])],
                 [{  # voluntari del dia que ajuden
-                    dijous: voluntari_dijous_id,
-                    divendres: voluntari_divendres_id,
-                    dissabte: voluntari_dissabte_id,
+                    self.dijous: voluntari_dijous_id,
+                    self.divendres: voluntari_divendres_id,
+                    self.dissabte: voluntari_dissabte_id,
                 }, frozenset([
                     barres_id,
                     subcaps_barres_id,
@@ -175,9 +178,9 @@ class Rewards15Edition(RewardsImpl):
                     # punt_lila_i_food_truck_id,
                 ])],
                 [{  # col·laborador del dia que ajuden
-                    dijous: col_dijous_id,
-                    divendres: col_divendres_id,
-                    dissabte: col_dissabte_id,
+                    self.dijous: col_dijous_id,
+                    self.divendres: col_divendres_id,
+                    self.dissabte: col_dissabte_id,
                 }, frozenset([
                     # barres_id,
                     # subcaps_barres_id,
@@ -197,9 +200,9 @@ class Rewards15Edition(RewardsImpl):
                     # punt_lila_i_food_truck_id,
                 ])],
                 [{  # globus del dia que ajudenx
-                    dijous: globus_dijous_id,
-                    divendres: globus_divendres_id,
-                    dissabte: globus_dissabte_id,
+                    self.dijous: globus_dijous_id,
+                    self.divendres: globus_divendres_id,
+                    self.dissabte: globus_dissabte_id,
                 }, frozenset([
                     # barres_id,
                     # subcaps_barres_id,
@@ -310,6 +313,10 @@ class Rewards15Edition(RewardsImpl):
             self.electrics_id = electrics_id
             self.globus_id = globus_id
             self.subcaps_barres_id = subcaps_barres_id
+
+            self.tasques_amb_rewards_diferits = frozenset([
+                electrics_id, globus_id, subcaps_barres_id, muntatge_id, suport_id
+            ])
 
     def calculate_tickets(self, user, current_shifts):
         from .models import UserTicket
@@ -435,6 +442,83 @@ class Rewards15Edition(RewardsImpl):
                             add_meal(meal_id)
 
         return meals_assigned.values()
+    
+    def calculate_cash(self, current_tickets, current_shifts):
+        cash_by_day = {
+            self.dijous: 0,
+            self.divendres: 0,
+            self.dissabte: 0
+        }
+
+        cash_lines = []
+
+        # dies en que treballa el voluntari
+        busy_days = set()
+
+        cash_to_assign = 0
+        cash_total = 0
+
+        def add_cash_detail(task_id, task_day, description, cash):
+            nonlocal cash_total, cash_to_assign
+
+            cash_lines.append((description, cash))
+            if task_id in self.tasques_amb_rewards_diferits:
+                cash_to_assign += cash
+            else:
+                cash_by_day[task_day] = cash_by_day[task_day] + cash
+            
+            if task_day in cash_by_day:
+                # controlo que sigui dijous, divendres o dissabte
+                busy_days.add(task_day)
+
+            cash_total += cash
+
+        for (t, s, us) in current_shifts:
+            if s.reward > 0:
+                if s.assignations: # no es buit, és a dir, hi ha opcions
+                    zero_assignations = True
+                    for (name, assigned) in zip(s.assignations, us.shift_assignations):
+                        if assigned:
+                            add_cash_detail(t.id, s.day, f"{t.name} - {s.description} - {name}", s.reward)
+                            zero_assignations = False
+                        
+                    if zero_assignations:
+                        add_cash_detail(t.id, s.day, f"{t.name} - {s.description}", 0)
+                else:
+                    add_cash_detail(t.id, s.day, f"{t.name} - {s.description}", s.reward)
+
+        if cash_to_assign > 0:
+            print(current_tickets)
+            print("--------------------------------------")
+            free_days = []
+            # es tracta de repartir aquests diners entre els dies que no treballa, o si no entre els que treball equitativament
+
+            if self.dijous not in busy_days and (self.entrada_dijous_id in current_tickets or self.abonament_id in current_tickets):
+                free_days.append(self.dijous)
+
+            if self.divendres not in busy_days and (self.entrada_divendres_id in current_tickets or self.abonament_id in current_tickets):
+                free_days.append(self.divendres)
+
+            if self.dissabte not in busy_days and (self.entrada_dissabte_id in current_tickets or self.abonament_id in current_tickets):
+                free_days.append(self.dissabte)
+
+            if not free_days:
+                # no te dies lliures, es reparteix entre els dies ocupats
+                if busy_days:
+                    free_days = list(busy_days)
+                else:
+                    # es reparteix entre els tres dies i xim pum
+                    free_days = [self.dijous, self.divendres, self.dissabte]
+            
+            integer_cash_by_day = cash_to_assign // len(free_days)
+            for d in free_days:
+                cash_by_day[d] = cash_by_day[d] + integer_cash_by_day
+
+            remanent = cash_to_assign -  len(free_days)*integer_cash_by_day
+            cash_by_day[free_days[0]] = cash_by_day[free_days[0]] + remanent
+
+        return (cash_total, cash_by_day.items(), cash_lines)
+    
 
 class RewardsManager:
     
@@ -537,24 +621,12 @@ class RewardsManager:
         db.session.add(user)
 
     def calculate_cash(self, user):
-        cash = 0
-        cash_details = list()
+        from .models import UserTicket
+        from . import db
 
-        current_shifts = self.__get_current_shifts(user.id)
-        for (t, s, us) in current_shifts:
-            if s.reward > 0:
-                if s.assignations: # no es buit, és a dir, hi ha opcions
-                    zero_assignations = True
-                    for (name, assigned) in zip(s.assignations, us.shift_assignations):
-                        if assigned:
-                            cash_details.append((f"{t.name} - {s.description} - {name}", s.reward))
-                            cash += s.reward
-                            zero_assignations = False
-                        
-                    if zero_assignations:
-                        cash_details.append((f"{t.name} - {s.description}", None))
-                else:
-                    cash_details.append((f"{t.name} - {s.description}", s.reward))
-                    cash += s.reward
+        current_tickets = [id[0] for id in db.session.query(UserTicket.ticket_id).filter(UserTicket.user_id == user.id).all()]
 
-        return (cash, cash_details)
+        return self.rewards_instance.calculate_cash(
+            current_tickets = current_tickets,
+            current_shifts = self.__get_current_shifts(user.id)
+        )

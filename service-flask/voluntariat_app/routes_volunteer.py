@@ -417,7 +417,7 @@ def rewards(volunteer_hashid):
         flash_info("data_saved")
         return redirect(request.full_path) # redirecció a mi mateix
     else:
-        (cash, cash_details) = rewards_manager.calculate_cash(volunteer)
+        (cash, cash_by_day, cash_lines) = rewards_manager.calculate_cash(volunteer)
 
         all_tickets = {id:name for (id, name) in db.session.execute(text(f"""select id, name from tickets"""))}
         tickets = [(ut.ticket_id, [(id, all_tickets[id]) for id in ut.ticket_id_options]) for ut in volunteer_tickets]
@@ -434,7 +434,7 @@ def rewards(volunteer_hashid):
             read_only = read_only,
             any_options = any_options,
             tickets = tickets,
-            cash = cash, cash_details = cash_details,
+            cash = cash, cash_by_day = cash_by_day, cash_lines = cash_lines,
             volunteer = volunteer, user = current_user
         )
 

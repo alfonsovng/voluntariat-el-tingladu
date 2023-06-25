@@ -51,12 +51,22 @@
     <hr />
     <h4>Les teves recompenses</h4>
     <h4><small class="text-muted">Recompenses assignades segons les teves tasques i torns</small></h4>
-    {% if cash_details %}
-      <br />
-      <dl>
-        {% for (label, c) in cash_details %}
-          <dt class="font-weight-normal text-ticket">{{label}}: {{ "pendent d'assignació" if c is none else "{0:d} €".format(c)}}</dt>
+    {% if cash_lines %}
+      <h5><small class="text-muted">Recompenses de cada torn:</small></h5>
+      <dl> 
+        <ul>
+        {% for (label, c) in cash_lines %}
+          <dt class="font-weight-normal text-ticket">{{label}}: {{ "pendent d'assignació" if c <=0 else "{0:d} €".format(c)}}</dt>
         {% endfor %}
+        </ul>
+        <h5><small class="text-muted">Dsitribució de les recompenses per dies:</small></h5>
+        <ul>
+        {% for (day, c) in cash_by_day %}
+          {% if c > 0 %}
+            <dt class="font-weight-normal text-ticket"><strong>{{day}}:</strong> {{ "{0:d} €".format(c)}}</dt>
+          {% endif %}
+        {% endfor %}
+        </ul>
       </dl>
       {% if cash > 0 %}
         <p class="font-weight-bolder text-ticket">Total: {{cash}} € en tiquets de consum</p>
