@@ -53,3 +53,6 @@ class DietForm(FlaskForm):
 class MealsForm(FlaskForm):
     # accept_conditions_meals = BooleanField(validators=[DataRequired()])
     submit = SubmitField()
+
+class TicketsForm(FlaskForm):
+    submit = SubmitField()
