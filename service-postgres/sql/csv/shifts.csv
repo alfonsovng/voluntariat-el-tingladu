@@ -35,9 +35,9 @@ MARXANDATGE,22-06 DISSABTE,Dissabte de 21:00 a 00:00,2,15,{}
 CUINA,20-06 DIJOUS,Tasques de cuina en dijous,12,0,{}
 CUINA,21-06 DIVENDRES,Tasques de cuina en divendres,12,0,{}
 CUINA,22-06 DISSABTE,Tasques de cuina en dissabte,12,0,{}
-GLOBUS,20-06 DIJOUS,Tasques d'el·laboració del Globus en dijous,8,0,{}
-GLOBUS,21-06 DIVENDRES,Tasques d'el·laboració del Globus en divendres,8,0,{}
-GLOBUS,22-06 DISSABTE,Tasques d'el·laboració del Globus en dissabte,8,0,{}
+GLOBUS,20-06 DIJOUS,Tasques d'el·laboració del Globus en dijous,8,30,{}
+GLOBUS,21-06 DIVENDRES,Tasques d'el·laboració del Globus en divendres,8,30,{}
+GLOBUS,22-06 DISSABTE,Tasques d'el·laboració del Globus en dissabte,8,30,{}
 PHOTOCALL,20-06 DIJOUS,Tasques de photocall en dijous,5,15,{}
 PHOTOCALL,21-06 DIVENDRES,Tasques de photocall en divendres,5,15,{}
 PHOTOCALL,22-06 DISSABTE,Tasques de photocall en dissabte,5,15,{}
@@ -48,7 +48,7 @@ MUNTATGE,"",Dimarts 18/06 de 17:00 a 20:00,10,10,{ASSISTÈNCIA CONFIRMADA}
 MUNTATGE,"",Dimecres 19/06 de 10:00 a 13:00,10,10,{ASSISTÈNCIA CONFIRMADA}
 MUNTATGE,"",Dimecres 19/06 de 17:00 a 20:00,10,10,{ASSISTÈNCIA CONFIRMADA}
 MUNTATGE,"",Dijous 20/06 de 10:00 a 13:00,5,10,{ASSISTÈNCIA CONFIRMADA}
-SUPORT,"",Tasques de suport per part de gent del centre obert,20,15,{}
+SUPORT,"",Tasques de suport per part de gent del centre obert,20,45,{}
 ORGANITZACIÓ,"",Tasques d'organització,30,0,{}
 COMUNICACIÓ,20-06 DIJOUS,Tasques de comunicació en dijous,10,0,{}
 COMUNICACIÓ,21-06 DIVENDRES,Tasques de comunicació en divendres,10,0,{}
