@@ -232,7 +232,7 @@ ALTER TABLE public.user_shifts OWNER TO postgres;
 CREATE TABLE public.user_tickets (
     user_id integer NOT NULL,
     ticket_id integer NOT NULL,
-    alternative_ticket_ids integer[] NOT NULL
+    ticket_id_options integer[] NOT NULL
 );
 
 

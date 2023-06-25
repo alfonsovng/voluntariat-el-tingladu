@@ -125,4 +125,4 @@ class UserTicket(db.Model):
     __tablename__ = "user_tickets"
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
     ticket_id = db.Column(db.Integer, db.ForeignKey("tickets.id"), primary_key=True)
-    alternative_ticket_ids = db.Column(ARRAY(db.Integer), nullable=False, server_default='{}')
+    ticket_id_options = db.Column(ARRAY(db.Integer), nullable=False, server_default='{}')
