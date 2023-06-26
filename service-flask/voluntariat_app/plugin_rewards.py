@@ -41,9 +41,9 @@ class Rewards15Edition(RewardsImpl):
     def __init__(self, app, db):
         with app.app_context():
             # dies
-            self.dijous = "20-06 DIJOUS"
-            self.divendres = "21-06 DIVENDRES"
-            self.dissabte = "22-06 DISSABTE"
+            self.dijous = "20-07 DIJOUS"
+            self.divendres = "21-07 DIVENDRES"
+            self.dissabte = "22-07 DISSABTE"
 
             # àpats
             sopar_dijous_id = self._get_meal_id(db, "SOPAR DE DIJOUS")
@@ -86,6 +86,9 @@ class Rewards15Edition(RewardsImpl):
             so_id = self._get_task_id(db, "SO")
             seguretat_id = self._get_task_id(db, "SEGURETAT")
             punt_lila_i_food_truck_id = self._get_task_id(db, "PUNT LILA I FOOD TRUCK")
+            invitacio_entrades_id = self._get_task_id(db, "INVITACIÓ ENTRADES")
+            invitacio_sopar_id = self._get_task_id(db, "INVITACIÓ SOPAR")
+            invitacio_tickets_id = self._get_task_id(db, "INVITACIÓ TICKETS")
 
             self.assignacio_apats = [
                 [{  # sopar del dia que ajuden
@@ -109,6 +112,9 @@ class Rewards15Edition(RewardsImpl):
                     # so_id,
                     # seguretat_id,
                     # punt_lila_i_food_truck_id,
+                    # invitacio_entrades_id,
+                    invitacio_sopar_id,
+                    # invitacio_tickets_id,
                 ])],
                 [[  # els 3 sopars
                     sopar_dijous_id, sopar_divendres_id, sopar_dissabte_id
@@ -129,6 +135,9 @@ class Rewards15Edition(RewardsImpl):
                     so_id,
                     seguretat_id,
                     # punt_lila_i_food_truck_id,
+                    # invitacio_entrades_id,
+                    # invitacio_sopar_id,
+                    # invitacio_tickets_id,
                 ])]
             ]
 
@@ -154,6 +163,9 @@ class Rewards15Edition(RewardsImpl):
                     # so_id,
                     # seguretat_id,
                     # punt_lila_i_food_truck_id,
+                    invitacio_entrades_id,
+                    # invitacio_sopar_id,
+                    # invitacio_tickets_id,
                 ])],
                 [{  # voluntari del dia que ajuden
                     self.dijous: voluntari_dijous_id,
@@ -176,6 +188,9 @@ class Rewards15Edition(RewardsImpl):
                     # so_id,
                     # seguretat_id,
                     # punt_lila_i_food_truck_id,
+                    # invitacio_entrades_id,
+                    # invitacio_sopar_id,
+                    # invitacio_tickets_id,
                 ])],
                 [{  # col·laborador del dia que ajuden
                     self.dijous: col_dijous_id,
@@ -198,6 +213,9 @@ class Rewards15Edition(RewardsImpl):
                     # so_id,
                     # seguretat_id,
                     # punt_lila_i_food_truck_id,
+                    # invitacio_entrades_id,
+                    # invitacio_sopar_id,
+                    # invitacio_tickets_id,
                 ])],
                 [{  # globus del dia que ajudenx
                     self.dijous: globus_dijous_id,
@@ -220,6 +238,9 @@ class Rewards15Edition(RewardsImpl):
                     # so_id,
                     # seguretat_id,
                     # punt_lila_i_food_truck_id,
+                    # invitacio_entrades_id,
+                    # invitacio_sopar_id,
+                    # invitacio_tickets_id,
                 ])],
                 [[  # suport (en realitat serà l’entrada del dia)
                     acreditacio_suport_id
@@ -240,6 +261,9 @@ class Rewards15Edition(RewardsImpl):
                     # so_id,
                     # seguretat_id,
                     # punt_lila_i_food_truck_id,
+                    # invitacio_entrades_id,
+                    # invitacio_sopar_id,
+                    # invitacio_tickets_id,
                 ])],
                 [[  # organització
                     acreditacio_organitzacio_id
@@ -260,6 +284,9 @@ class Rewards15Edition(RewardsImpl):
                     # so_id,
                     # seguretat_id,
                     # punt_lila_i_food_truck_id,
+                    # invitacio_entrades_id,
+                    # invitacio_sopar_id,
+                    # invitacio_tickets_id,
                 ])],
                 [[
                     # treballador
@@ -281,6 +308,9 @@ class Rewards15Edition(RewardsImpl):
                     so_id,
                     seguretat_id,
                     # punt_lila_i_food_truck_id,
+                    # invitacio_entrades_id,
+                    # invitacio_sopar_id,
+                    # invitacio_tickets_id,
                 ])],
                 [[  # punt lila I food truck
                     acreditacio_punt_lila_i_food_truck_id
@@ -301,6 +331,9 @@ class Rewards15Edition(RewardsImpl):
                     # so_id,
                     # seguretat_id,
                     punt_lila_i_food_truck_id,
+                    # invitacio_entrades_id,
+                    # invitacio_sopar_id,
+                    # invitacio_tickets_id,
                 ])],
             ]
 
@@ -315,7 +348,7 @@ class Rewards15Edition(RewardsImpl):
             self.subcaps_barres_id = subcaps_barres_id
 
             self.tasques_amb_rewards_diferits = frozenset([
-                electrics_id, globus_id, subcaps_barres_id, muntatge_id, suport_id
+                electrics_id, globus_id, subcaps_barres_id, muntatge_id, suport_id, invitacio_tickets_id
             ])
 
     def calculate_tickets(self, user, current_shifts):
@@ -397,6 +430,15 @@ class Rewards15Edition(RewardsImpl):
             del tickets_assigned[self.entrada_dissabte_id]
 
             add_ticket(self.abonament_id)
+
+        # Si hi ha abonament, no calen les entrades de dies sueltos
+        if self.abonament_id in tickets_assigned:
+            if self.entrada_dijous_id in tickets_assigned: 
+                del tickets_assigned[self.entrada_dijous_id]
+            if self.entrada_divendres_id in tickets_assigned: 
+                del tickets_assigned[self.entrada_divendres_id]
+            if self.entrada_dissabte_id in tickets_assigned: 
+                del tickets_assigned[self.entrada_dissabte_id]
 
         # Reviso solapaments d'entrades variables, màxim pot haver 2, i si hi ha 2, deixem sols 1
         there_is_one = False
@@ -483,13 +525,11 @@ class Rewards15Edition(RewardsImpl):
                             zero_assignations = False
                         
                     if zero_assignations:
-                        add_cash_detail(t.id, s.day, f"{t.name} - {s.description}", 0)
+                        add_cash_detail(t.id, s.day, f"{t.name} - {s.description} ({s.reward} €)", 0)
                 else:
                     add_cash_detail(t.id, s.day, f"{t.name} - {s.description}", s.reward)
 
         if cash_to_assign > 0:
-            print(current_tickets)
-            print("--------------------------------------")
             free_days = []
             # es tracta de repartir aquests diners entre els dies que no treballa, o si no entre els que treball equitativament
 
@@ -514,7 +554,7 @@ class Rewards15Edition(RewardsImpl):
             for d in free_days:
                 cash_by_day[d] = cash_by_day[d] + integer_cash_by_day
 
-            remanent = cash_to_assign -  len(free_days)*integer_cash_by_day
+            remanent = cash_to_assign - len(free_days)*integer_cash_by_day
             cash_by_day[free_days[0]] = cash_by_day[free_days[0]] + remanent
 
         return (cash_total, cash_by_day.items(), cash_lines)

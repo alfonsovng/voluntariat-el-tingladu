@@ -15,3 +15,6 @@ ELÈCTRICS,Voluntariat elèctrics,cucut,FALSE
 SO,Persones professionals del So,"",TRUE
 SEGURETAT,Persones professionals de Seguretat,"",TRUE
 PUNT LILA I FOOD TRUCK,Persones professionals del Punt Lila i les Food Trucks,"",TRUE
+INVITACIÓ ENTRADES,Tasca ficticia per a assignar entrades,"",TRUE
+INVITACIÓ SOPAR,Tasca ficticia per a assignar sopars,"",TRUE
+INVITACIÓ TICKETS,Tasca ficticia per a assignar tickets,"",TRUE
