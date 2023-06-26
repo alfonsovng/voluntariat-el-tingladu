@@ -214,6 +214,7 @@ def shifts(volunteer_hashid, task_hashid):
         return render_template('volunteer-shifts.html',
             form=form,
             read_only=read_only,
+            day = day,
             task=task,
             shifts_and_selected=shifts_and_selected,
             volunteer=volunteer,
