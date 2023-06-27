@@ -1,6 +1,6 @@
 venv
 ngrok
-postgres/data
+service-postgres/data
 doc
 .env
 .env.http
