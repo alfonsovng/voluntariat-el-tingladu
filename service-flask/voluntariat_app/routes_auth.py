@@ -3,7 +3,7 @@ from flask_login import current_user, login_user, logout_user
 
 from . import login_manager, db, hashid_manager, task_manager, params_manager
 from .forms_auth import LoginForm, SignUpForm, ForgottenPasswordForm, ResetPasswordForm
-from .models import User, UserRole, UserDiet
+from .models import User, UserRole, UserDiet, UserRewards
 from .plugin_gmail import TaskSignUpEmail, TaskResetPasswordEmail, TaskConfirmPasswordChangeEmail
 from .helper import flash_info, flash_warning, flash_error, logger
 
@@ -58,10 +58,11 @@ def signup(invitation_token):
             user.change_password_token = token
             db.session.add(user)
             
-            # guardo la informació de la seva dieta
+            # guardo la informació de la seva dieta i les seves recompenses
             db.session.add(UserDiet(user_id = user.id))
+            db.session.add(UserRewards(user_id = user.id))
 
-            db.session.commit() # guardem token i la dieta
+            db.session.commit() # guardem token, dieta i recompenses
            
             # send email to end signup
             email_task = TaskSignUpEmail(name=form.name.data,email=lowercase_email,token=token)

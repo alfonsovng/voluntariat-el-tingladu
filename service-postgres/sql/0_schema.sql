@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 15.2 (Debian 15.2-1.pgdg110+1)
--- Dumped by pg_dump version 15.2 (Debian 15.2-1.pgdg110+1)
+-- Dumped from database version 15.3 (Debian 15.3-1.pgdg120+1)
+-- Dumped by pg_dump version 15.3 (Debian 15.3-1.pgdg120+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -15,6 +15,20 @@ SET check_function_bodies = false;
 SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
+
+--
+-- Name: hstore; Type: EXTENSION; Schema: -; Owner: -
+--
+
+CREATE EXTENSION IF NOT EXISTS hstore WITH SCHEMA public;
+
+
+--
+-- Name: EXTENSION hstore; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION hstore IS 'data type for storing sets of (key, value) pairs';
+
 
 --
 -- Name: users_role; Type: TYPE; Schema: public; Owner: postgres
@@ -212,6 +226,19 @@ CREATE TABLE public.user_meals (
 ALTER TABLE public.user_meals OWNER TO postgres;
 
 --
+-- Name: user_rewards; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.user_rewards (
+    user_id integer NOT NULL,
+    description character varying[] DEFAULT '{}'::character varying[] NOT NULL,
+    cash_by_day public.hstore DEFAULT ''::public.hstore NOT NULL
+);
+
+
+ALTER TABLE public.user_rewards OWNER TO postgres;
+
+--
 -- Name: user_shifts; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -232,7 +259,7 @@ ALTER TABLE public.user_shifts OWNER TO postgres;
 CREATE TABLE public.user_tickets (
     user_id integer NOT NULL,
     ticket_id integer NOT NULL,
-    ticket_id_options integer[] NOT NULL
+    ticket_id_options integer[] DEFAULT '{}'::integer[] NOT NULL
 );
 
 
@@ -257,8 +284,7 @@ CREATE TABLE public.users (
     electrician boolean DEFAULT false NOT NULL,
     role public.users_role NOT NULL,
     change_password_token character varying,
-    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    last_shift_change_at TIMESTAMPTZ
+    last_shift_change_at timestamp with time zone
 );
 
 
@@ -394,6 +420,14 @@ ALTER TABLE ONLY public.user_meals
 
 
 --
+-- Name: user_rewards user_rewards_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_rewards
+    ADD CONSTRAINT user_rewards_pkey PRIMARY KEY (user_id);
+
+
+--
 -- Name: user_shifts user_shifts_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -455,6 +489,14 @@ ALTER TABLE ONLY public.user_meals
 
 ALTER TABLE ONLY public.user_meals
     ADD CONSTRAINT user_meals_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
+
+
+--
+-- Name: user_rewards user_rewards_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.user_rewards
+    ADD CONSTRAINT user_rewards_user_id_fkey FOREIGN KEY (user_id) REFERENCES public.users(id);
 
 
 --
