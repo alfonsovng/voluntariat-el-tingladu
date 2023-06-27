@@ -1,4 +1,4 @@
-from .helper import logger
+from .helper import logger, labels
 from sqlalchemy import text
 
 class RewardsImpl:
@@ -498,12 +498,11 @@ class Rewards15Edition(RewardsImpl):
         busy_days = set()
 
         cash_to_assign = 0
-        cash_total = 0
 
         def add_cash_detail(task_id, task_day, description, cash):
-            nonlocal cash_total, cash_to_assign
+            nonlocal cash_to_assign
 
-            cash_lines.append((description, cash))
+            cash_lines.append(description)
             if task_id in self.tasques_amb_rewards_diferits:
                 cash_to_assign += cash
             else:
@@ -513,19 +512,17 @@ class Rewards15Edition(RewardsImpl):
                 # controlo que sigui dijous, divendres o dissabte
                 busy_days.add(task_day)
 
-            cash_total += cash
-
         for (t, s, us) in current_shifts:
             if s.reward > 0:
                 if s.assignations: # no es buit, és a dir, hi ha opcions
                     zero_assignations = True
                     for (name, assigned) in zip(s.assignations, us.shift_assignations):
                         if assigned:
-                            add_cash_detail(t.id, s.day, f"{t.name} - {s.description} - {name}", s.reward)
+                            add_cash_detail(t.id, s.day, f"{t.name} - {s.description} - {name}: {s.reward} €", s.reward)
                             zero_assignations = False
                         
                     if zero_assignations:
-                        add_cash_detail(t.id, s.day, f"{t.name} - {s.description} ({s.reward} €)", 0)
+                        add_cash_detail(t.id, s.day, f"{t.name} - {s.description}: {s.reward} € [{labels.get('reward_assignation_pending')}]", 0)
                 else:
                     add_cash_detail(t.id, s.day, f"{t.name} - {s.description}", s.reward)
 
@@ -557,7 +554,7 @@ class Rewards15Edition(RewardsImpl):
             remanent = cash_to_assign - len(free_days)*integer_cash_by_day
             cash_by_day[free_days[0]] = cash_by_day[free_days[0]] + remanent
 
-        return (cash_total, cash_by_day.items(), cash_lines)
+        return (cash_by_day, cash_lines)
     
 
 class RewardsManager:
@@ -587,6 +584,9 @@ class RewardsManager:
         # actualitzo tickets, acreditacions i àpats
         self.__update_tickets(user, current_shifts)
         self.__update_meals(user, current_shifts)
+
+        # actualitzo el cash
+        self.update_cash(user.id)
 
         # actualitzo el last_change_at de l'usuari
         self.__update_user(user)
@@ -660,13 +660,23 @@ class RewardsManager:
         user.last_shift_change_at = func.now()
         db.session.add(user)
 
-    def calculate_cash(self, user):
-        from .models import UserTicket
+    def update_cash(self, user_id):
+        from .models import UserTicket, UserRewards
         from . import db
 
-        current_tickets = [id[0] for id in db.session.query(UserTicket.ticket_id).filter(UserTicket.user_id == user.id).all()]
+        current_tickets = [id[0] for id in db.session.query(UserTicket.ticket_id).filter(UserTicket.user_id == user_id).all()]
 
-        return self.rewards_instance.calculate_cash(
+        (cash_by_day, cash_lines) = self.rewards_instance.calculate_cash(
             current_tickets = current_tickets,
-            current_shifts = self.__get_current_shifts(user.id)
+            current_shifts = self.__get_current_shifts(user_id)
         )
+
+        rewards = UserRewards.query.filter_by(user_id = user_id).first()
+        rewards.description = cash_lines
+        cash_total = 0
+        for (k,v) in cash_by_day.items():
+            rewards.cash_by_day[k] = str(v)
+            cash_total += v
+        db.session.add(rewards)
+
+        logger.info(f"USER #{user_id} ==> {cash_total} €")
