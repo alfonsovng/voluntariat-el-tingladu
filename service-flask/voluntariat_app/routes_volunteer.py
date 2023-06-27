@@ -4,7 +4,7 @@ from .helper import flash_error, flash_info, load_volunteer, flash_warning, trim
 from . import db, task_manager, params_manager, rewards_manager, hashid_manager
 from .forms_volunteer import ProfileForm, ChangePasswordForm, ShiftsForm, ShiftsFormWithPassword, DietForm, MealsForm, TicketsForm
 from .plugin_gmail import TaskConfirmPasswordChangeEmail
-from .models import Task, Shift, UserShift, UserDiet, UserMeal, Meal, Ticket, UserTicket
+from .models import Task, Shift, UserShift, UserDiet, UserMeal, Meal, UserRewards, UserTicket
 from sqlalchemy import text
 from sqlalchemy.dialects.postgresql import ARRAY
 from urllib.request import pathname2url
@@ -418,11 +418,11 @@ def rewards(volunteer_hashid):
         flash_info("data_saved")
         return redirect(request.full_path) # redirecció a mi mateix
     else:
-        #(cash, cash_by_day, cash_lines) = rewards_manager.calculate_cash(volunteer.id)
-        # TODO: read this data from user_rewards database table
-        cash = 0
-        cash_by_day = []
-        cash_lines = []
+        rewards = UserRewards.query.filter_by(user_id = volunteer.id).first()
+
+        total_cash = 0
+        for c in rewards.cash_by_day.values():
+            total_cash += int(c)
 
         all_tickets = {id:name for (id, name) in db.session.execute(text(f"""select id, name from tickets"""))}
         tickets = [(ut.ticket_id, [(id, all_tickets[id]) for id in ut.ticket_id_options]) for ut in volunteer_tickets]
@@ -439,7 +439,8 @@ def rewards(volunteer_hashid):
             read_only = read_only,
             any_options = any_options,
             tickets = tickets,
-            cash = cash, cash_by_day = cash_by_day, cash_lines = cash_lines,
+            rewards = rewards,
+            total_cash = total_cash,
             volunteer = volunteer, user = current_user
         )
 
