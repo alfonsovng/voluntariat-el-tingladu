@@ -418,7 +418,11 @@ def rewards(volunteer_hashid):
         flash_info("data_saved")
         return redirect(request.full_path) # redirecció a mi mateix
     else:
-        (cash, cash_by_day, cash_lines) = rewards_manager.calculate_cash(volunteer)
+        #(cash, cash_by_day, cash_lines) = rewards_manager.calculate_cash(volunteer.id)
+        # TODO: read this data from user_rewards database table
+        cash = 0
+        cash_by_day = []
+        cash_lines = []
 
         all_tickets = {id:name for (id, name) in db.session.execute(text(f"""select id, name from tickets"""))}
         tickets = [(ut.ticket_id, [(id, all_tickets[id]) for id in ut.ticket_id_options]) for ut in volunteer_tickets]

@@ -355,16 +355,21 @@ def shift_detail(task_id, shift_id):
     form = AssignationsForm()
     if form.validate_on_submit():
         for i in range(len(shift.assignations)):
-            user_ids = ",".join(request.form.getlist(f"assignations-{i}"))
+            volunteer_ids = ",".join(request.form.getlist(f"assignations-{i}"))
             # totes a FALSE
             db.session.execute(text(f"""update user_shifts set shift_assignations[{i+1}] = FALSE 
                 where shift_id = {shift_id}"""
             ))
             # les triades, a TRUE
-            if user_ids:
+            if volunteer_ids:
                 db.session.execute(text(f"""update user_shifts set shift_assignations[{i+1}] = TRUE 
-                    where shift_id = {shift_id} and user_id in ({user_ids})"""
+                    where shift_id = {shift_id} and user_id in ({volunteer_ids})"""
                 ))
+
+        # actualitzo el cash de tots els voluntaris d'aquest torn
+        user_shifts = db.session.query(UserShift).filter(UserShift.shift_id == shift_id).all()
+        for us in user_shifts:
+            rewards_manager.update_cash(us.user_id)
 
         db.session.commit()
         flash_info("assignations_saved")
@@ -579,6 +584,8 @@ def tickets_detail(ticket_id):
 @admin_bp.route('/admin/rewards')
 @login_required
 def rewards():
+    # TODO: read this data from user_rewards database table
+
     if not current_user.is_admin:
         flash_error("must_be_admin")
         return redirect(url_for('volunteer_bp.dashboard'))
@@ -630,6 +637,9 @@ def rewards():
 @admin_bp.route('/admin/update-all-rewards')
 @login_required
 def update_all_rewards():
+    if not current_user.is_admin:
+        flash_error("must_be_admin")
+        return redirect(url_for('volunteer_bp.dashboard'))
     rewards_manager.update_all_rewards()
     db.session.commit()
     flash_info("data_saved")
@@ -641,6 +651,9 @@ def excel_tickets_and_rewards():
     if not current_user.is_admin:
         flash_error("must_be_admin")
         return redirect(url_for('volunteer_bp.dashboard'))
+    
+    # TODO: read this data from user_rewards database table
+
     
     select = """select u.surname as cognoms, u.name as nom, 
         case when u.role='worker' then '' else u.email end as email, 
