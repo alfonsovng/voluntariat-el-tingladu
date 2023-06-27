@@ -3,8 +3,9 @@ from werkzeug.security import check_password_hash, generate_password_hash
 import enum
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import aliased
-from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.dialects.postgresql import ARRAY, HSTORE
 from sqlalchemy import text, exists
+from sqlalchemy.ext.mutable import MutableDict
 from . import db, hashid_manager
 
 class UserRole(enum.Enum):
@@ -126,3 +127,9 @@ class UserTicket(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
     ticket_id = db.Column(db.Integer, db.ForeignKey("tickets.id"), primary_key=True)
     ticket_id_options = db.Column(ARRAY(db.Integer), nullable=False, server_default='{}')
+
+class UserRewards(db.Model):
+    __tablename__ = "user_rewards"
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
+    description = db.Column(ARRAY(db.String), nullable=False, server_default='{}')
+    cash_by_day = db.Column(MutableDict.as_mutable(HSTORE), nullable=False, server_default='')

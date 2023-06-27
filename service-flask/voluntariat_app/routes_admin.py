@@ -3,7 +3,7 @@ from flask_login import current_user, login_required
 from .forms_message import EmailForm
 from .forms_admin import AddWorkerForm, AddSomeWorkersForm, WorkerForm, AssignationsForm
 from .helper import flash_error, flash_info, load_volunteer, logger, get_timestamp, get_shifts_meals_and_tickets, labels
-from .models import User, Task, Shift, UserShift, Meal, UserMeal, UserDiet, Ticket, UserTicket, UserRole
+from .models import User, Task, Shift, UserShift, Meal, UserMeal, UserDiet, UserRewards, Ticket, UserTicket, UserRole
 from . import db, hashid_manager, excel_manager, task_manager, params_manager, rewards_manager
 from .plugin_gmail import TaskMessageEmail
 import sqlalchemy
@@ -169,6 +169,7 @@ def __insert_worker(admin_id, surname, name, phone, shift_id):
 
     # guardo la informació de la seva dieta
     db.session.add(UserDiet(user_id = worker.id))
+    db.session.add(UserRewards(user_id = worker.id))
 
     # actualitzo tickets, àpats i acreditacions
     rewards_manager.update_rewards(
