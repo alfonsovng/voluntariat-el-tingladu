@@ -524,7 +524,7 @@ class Rewards15Edition(RewardsImpl):
                     if zero_assignations:
                         add_cash_detail(t.id, s.day, f"{t.name} - {s.description}: {s.reward} € [{labels.get('reward_assignation_pending')}]", 0)
                 else:
-                    add_cash_detail(t.id, s.day, f"{t.name} - {s.description}", s.reward)
+                    add_cash_detail(t.id, s.day, f"{t.name} - {s.description}: {s.reward} €", s.reward)
 
         if cash_to_assign > 0:
             free_days = []
