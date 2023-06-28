@@ -8,6 +8,7 @@ from .models import Task, Shift, UserShift, UserDiet, UserMeal, Meal, UserReward
 from sqlalchemy import text
 from sqlalchemy.dialects.postgresql import ARRAY
 from urllib.request import pathname2url
+from collections import OrderedDict
 
 # Blueprint Configuration
 volunteer_bp = Blueprint(
@@ -439,7 +440,8 @@ def rewards(volunteer_hashid):
             read_only = read_only,
             any_options = any_options,
             tickets = tickets,
-            rewards = rewards,
+            cash_descriptions = rewards.description,
+            cash_by_day = OrderedDict(sorted(rewards.cash_by_day.items())),
             total_cash = total_cash,
             volunteer = volunteer, user = current_user
         )

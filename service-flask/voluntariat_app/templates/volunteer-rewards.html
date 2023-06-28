@@ -51,18 +51,18 @@
     <hr />
     <h4>Les teves recompenses</h4>
     <h4><small class="text-muted">Recompenses assignades segons les teves tasques i torns</small></h4>
-    {% if rewards.description %}
+    {% if cash_descriptions %}
       <h5><small class="text-muted">Torn i recompensa associada:</small></h5>
       <dl> 
         <ul>
-        {% for label in rewards.description %}
+        {% for label in cash_descriptions %}
           <dt class="font-weight-normal text-ticket">{{label}}</dt>
         {% endfor %}
         </ul>
         {% if total_cash > 0 %}
           <h5><small class="text-muted">Distribució de les recompenses per dies:</small></h5>
           <ul>
-            {% for (day, c) in rewards.cash_by_day.items() %}
+            {% for (day, c) in cash_by_day.items() %}
               {% if c|int > 0 %}
                 <dt class="font-weight-normal text-ticket">{{day}}: {{ c }} €</dt>
               {% endif %}
