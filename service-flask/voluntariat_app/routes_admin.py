@@ -408,7 +408,7 @@ def meals():
             join meals as m on m.id = um.meal_id
             join user_diets as ud on u.id = ud.user_id
             where um.selected
-            order by m.id asc, cognoms asc, nom asc, u.email asc
+            order by m.day asc, m.id asc, cognoms asc, nom asc, u.email asc
         """
 
         file_name = hashid_manager.create_unique_file_name(
@@ -500,14 +500,14 @@ def tickets():
 
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
-        select = """select t.name as entrada,
+        select = """select t.day as dia, t.name as entrada,
             u.surname as cognoms, u.name as nom, 
             case when u.role='worker' then '' else u.email end as email, 
             u.phone as mòbil
             from users as u 
             join user_tickets as ut on u.id = ut.user_id
             join tickets as t on t.id = ut.ticket_id
-            order by t.id asc, cognoms asc, nom asc, u.email asc
+            order by t.day asc, t.id asc, cognoms asc, nom asc, u.email asc
         """
 
         file_name = hashid_manager.create_unique_file_name(
@@ -531,7 +531,7 @@ def tickets():
     ).outerjoin(
         count_subquery, Ticket.id == count_subquery.c.ticket_id
     ).order_by(
-        Ticket.id.asc()
+        Ticket.day.asc(), Ticket.id.asc()
     )
 
     return render_template('admin-tickets.html',tickets_and_quantity=tickets_and_quantity,user=current_user)
@@ -545,7 +545,7 @@ def tickets_detail(ticket_id):
 
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
-        select = """select t.name as entrada,
+        select = """select t.day as dia, t.name as entrada,
             u.surname as cognoms, u.name as nom, 
             case when u.role='worker' then '' else u.email end as email, 
             u.phone as mòbil
@@ -553,7 +553,7 @@ def tickets_detail(ticket_id):
             join user_tickets as ut on u.id = ut.user_id
             join tickets as t on t.id = ut.ticket_id
             where t.id = :TICKET_ID
-            order by t.id asc, cognoms asc, nom asc, u.email asc
+            order by cognoms asc, nom asc, u.email asc
         """
 
         file_name = hashid_manager.create_unique_file_name(
@@ -584,27 +584,25 @@ def tickets_detail(ticket_id):
 @admin_bp.route('/admin/rewards')
 @login_required
 def rewards():
-    # TODO: read this data from user_rewards database table
-
     if not current_user.is_admin:
         flash_error("must_be_admin")
         return redirect(url_for('volunteer_bp.dashboard'))
 
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
-        select = """select u.surname as cognoms, u.name as nom, 
+        select = """select r.day as "dia",
+            u.surname as cognoms, u.name as nom, 
             case when u.role='worker' then '' else u.email end as email, 
             u.phone as mòbil,
             r.cash as "tickets consum"
             from users as u 
             join (
-                select us.user_id, 
-                sum(s.reward*(case when array_length(us.shift_assignations,1) > 0 then (select sum(case when s then 1 else 0 end) from unnest(us.shift_assignations) s) else 1 end)) as cash
-                from shifts as s join user_shifts as us on s.id = us.shift_id group by user_id
+                select user_id, (each(cash_by_day)).key as day, CAST((each(cash_by_day)).value AS INTEGER) as cash
+                from user_rewards
             ) as r 
             on r.user_id = u.id
             where r.cash > 0
-            order by cognoms asc, nom asc, u.email asc
+            order by dia asc, cognoms asc, nom asc, u.email asc
         """
 
         file_name = hashid_manager.create_unique_file_name(
@@ -618,19 +616,17 @@ def rewards():
         )
 
     cash_subquery = sqlalchemy.text(f"""
-        select us.user_id, 
-        sum(s.reward*(case when array_length(us.shift_assignations,1) > 0 then (select sum(case when s then 1 else 0 end) from unnest(us.shift_assignations) s) else 1 end)) as cash
-        from shifts as s join user_shifts as us on s.id = us.shift_id
-        group by user_id
-    """).columns(user_id=db.Integer,cash=db.Integer).subquery("cash_subquery")
+        select user_id, (each(cash_by_day)).key as day, CAST((each(cash_by_day)).value AS INTEGER) as cash
+        from user_rewards
+    """).columns(user_id=db.Integer,day=db.String,cash=db.Integer).subquery("cash_subquery")
 
     users_with_cash = db.session.query(
-        User, cash_subquery.c.cash, 
+        User, cash_subquery.c.day, cash_subquery.c.cash, 
     ).join(
         cash_subquery, User.id == cash_subquery.c.user_id
     ).filter(
         cash_subquery.c.cash > 0
-    ).order_by(User.surname.asc(), User.name.asc()).all()
+    ).order_by(cash_subquery.c.day.asc(), User.surname.asc(), User.name.asc()).all()
 
     return render_template('admin-cash.html',users_with_cash=users_with_cash,user=current_user)
 
@@ -651,28 +647,29 @@ def excel_tickets_and_rewards():
     if not current_user.is_admin:
         flash_error("must_be_admin")
         return redirect(url_for('volunteer_bp.dashboard'))
-    
-    # TODO: read this data from user_rewards database table
-
-    
-    select = """select u.surname as cognoms, u.name as nom, 
+      
+    select = """select tr.day, u.surname as cognoms, u.name as nom, 
         case when u.role='worker' then '' else u.email end as email, 
         u.phone as mòbil,
-        t.entrades as entrades,
-        r.cash as "tickets consum"
+        tr.entrades as entrades,
+        tr.cash as "tickets consum"
         from users as u 
         join (
-            select ut.user_id as user_id, array_to_string(array_agg(t.name),' + ') as entrades
-            from tickets as t
-            join user_tickets as ut on t.id = ut.ticket_id
-            group by user_id
-        ) as t on u.id = t.user_id
-        join (
-            select us.user_id, 
-            sum(s.reward*(case when array_length(us.shift_assignations,1) > 0 then (select sum(case when s then 1 else 0 end) from unnest(us.shift_assignations) s) else 1 end)) as cash
-            from shifts as s join user_shifts as us on s.id = us.shift_id group by user_id
-        ) as r on r.user_id = u.id
-        order by cognoms asc, nom asc, u.email asc
+            select entrades, cash,
+                case when t.user_id is NULL then r.user_id else t.user_id end as user_id,
+                case when t.day is NULL then r.day else t.day end as day
+            from (
+                select ut.user_id as user_id, t.day as day, array_to_string(array_agg(t.name),' + ') as entrades
+                from tickets as t
+                join user_tickets as ut on t.id = ut.ticket_id
+                group by user_id, t.day
+            ) as t
+            full outer join (
+                select user_id, (each(cash_by_day)).key as day, CAST((each(cash_by_day)).value AS INTEGER) as cash
+                from user_rewards
+            ) as r on  r.user_id = t.user_id and r.day = t.day
+        ) as tr on tr.user_id = u.id
+        order by tr.day asc, cognoms asc, nom asc, u.email asc
     """
 
     file_name = hashid_manager.create_unique_file_name(

@@ -15,6 +15,7 @@
             <table class="table table-light table-striped table-hover table-bordered table-sm">
                 <thead>
                     <tr>
+                        <th>DIA</th>
                         <th>NOM</th>
                         <th>DESCRIPCIÓ</th>
                         <th>QUANTITAT</th>
@@ -24,6 +25,7 @@
                 <tbody>
                     {% for t,q in tickets_and_quantity %}
                     <tr>
+                        <td><a href='/admin/tickets/{{t.id}}'>{{t.day}}</a></td>
                         <td><a href='/admin/tickets/{{t.id}}'>{{t.name}}</a></td>
                         <td><a href='/admin/tickets/{{t.id}}'>{{t.description}}</a></td>
                         <td><a href='/admin/tickets/{{t.id}}'>{{0 if q is none else q}}</a></td>
