@@ -59,7 +59,10 @@ class ShiftsEmail(Task):
 
             logger.info("Comprovant si hi ha usuaris als que notificar els seus torns")
 
-            users = User.query.filter(User.role != UserRole.worker).filter((User.last_shift_change_at+timedelta(hours=2)) < func.now())
+            # que tan sols envii 20 mails a la vegada
+            users = User.query.filter(User.role != UserRole.worker).filter(
+                (User.last_shift_change_at+timedelta(hours=2)) < func.now()
+            ).order_by(User.id.asc()).limit(20).all()
 
             for user_with_shifts in users:
 
