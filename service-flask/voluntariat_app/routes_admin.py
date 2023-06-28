@@ -668,8 +668,9 @@ def excel_tickets_and_rewards():
                 select user_id, (each(cash_by_day)).key as day, CAST((each(cash_by_day)).value AS INTEGER) as cash
                 from user_rewards
             ) as r on  r.user_id = t.user_id and r.day = t.day
+            where cash > 0 or entrades <> ''
         ) as tr on tr.user_id = u.id
-        order by tr.day asc, cognoms asc, nom asc, u.email asc
+        order by tr.day asc, cognoms asc, nom asc, u.email asc;
     """
 
     file_name = hashid_manager.create_unique_file_name(
