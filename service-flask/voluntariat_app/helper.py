@@ -79,6 +79,11 @@ def get_shifts_meals_and_tickets(user_id):
         join shifts as s on t.id = s.task_id 
         join user_shifts as us on us.shift_id = s.id 
         where us.user_id = {user_id}""")).scalars()]
+
+# TODO  
+# select a.shift_id, array_to_string(array_agg(a.name),' + ') from 
+#     (select s.id as shift_id, unnest(s.assignations) as name,  unnest(us.shift_assignations) as assignation from shifts as s join user_shifts as us on us.shift_id = s.id where us.user_id = 1) as a where a.assignation group by a.shift_id;
+
     meals = [m for m in db.session.execute(text(f"""select m.name 
         from meals as m 
         join user_meals as um on m.id=um.meal_id 

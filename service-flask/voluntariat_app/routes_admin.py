@@ -590,7 +590,7 @@ def rewards():
 
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
-        select = """select r.day as "dia",
+        select = """select r.day as dia,
             u.surname as cognoms, u.name as nom, 
             case when u.role='worker' then '' else u.email end as email, 
             u.phone as mòbil,
@@ -648,7 +648,7 @@ def excel_tickets_and_rewards():
         flash_error("must_be_admin")
         return redirect(url_for('volunteer_bp.dashboard'))
       
-    select = """select tr.day, u.surname as cognoms, u.name as nom, 
+    select = """select tr.day as dia, u.surname as cognoms, u.name as nom, 
         case when u.role='worker' then '' else u.email end as email, 
         u.phone as mòbil,
         tr.entrades as entrades,

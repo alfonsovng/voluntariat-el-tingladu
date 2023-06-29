@@ -86,5 +86,9 @@ class ShiftsEmail(Task):
                                 join shifts as s on t.id = s.task_id 
                                 join user_shifts as us on us.shift_id = s.id 
                                 where us.user_id = {user_with_shifts.id}""")).scalars()]
+                            
+                            # TODO
+                            # select a.shift_id, array_to_string(array_agg(a.name),' + ') from 
+#     (select s.id as shift_id, unnest(s.assignations) as name,  unnest(us.shift_assignations) as assignation from shifts as s join user_shifts as us on us.shift_id = s.id where us.user_id = 1) as a where a.assignation group by a.shift_id;
 
                             self.__task_queue.put_nowait(TaskYourShiftsEmail(user_with_shifts, shifts))
