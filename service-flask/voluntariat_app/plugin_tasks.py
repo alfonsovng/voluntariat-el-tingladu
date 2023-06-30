@@ -81,14 +81,18 @@ class ShiftsEmail(Task):
                             # envio un email dels torns apuntats!
                             logger.info(f"Email amb els torns a l'usuari {user_with_shifts}")
 
-                            shifts = [s for s in session.execute(text(f"""select t.name || ': ' || s.description
+                            shifts = [s for s in db.session.execute(text(f"""select t.name || ': ' || s.description || case when d.assignations is NULL then '' else ' [' || d.assignations || ']' end
                                 from tasks as t 
                                 join shifts as s on t.id = s.task_id 
-                                join user_shifts as us on us.shift_id = s.id 
+                                join user_shifts as us on us.shift_id = s.id
+                                left join (
+                                    select a.shift_id, array_to_string(array_agg(a.name),' + ') as assignations 
+                                    from (
+                                        select s.id as shift_id, unnest(s.assignations) as name, unnest(us.shift_assignations) as assignation 
+                                        from shifts as s join user_shifts as us on us.shift_id = s.id where us.user_id = {user_with_shifts.id}
+                                    ) as a
+                                    where a.assignation group by a.shift_id
+                                ) as d on d.shift_id = s.id
                                 where us.user_id = {user_with_shifts.id}""")).scalars()]
-                            
-                            # TODO
-                            # select a.shift_id, array_to_string(array_agg(a.name),' + ') from 
-#     (select s.id as shift_id, unnest(s.assignations) as name,  unnest(us.shift_assignations) as assignation from shifts as s join user_shifts as us on us.shift_id = s.id where us.user_id = 1) as a where a.assignation group by a.shift_id;
 
                             self.__task_queue.put_nowait(TaskYourShiftsEmail(user_with_shifts, shifts))
