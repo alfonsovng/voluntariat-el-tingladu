@@ -209,6 +209,11 @@ def shifts(volunteer_hashid, task_hashid):
     else:
         shifts_and_selected = __select_shifts_and_selected(volunteer_id=volunteer.id, task_id=task_id, day=day)
 
+        if not shifts_and_selected:
+            # si hi ha 0 shifts es pq el day és incorrecte
+            flash_error("wrong_address")
+            return redirect(url_for('main_bp.init'))
+
         if read_only:
             flash_info("read_only")
         
@@ -308,7 +313,7 @@ def __select_shifts_and_selected(volunteer_id, task_id, day):
         selected_shifts_subquery, Shift.id == selected_shifts_subquery.c.shift_id
     ).order_by(
         Shift.id.asc()
-    )
+    ).all()
 
 @volunteer_bp.route('/admin/p/<volunteer_hashid>/meals', methods=["GET", "POST"])
 @volunteer_bp.route('/p/<volunteer_hashid>/meals', methods=["GET", "POST"])
