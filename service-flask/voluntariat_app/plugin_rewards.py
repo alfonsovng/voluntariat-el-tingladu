@@ -58,10 +58,10 @@ class Rewards15Edition(RewardsImpl):
             voluntari_divendres_id = self._get_ticket_id(db, "VOLUNTARI DE DIVENDRES")
             voluntari_dissabte_id = self._get_ticket_id(db, "VOLUNTARI DE DISSABTE")
             col_dijous_id = self._get_ticket_id(db, "COL·LABORADOR DE DIJOUS")
-            col_divendres_id = self._get_ticket_id(db, "COL·LABORADOR DE DIJOUS")
+            col_divendres_id = self._get_ticket_id(db, "COL·LABORADOR DE DIVENDRES")
             col_dissabte_id = self._get_ticket_id(db, "COL·LABORADOR DE DISSABTE")
             globus_dijous_id = self._get_ticket_id(db, "GLOBUS DE DIJOUS")
-            globus_divendres_id = self._get_ticket_id(db, "GLOBUS DE DIJOUS")
+            globus_divendres_id = self._get_ticket_id(db, "GLOBUS DE DIVENDRES")
             globus_dissabte_id = self._get_ticket_id(db, "GLOBUS DE DISSABTE")
             abonament_id = self._get_ticket_id(db, "ABONAMENT TRES DIES")
             acreditacio_suport_id = self._get_ticket_id(db, "ENTRADA AVUI DE SUPORT")
@@ -373,6 +373,8 @@ class Rewards15Edition(RewardsImpl):
                     if type(the_tickets) is dict:
                         # és un diccionari, miro el dia
                         ticket_id = the_tickets[s.day]
+                        print("----------------------------------------------")
+                        print(f"ticket_id={ticket_id} and day = {s.day}: {s.description}")
                         if ticket_id is None:
                             logger.warning(f"UNKNOW DAY {s.day} of shift#{s.id}")
                         else:
@@ -573,9 +575,9 @@ class RewardsManager:
 
         users = User.query.all()
         for user in users:
-            self.update_rewards(user)
+            self.update_rewards(user, with_notification = False)
 
-    def update_rewards(self, user):
+    def update_rewards(self, user, with_notification = True):
         # miro quins torns fa l'usuari
         current_shifts = self.__get_current_shifts(user.id)
 
@@ -589,7 +591,8 @@ class RewardsManager:
         self.update_cash(user.id)
 
         # actualitzo el last_change_at de l'usuari
-        self.__update_user(user)
+        if with_notification:
+            self.__update_user(user)
 
     def __get_current_shifts(self, user_id):
         from .models import UserShift, Shift, Task
