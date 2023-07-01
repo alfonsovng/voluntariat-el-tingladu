@@ -713,7 +713,7 @@ def excel_tickets_and_rewards():
             where cash > 0 or entrades <> ''
         ) as tr on tr.user_id = u.id
         {day_filter}
-        order by tr.day asc, cognoms asc, nom asc, u.email asc;
+        order by cognoms asc, nom asc, u.email asc, tr.day asc;
     """
 
     file_name = hashid_manager.create_unique_file_name(
