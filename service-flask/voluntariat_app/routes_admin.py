@@ -498,21 +498,31 @@ def tickets():
         flash_error("must_be_admin")
         return redirect(url_for('volunteer_bp.dashboard'))
 
+    day = request.args.get("day")
+    if day is None:
+        day = ""
+
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
-        select = """select t.day as dia, t.name as entrada,
+        day_filter = ""
+        if day != "":
+            # filtrem per dia incloent sempre els tickets que no tenen dia
+            day_filter = f"where t.day='{day}' or t.day=''"
+
+        select = f"""select t.day as dia, t.name as entrada,
             u.surname as cognoms, u.name as nom, 
             case when u.role='worker' then '' else u.email end as email, 
             u.phone as mòbil
             from users as u 
             join user_tickets as ut on u.id = ut.user_id
             join tickets as t on t.id = ut.ticket_id
+            {day_filter}
             order by t.day asc, t.id asc, cognoms asc, nom asc, u.email asc
         """
 
         file_name = hashid_manager.create_unique_file_name(
             user_id = current_user.id,
-            name = "ENTRADES",
+            name = "ENTRADES-" + day,
             extension = ".xlsx"
         )
         return generate_excel(
@@ -526,15 +536,21 @@ def tickets():
         group by ticket_id
     """).columns(ticket_id=db.Integer,n_tickets=db.Integer).subquery("count_subquery")
 
-    tickets_and_quantity = db.session.query(
+    query_tickets_and_quantity = db.session.query(
         Ticket, count_subquery.c.n_tickets, 
     ).outerjoin(
         count_subquery, Ticket.id == count_subquery.c.ticket_id
-    ).order_by(
-        Ticket.day.asc(), Ticket.id.asc()
     )
 
-    return render_template('admin-tickets.html',tickets_and_quantity=tickets_and_quantity,user=current_user)
+    if day != "":
+        # filtrem per dia incloent sempre els tickets que no tenen dia
+        query_tickets_and_quantity = query_tickets_and_quantity.filter((Ticket.day == day) | (Ticket.day == ''))
+
+    tickets_and_quantity = query_tickets_and_quantity.order_by(
+        Ticket.day.asc(), Ticket.id.asc()
+    ).all()
+
+    return render_template('admin-tickets.html',day=day,tickets_and_quantity=tickets_and_quantity,user=current_user)
 
 @admin_bp.route('/admin/tickets/<int:ticket_id>')
 @login_required
@@ -587,10 +603,20 @@ def rewards():
     if not current_user.is_admin:
         flash_error("must_be_admin")
         return redirect(url_for('volunteer_bp.dashboard'))
+    
+    day = request.args.get("day")
+    if day is None:
+        day = ""
 
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
-        select = """select r.day as dia,
+
+        day_filter = ""
+        if day != "":
+            # filtrem per dia
+            day_filter = f" and r.day='{day}'"
+
+        select = f"""select r.day as dia,
             u.surname as cognoms, u.name as nom, 
             case when u.role='worker' then '' else u.email end as email, 
             u.phone as mòbil,
@@ -602,12 +628,13 @@ def rewards():
             ) as r 
             on r.user_id = u.id
             where r.cash > 0
+            {day_filter}
             order by dia asc, cognoms asc, nom asc, u.email asc
         """
 
         file_name = hashid_manager.create_unique_file_name(
             user_id = current_user.id,
-            name = "CONSUM",
+            name = "CONSUM-" + day,
             extension = ".xlsx"
         )
         return generate_excel(
@@ -620,15 +647,21 @@ def rewards():
         from user_rewards
     """).columns(user_id=db.Integer,day=db.String,cash=db.Integer).subquery("cash_subquery")
 
-    users_with_cash = db.session.query(
+    query_users_with_cash = db.session.query(
         User, cash_subquery.c.day, cash_subquery.c.cash, 
     ).join(
         cash_subquery, User.id == cash_subquery.c.user_id
     ).filter(
         cash_subquery.c.cash > 0
-    ).order_by(cash_subquery.c.day.asc(), User.surname.asc(), User.name.asc()).all()
+    )
 
-    return render_template('admin-cash.html',users_with_cash=users_with_cash,user=current_user)
+    if day != "":
+        # filtrem per dia
+        query_users_with_cash = query_users_with_cash.filter(cash_subquery.c.day == day)
+
+    users_with_cash = query_users_with_cash.order_by(cash_subquery.c.day.asc(), User.surname.asc(), User.name.asc()).all()
+
+    return render_template('admin-cash.html',day=day,users_with_cash=users_with_cash,user=current_user)
 
 @admin_bp.route('/admin/update-all-rewards')
 @login_required
@@ -648,7 +681,16 @@ def excel_tickets_and_rewards():
         flash_error("must_be_admin")
         return redirect(url_for('volunteer_bp.dashboard'))
       
-    select = """select tr.day as dia, u.surname as cognoms, u.name as nom, 
+    day = request.args.get("day")
+    if day is None:
+        day = ""
+    
+    day_filter = ""
+    if day != "":
+        # filtrem per dia
+        day_filter = f"where tr.day='{day}' or tr.day=''"
+
+    select = f"""select tr.day as dia, u.surname as cognoms, u.name as nom, 
         case when u.role='worker' then '' else u.email end as email, 
         u.phone as mòbil,
         tr.entrades as entrades,
@@ -670,12 +712,13 @@ def excel_tickets_and_rewards():
             ) as r on  r.user_id = t.user_id and r.day = t.day
             where cash > 0 or entrades <> ''
         ) as tr on tr.user_id = u.id
+        {day_filter}
         order by tr.day asc, cognoms asc, nom asc, u.email asc;
     """
 
     file_name = hashid_manager.create_unique_file_name(
         user_id = current_user.id,
-        name = "TICKETS_I_CONSUM",
+        name = "TICKETS_I_CONSUM-" + day,
         extension = ".xlsx"
     )
     return generate_excel(

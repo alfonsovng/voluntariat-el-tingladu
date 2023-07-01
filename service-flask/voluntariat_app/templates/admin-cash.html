@@ -11,6 +11,12 @@
     <div class="col-sm-12">
         <h2>Administració</h2>
         <h2><small class="text-muted">{% block title %}Tiquets de consum{% endblock %}</small></h2>
+        <div class="btn-group btn-group-sm">
+            <a class="btn btn-info {{'active' if day == ''}}" href="?day=">Totes les dades</a>
+            <a class="btn btn-info {{'active' if day == '20-07 DIJOUS'}}" href="?day=20-07 DIJOUS">20-07 DIJOUS</a>
+            <a class="btn btn-info {{'active' if day == '21-07 DIVENDRES'}}" href="?day=21-07 DIVENDRES">21-07 DIVENDRES</a>
+            <a class="btn btn-info {{'active' if day == '22-07 DISSABTE'}}" href="?day=22-07 DISSABTE">22-07 DISSABTE</a>
+        </div>
         <div class="table-responsive">
             <table class="table table-light table-striped table-hover table-bordered table-sm">
                 <thead>
@@ -64,8 +70,8 @@
         <br />
         <div class="btn-group">
             <a class="btn btn-secondary" href="/admin"> &#x3c;&#x3c; Torna enrere</a>
-            <a class="btn btn-primary" href="?excel=1">Descarrega en format Excel</a>
-            <a class="btn btn-info" href="/admin/excel_tickets_and_rewards">Excel amb les entrades</a>
+            <a class="btn btn-primary" href="?excel=1&day={{ day }}">Descarrega en format Excel</a>
+            <a class="btn btn-dark bg-ticket" href="/admin/excel_tickets_and_rewards?day={{ day }}">Excel amb les entrades</a>
         </div>
     </div>
 </div>  
