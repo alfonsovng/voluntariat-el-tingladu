@@ -373,8 +373,6 @@ class Rewards15Edition(RewardsImpl):
                     if type(the_tickets) is dict:
                         # és un diccionari, miro el dia
                         ticket_id = the_tickets[s.day]
-                        print("----------------------------------------------")
-                        print(f"ticket_id={ticket_id} and day = {s.day}: {s.description}")
                         if ticket_id is None:
                             logger.warning(f"UNKNOW DAY {s.day} of shift#{s.id}")
                         else:
