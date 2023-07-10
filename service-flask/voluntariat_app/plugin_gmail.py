@@ -151,7 +151,7 @@ class TaskMessageEmail(TaskEmail):
         )
 
 
-class TaskYourShiftsEmail(TaskEmail):
+class TaskProvisionalShiftsEmail(TaskEmail):
     def __init__(self, user, shifts):
         from . import params_manager
 
@@ -160,8 +160,29 @@ class TaskYourShiftsEmail(TaskEmail):
         body = "\n".join(shifts)
 
         email = user.email
-        subject = f'{labels.get("your_shifts_subject")} {str_date_time}'
-        content = render_template("email/your_shifts_email.txt",
+        subject = f'{labels.get("provisional_shifts_subject")} {str_date_time}'
+        content = render_template("email/provisional_shifts_email.txt",
+            name = user.name,
+            body = body,
+            app_url = params_manager.external_url
+        )
+
+        super().__init__(
+            receiver_emails = [email],
+            subject = subject,
+            content = content
+        )
+
+
+class TaskDefinitiveShiftsEmail(TaskEmail):
+    def __init__(self, user, shifts):
+        from . import params_manager
+
+        body = "\n".join(shifts)
+
+        email = user.email
+        subject = labels.get("definitive_shifts_subject")
+        content = render_template("email/definitive_shifts_email.txt",
             name = user.name,
             body = body,
             app_url = params_manager.external_url
