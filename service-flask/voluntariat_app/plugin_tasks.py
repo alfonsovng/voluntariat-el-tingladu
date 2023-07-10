@@ -53,7 +53,8 @@ class ShiftsEmail(Task):
         from sqlalchemy.orm import Session
         from .models import User, UserRole
         from . import db
-        from .plugin_gmail import TaskYourShiftsEmail
+        from .plugin_gmail import TaskProvisionalShiftsEmail
+        # from .plugin_gmail import TaskDefinitiveShiftsEmail
 
         with self.__app.app_context():
 
@@ -95,4 +96,5 @@ class ShiftsEmail(Task):
                                 ) as d on d.shift_id = s.id
                                 where us.user_id = {user_with_shifts.id}""")).scalars()]
 
-                            self.__task_queue.put_nowait(TaskYourShiftsEmail(user_with_shifts, shifts))
+                            self.__task_queue.put_nowait(TaskProvisionalShiftsEmail(user_with_shifts, shifts))
+                            # self.__task_queue.put_nowait(TaskDefinitiveShiftsEmail(user_with_shifts, shifts))
