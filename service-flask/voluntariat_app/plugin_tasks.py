@@ -60,10 +60,10 @@ class ShiftsEmail(Task):
 
             logger.info("Comprovant si hi ha usuaris als que notificar els seus torns")
 
-            # que tan sols envii 20 mails a la vegada
+            # que tan sols envii 10 mails a la vegada
             users = User.query.filter(User.role != UserRole.worker).filter(
                 (User.last_shift_change_at+timedelta(hours=2)) < func.now()
-            ).order_by(User.id.asc()).limit(20).all()
+            ).order_by(User.id.asc()).limit(10).all()
 
             for user_with_shifts in users:
 
@@ -97,4 +97,5 @@ class ShiftsEmail(Task):
                                 where us.user_id = {user_with_shifts.id}""")).scalars()]
 
                             self.__task_queue.put_nowait(TaskProvisionalShiftsEmail(user_with_shifts, shifts))
-                            # self.__task_queue.put_nowait(TaskDefinitiveShiftsEmail(user_with_shifts, shifts))
+                            # if shifts:
+                            #     self.__task_queue.put_nowait(TaskDefinitiveShiftsEmail(user_with_shifts, shifts))
