@@ -2,10 +2,10 @@ from flask import Blueprint, redirect, render_template, url_for, request, Respon
 from flask_login import current_user, login_required
 from .forms_message import EmailForm
 from .forms_admin import AddWorkerForm, AddSomeWorkersForm, WorkerForm, AssignationsForm
-from .helper import flash_error, flash_info, load_volunteer, logger, get_timestamp, get_shifts_meals_and_tickets, labels
+from .helper import flash_error, flash_info, load_volunteer, logger, get_timestamp, get_shifts_meals_and_tickets, labels, get_shifts
 from .models import User, Task, Shift, UserShift, Meal, UserMeal, UserDiet, UserRewards, Ticket, UserTicket, UserRole
 from . import db, hashid_manager, excel_manager, task_manager, params_manager, rewards_manager
-from .plugin_gmail import TaskMessageEmail
+from .plugin_gmail import TaskMessageEmail, TaskDefinitiveShiftsEmail
 import sqlalchemy
 from io import StringIO
 from sqlalchemy import text
@@ -383,6 +383,26 @@ def shift_detail(task_id, shift_id):
         task=task,shift=shift,users_with_shifts=users_with_shifts,
         form=form,user=current_user
     )
+
+@admin_bp.route('/admin/tasks/<int:task_id>/email')
+@login_required
+def shifts_email(task_id):
+    if not current_user.is_admin:
+        flash_error("must_be_admin")
+        return redirect(url_for('volunteer_bp.dashboard'))
+    
+    users = db.session.query(User).join(UserShift).join(Shift).filter(
+        Shift.task_id == task_id
+    ).all()
+
+    for u in users:
+        shifts = get_shifts(u.id)
+        task = TaskDefinitiveShiftsEmail(user = u, shifts = shifts)
+        task_manager.add_task(task)
+
+    flash_info("message_sent")
+
+    return redirect(url_for('admin_bp.shifts', task_id = task_id))
 
 @admin_bp.route('/admin/meals')
 @login_required
