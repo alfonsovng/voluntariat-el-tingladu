@@ -39,6 +39,9 @@ class GmailManager:
         server.login(self.sender_email, self.password)
         server.send_message(msg, from_addr=self.sender_email, to_addrs=receiver_emails)
 
+
+    #
+
     
 from .helper import Task
 class TaskEmail(Task):

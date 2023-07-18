@@ -74,6 +74,23 @@ def get_shifts_meals_and_tickets(user_id):
     from . import db
     from sqlalchemy import text
 
+    shifts = get_shifts(user_id)
+
+    meals = [m for m in db.session.execute(text(f"""select m.name 
+        from meals as m 
+        join user_meals as um on m.id=um.meal_id 
+        where um.selected and um.user_id = {user_id}""")).scalars()]
+    tickets = [t for t in db.session.execute(text(f"""select t.name 
+        from tickets as t 
+        join user_tickets as ut on t.id=ut.ticket_id 
+        where ut.user_id = {user_id}""")).scalars()]
+
+    return (shifts, meals, tickets)
+
+def get_shifts(user_id):
+    from . import db
+    from sqlalchemy import text
+
     shifts = [s for s in db.session.execute(text(f"""select t.name || ': ' || s.description || case when d.assignations is NULL then '' else ' [' || d.assignations || ']' end
         from tasks as t 
         join shifts as s on t.id = s.task_id 
@@ -87,18 +104,8 @@ def get_shifts_meals_and_tickets(user_id):
             where a.assignation group by a.shift_id
         ) as d on d.shift_id = s.id
         where us.user_id = {user_id}""")).scalars()]
-
-    meals = [m for m in db.session.execute(text(f"""select m.name 
-        from meals as m 
-        join user_meals as um on m.id=um.meal_id 
-        where um.selected and um.user_id = {user_id}""")).scalars()]
-    tickets = [t for t in db.session.execute(text(f"""select t.name 
-        from tickets as t 
-        join user_tickets as ut on t.id=ut.ticket_id 
-        where ut.user_id = {user_id}""")).scalars()]
-
-    return (shifts, meals, tickets)
-
+    
+    return shifts
 
 #
 # Elimina els espais en blanc, controlant que no sigui None

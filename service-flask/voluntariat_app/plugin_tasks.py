@@ -33,6 +33,7 @@ class TaskManager:
                     if task is not None:
                         logger.info("Executant una tasca...")
                         task.do_it()
+                        time.sleep(5) # FIXME: 5 segons entre tasca i tasca
                 except Exception as e:
                     logger.warning(f'Tasca amb error: {e}')
             except:
@@ -48,13 +49,12 @@ class ShiftsEmail(Task):
 
     def do_it(self):
         from datetime import timedelta
-        from sqlalchemy import update, text
+        from sqlalchemy import update
         from sqlalchemy.sql import func
         from sqlalchemy.orm import Session
         from .models import User, UserRole
-        from . import db
+        from . import db, helper
         from .plugin_gmail import TaskProvisionalShiftsEmail
-        # from .plugin_gmail import TaskDefinitiveShiftsEmail
 
         with self.__app.app_context():
 
@@ -82,20 +82,6 @@ class ShiftsEmail(Task):
                             # envio un email dels torns apuntats!
                             logger.info(f"Email amb els torns a l'usuari {user_with_shifts}")
 
-                            shifts = [s for s in db.session.execute(text(f"""select t.name || ': ' || s.description || case when d.assignations is NULL then '' else ' [' || d.assignations || ']' end
-                                from tasks as t 
-                                join shifts as s on t.id = s.task_id 
-                                join user_shifts as us on us.shift_id = s.id
-                                left join (
-                                    select a.shift_id, array_to_string(array_agg(a.name),' + ') as assignations 
-                                    from (
-                                        select s.id as shift_id, unnest(s.assignations) as name, unnest(us.shift_assignations) as assignation 
-                                        from shifts as s join user_shifts as us on us.shift_id = s.id where us.user_id = {user_with_shifts.id}
-                                    ) as a
-                                    where a.assignation group by a.shift_id
-                                ) as d on d.shift_id = s.id
-                                where us.user_id = {user_with_shifts.id}""")).scalars()]
+                            shifts = helper.get_shifts(user_with_shifts.id)
 
                             self.__task_queue.put_nowait(TaskProvisionalShiftsEmail(user_with_shifts, shifts))
-                            # if shifts:
-                            #     self.__task_queue.put_nowait(TaskDefinitiveShiftsEmail(user_with_shifts, shifts))
