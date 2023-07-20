@@ -710,16 +710,18 @@ def excel_tickets_and_rewards():
     if day != "":
         # filtrem per dia
         day_filter = f"where tr.day='{day}' or tr.day=''"
+        # els abonaments surten cada dia
         day_aggregation = f"case when t.day = '' then '{day}' else t.day end"
 
     select = f"""select tr.day as dia, u.surname as cognoms, u.name as nom, 
         case when u.role='worker' then '' else u.email end as email, 
         u.phone as mòbil,
         tr.entrades as entrades,
-        tr.cash as "tickets consum"
+        tr.cash as "tickets consum",
+        case when tr.sopar then 'X' else '' end as "sopar"
         from users as u 
         join (
-            select entrades, cash,
+            select entrades, cash, sopar,
                 case when t.user_id is NULL then r.user_id else t.user_id end as user_id,
                 case when t.extended_day is NULL then r.day else t.extended_day end as day
             from (
@@ -729,10 +731,21 @@ def excel_tickets_and_rewards():
                 group by user_id, extended_day
             ) as t
             full outer join (
-                select user_id, (each(cash_by_day)).key as day, CAST((each(cash_by_day)).value AS INTEGER) as cash
-                from user_rewards
-            ) as r on  r.user_id = t.user_id and r.day = t.extended_day
-            where cash > 0 or entrades <> ''
+                select 
+                    case when ur.user_id is NULL then sm.user_id else ur.user_id end as user_id,
+                    case when ur.day is NULL then sm.day else ur.day end as day,
+                    case when cash is NULL then 0 else cash end as cash,
+                    case when selected then TRUE else FALSE end as sopar
+                from (
+                    select user_id, (each(cash_by_day)).key as day, CAST((each(cash_by_day)).value AS INTEGER) as cash
+                    from user_rewards
+                ) as ur
+                full outer join (
+                    select um.user_id, m.day, um.selected from meals as m join user_meals as um on m.id = um.meal_id
+                    where um.selected
+                ) as sm on ur.user_id = sm.user_id and ur.day = sm.day
+            ) as r on r.user_id = t.user_id and r.day = t.extended_day
+            where cash > 0 or entrades <> '' or sopar
         ) as tr on tr.user_id = u.id
         {day_filter}
         order by cognoms asc, nom asc, u.email asc, tr.day asc;
