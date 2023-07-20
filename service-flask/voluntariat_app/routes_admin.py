@@ -384,25 +384,25 @@ def shift_detail(task_id, shift_id):
         form=form,user=current_user
     )
 
-@admin_bp.route('/admin/tasks/<int:task_id>/email')
-@login_required
-def shifts_email(task_id):
-    if not current_user.is_admin:
-        flash_error("must_be_admin")
-        return redirect(url_for('volunteer_bp.dashboard'))
+# @admin_bp.route('/admin/tasks/<int:task_id>/email')
+# @login_required
+# def shifts_email(task_id):
+#     if not current_user.is_admin:
+#         flash_error("must_be_admin")
+#         return redirect(url_for('volunteer_bp.dashboard'))
     
-    users = db.session.query(User).join(UserShift).join(Shift).filter(
-        Shift.task_id == task_id
-    ).all()
+#     users = db.session.query(User).join(UserShift).join(Shift).filter(
+#         Shift.task_id == task_id
+#     ).all()
 
-    for u in users:
-        shifts = get_shifts(u.id)
-        task = TaskDefinitiveShiftsEmail(user = u, shifts = shifts)
-        task_manager.add_task(task)
+#     for u in users:
+#         shifts = get_shifts(u.id)
+#         task = TaskDefinitiveShiftsEmail(user = u, shifts = shifts)
+#         task_manager.add_task(task)
 
-    flash_info("message_sent")
+#     flash_info("message_sent")
 
-    return redirect(url_for('admin_bp.shifts', task_id = task_id))
+#     return redirect(url_for('admin_bp.shifts', task_id = task_id))
 
 @admin_bp.route('/admin/meals')
 @login_required
@@ -706,9 +706,11 @@ def excel_tickets_and_rewards():
         day = ""
     
     day_filter = ""
+    day_aggregation = "t.day"
     if day != "":
         # filtrem per dia
         day_filter = f"where tr.day='{day}' or tr.day=''"
+        day_aggregation = f"case when t.day = '' then '{day}' else t.day end"
 
     select = f"""select tr.day as dia, u.surname as cognoms, u.name as nom, 
         case when u.role='worker' then '' else u.email end as email, 
@@ -721,10 +723,10 @@ def excel_tickets_and_rewards():
                 case when t.user_id is NULL then r.user_id else t.user_id end as user_id,
                 case when t.day is NULL then r.day else t.day end as day
             from (
-                select ut.user_id as user_id, t.day as day, array_to_string(array_agg(t.name),' + ') as entrades
+                select ut.user_id as user_id, {day_aggregation} as day, array_to_string(array_agg(t.name),' + ') as entrades
                 from tickets as t
                 join user_tickets as ut on t.id = ut.ticket_id
-                group by user_id, t.day
+                group by user_id, day
             ) as t
             full outer join (
                 select user_id, (each(cash_by_day)).key as day, CAST((each(cash_by_day)).value AS INTEGER) as cash
