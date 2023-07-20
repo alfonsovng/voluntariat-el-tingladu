@@ -721,17 +721,17 @@ def excel_tickets_and_rewards():
         join (
             select entrades, cash,
                 case when t.user_id is NULL then r.user_id else t.user_id end as user_id,
-                case when t.day is NULL then r.day else t.day end as day
+                case when t.extended_day is NULL then r.day else t.extended_day end as day
             from (
-                select ut.user_id as user_id, {day_aggregation} as day, array_to_string(array_agg(t.name),' + ') as entrades
+                select ut.user_id as user_id, {day_aggregation} as extended_day, array_to_string(array_agg(t.name),' + ') as entrades
                 from tickets as t
                 join user_tickets as ut on t.id = ut.ticket_id
-                group by user_id, day
+                group by user_id, extended_day
             ) as t
             full outer join (
                 select user_id, (each(cash_by_day)).key as day, CAST((each(cash_by_day)).value AS INTEGER) as cash
                 from user_rewards
-            ) as r on  r.user_id = t.user_id and r.day = t.day
+            ) as r on  r.user_id = t.user_id and r.day = t.extended_day
             where cash > 0 or entrades <> ''
         ) as tr on tr.user_id = u.id
         {day_filter}
