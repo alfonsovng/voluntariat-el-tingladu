@@ -1,10 +1,7 @@
 venv
-ngrok
-service-postgres/data
-doc
 .env
-.env.http
-.env.https
+.env.development
+.env.production
 __pycache__
 .metals
 .vscode

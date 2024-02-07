@@ -1,0 +1,37 @@
+version: '3.9'
+
+services:
+
+  postgres:
+    image: postgres:16.1
+    restart: no
+    env_file:
+      - ./.env.development
+    volumes:
+      - ./postgres:/docker-entrypoint-initdb.d
+      - postgres_volume:/var/lib/postgresql/data
+      
+  flask:
+    build:
+      context: .
+      dockerfile: flask.Dockerfile
+    command: gunicorn -w 4 --bind 0.0.0.0:5000 wsgi:app
+    env_file:
+      - ./.env.development
+    volumes:
+      - .:/usr/src/flask
+    depends_on:
+      - postgres
+
+  nginx:
+    image: nginx:1.25.3-alpine
+    ports:
+      - 127.0.0.1:80:80
+    volumes:
+      - ./nginx/conf-development:/etc/nginx/conf.d
+      - ./voluntariat_app/static:/static
+    depends_on:
+      - flask
+
+volumes:
+  postgres_volume:
