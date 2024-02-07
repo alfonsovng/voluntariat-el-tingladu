@@ -267,6 +267,9 @@ def shifts(task_id):
             u.surname as cognoms, u.name as nom, 
             case when u.role='worker' then '' else u.email end as email, 
             u.phone as mòbil, us.comments as "obs torn" 
+            , case when us.shift_assignations[1] then s.assignations[1] else '' end as assignació
+            , case when us.shift_assignations[2] then s.assignations[2] else '' end as assignació
+            , case when us.shift_assignations[3] then s.assignations[3] else '' end as assignació
             from users as u 
             join user_shifts as us on u.id = us.user_id
             join shifts as s on s.id = us.shift_id
