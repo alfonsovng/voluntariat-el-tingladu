@@ -26,7 +26,7 @@ services:
   nginx:
     image: nginx:1.25.3-alpine
     ports:
-      - 127.0.0.1:80:80
+      - 127.0.0.1:8080:80
     volumes:
       - ./nginx/conf-development:/etc/nginx/conf.d
       - ./voluntariat_app/static:/static
