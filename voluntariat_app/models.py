@@ -61,7 +61,7 @@ class User(UserMixin, db.Model):
 
     def set_password(self, password):
         """Assigna un password amb la funció hash aplicada"""
-        self.password = generate_password_hash(password, method="sha256")
+        self.password = generate_password_hash(password, method="scrypt")
 
     def check_password(self, password):
         """Comprova si el password és igual"""
