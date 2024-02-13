@@ -9,9 +9,11 @@ from sqlalchemy.ext.mutable import MutableDict
 from . import db, hashid_manager
 
 class UserRole(enum.Enum):
-    admin = 1
-    volunteer = 2
-    worker = 3
+    superadmin = 1
+    admin = 2
+    partner = 3
+    volunteer = 4
+    worker = 5
 
 class UserShift(db.Model):
     __tablename__ = "user_shifts"
@@ -32,7 +34,6 @@ class User(UserMixin, db.Model):
     purchased_ticket1 = db.Column(db.String, nullable=False, server_default='')  #'' es un possible valor
     purchased_ticket2 = db.Column(db.String, nullable=False, server_default='')  #'' es un possible valor
     purchased_ticket3 = db.Column(db.String, nullable=False, server_default='')  #'' es un possible valor
-    purchased_ticket4 = db.Column(db.String, nullable=False, server_default='')  #'' es un possible valor
     electrician = db.Column(db.Boolean, nullable=False, default=False, server_default=text("FALSE"))
     role = db.Column(db.Enum(UserRole, name='users_role'), nullable=False)
     change_password_token = db.Column(db.String)
@@ -53,7 +54,7 @@ class User(UserMixin, db.Model):
 
     @hybrid_property
     def is_admin(self):
-        return self.role == UserRole.admin
+        return self.role == UserRole.admin or self.role == UserRole.superadmin
 
     @hybrid_property
     def is_worker(self):

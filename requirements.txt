@@ -5,6 +5,7 @@ email-validator==2.1.0.post1
 et-xmlfile==1.1.0
 Flask==3.0.2
 Flask-Login==0.6.3
+Flask-Principal==0.4.0
 Flask-SQLAlchemy==3.1.1
 Flask-WTF==1.2.1
 greenlet==3.0.3
@@ -18,7 +19,7 @@ openpyxl==3.1.2
 packaging==23.2
 psycopg2-binary==2.9.9
 python-dotenv==1.0.1
-SQLAlchemy==2.0.25
+SQLAlchemy==2.0.26
 typing_extensions==4.9.0
 Werkzeug==3.0.1
 WTForms==3.1.2

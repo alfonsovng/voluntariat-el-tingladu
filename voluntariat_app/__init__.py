@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_login import LoginManager
+from flask_principal import Principal
 from flask_sqlalchemy import SQLAlchemy
 from .plugin_hashid import HashidManager
 from .plugin_tasks import TaskManager
@@ -10,6 +11,7 @@ from .plugin_rewards import RewardsManager
 
 db = SQLAlchemy()
 login_manager = LoginManager()
+principal_manager = Principal()
 params_manager = ParamsManager()
 hashid_manager = HashidManager()
 task_manager = TaskManager()
@@ -31,6 +33,7 @@ def create_app():
     
     params_manager.init_app(app)
     login_manager.init_app(app)
+    principal_manager.init_app(app)
     hashid_manager.init_app(app)
     task_manager.init_app(app)
     gmail_manager.init_app(app)

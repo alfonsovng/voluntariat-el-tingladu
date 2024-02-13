@@ -5,7 +5,7 @@ from . import login_manager, db, hashid_manager, task_manager, params_manager
 from .forms_auth import LoginForm, SignUpForm, ForgottenPasswordForm, ResetPasswordForm
 from .models import User, UserRole, UserDiet, UserRewards
 from .plugin_gmail import TaskSignUpEmail, TaskResetPasswordEmail, TaskConfirmPasswordChangeEmail
-from .helper import flash_info, flash_warning, flash_error, logger
+from .helper import flash_info, flash_warning, flash_error, logger, notify_identity_changed
 
 # Blueprint Configuration
 auth_bp = Blueprint(
@@ -153,6 +153,9 @@ def login():
             db.session.commit() # remove any existing token
 
             login_user(existing_user)
+
+            # aquí s'actualitzen els rols que té l'usuari
+            notify_identity_changed()
             
             next_page = request.args.get("next")
             return redirect(next_page or url_for("main_bp.init"))

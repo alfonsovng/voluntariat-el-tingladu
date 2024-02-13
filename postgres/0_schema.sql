@@ -35,7 +35,9 @@ COMMENT ON EXTENSION hstore IS 'data type for storing sets of (key, value) pairs
 --
 
 CREATE TYPE public.users_role AS ENUM (
+    'superadmin',
     'admin',
+    'partner',
     'volunteer',
     'worker'
 );
@@ -274,13 +276,12 @@ CREATE TABLE public.users (
     name character varying NOT NULL,
     surname character varying NOT NULL,
     email character varying NOT NULL,
-    dni character varying NOT NULL,
+    dni character varying NOT NULL UNIQUE,
     password character varying NOT NULL,
     phone character varying DEFAULT ''::character varying NOT NULL,
     purchased_ticket1 character varying DEFAULT ''::character varying NOT NULL,
     purchased_ticket2 character varying DEFAULT ''::character varying NOT NULL,
     purchased_ticket3 character varying DEFAULT ''::character varying NOT NULL,
-    purchased_ticket4 character varying DEFAULT ''::character varying NOT NULL,
     electrician boolean DEFAULT false NOT NULL,
     role public.users_role NOT NULL,
     change_password_token character varying,

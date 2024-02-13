@@ -150,3 +150,58 @@ class LabelsManager:
         return value
 
 labels = LabelsManager()
+
+
+#
+# ROLE
+#
+from flask_principal import identity_loaded, identity_changed, ActionNeed, Permission, Identity, AnonymousIdentity
+
+__superadmin_action_need = ActionNeed('superadmin')
+__admin_action_need = ActionNeed('admin')
+__edit_action_need = ActionNeed('edit')
+__view_action_need = ActionNeed('view')
+
+require_superadmin = Permission(__superadmin_action_need)
+require_admin = Permission(__admin_action_need)
+require_edit = Permission(__edit_action_need)
+require_view = Permission(__view_action_need)
+
+@identity_loaded.connect
+def on_identity_loaded(sender, identity):
+    from .models import UserRole
+    from flask_login import current_user
+
+    identity.user = current_user
+    if hasattr(current_user, 'role'):
+        from . import params_manager
+
+        if current_user.role == UserRole.superadmin:
+            identity.provides.add(__superadmin_action_need)
+            identity.provides.add(__admin_action_need)
+            identity.provides.add(__edit_action_need)
+            identity.provides.add(__view_action_need)
+        elif current_user.role == UserRole.admin:
+            identity.provides.add(__admin_action_need)
+            identity.provides.add(__edit_action_need)
+            identity.provides.add(__view_action_need)
+        elif current_user.role == UserRole.partner:
+            if (params_manager.allow_modifications):
+                identity.provides.add(__edit_action_need)
+            identity.provides.add(__view_action_need)
+        elif current_user.role == UserRole.volunteer:
+            if(params_manager.allow_volunteers):
+                if (params_manager.allow_modifications):
+                    identity.provides.add(__edit_action_need)
+                identity.provides.add(__view_action_need)
+
+def notify_identity_changed():
+    from flask import current_app
+    from flask_login import current_user
+
+    if hasattr(current_user, 'id'):
+        identity = Identity(current_user.id)
+    else:
+        identity = AnonymousIdentity()
+    
+    identity_changed.send(current_app._get_current_object(), identity = identity)
