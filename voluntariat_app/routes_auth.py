@@ -1,6 +1,5 @@
 from flask import Blueprint, redirect, render_template, request, url_for
-from flask_login import current_user, login_user, logout_user
-
+from flask_login import current_user, login_user, logout_user, login_required
 from . import login_manager, db, hashid_manager, task_manager, params_manager
 from .forms_auth import LoginForm, SignUpForm, ForgottenPasswordForm, ResetPasswordForm
 from .models import User, UserRole, UserDiet, UserRewards
@@ -171,8 +170,30 @@ def load_user(user_id):
         return User.query.get(user_id)
     return None
 
+@auth_bp.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for("auth_bp.login"))
+
 @login_manager.unauthorized_handler
 def unauthorized():
     flash_warning("unauthorized")
     # TODO: set next
     return redirect(url_for("auth_bp.login"))
+
+@auth_bp.app_errorhandler(401)
+def unauthorized(e):
+    flash_warning("unauthorized")
+    return redirect(url_for('auth_bp.login'))
+
+@auth_bp.app_errorhandler(403)
+def must_be_admin(e):
+    flash_error("must_be_admin")
+    return redirect(url_for('volunteer_bp.dashboard'))
+
+@auth_bp.app_errorhandler(405)
+def read_only(e):
+    flash_error("read_only")
+    return redirect(url_for('volunteer_bp.dashboard'))
+

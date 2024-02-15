@@ -22,6 +22,7 @@ services:
       - ./.env.production
     volumes:
       - .:/usr/src/flask
+      - ./.env.production:/usr/src/flask/.env # m'asseguro que el .env.production es el que s'usa
     depends_on:
       - postgres
 

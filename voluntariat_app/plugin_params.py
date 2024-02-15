@@ -1,3 +1,5 @@
+from .helper import logger
+
 class ParamsManager:
 
     def __init__(self, app=None):
@@ -14,3 +16,9 @@ class ParamsManager:
         self.invitation_token = app.config.get('PARAM_INVITATION_TOKEN')
         self.allow_modifications = app.config.get('PARAM_ALLOW_MODIFICATIONS')
         self.allow_volunteers = app.config.get('PARAM_ALLOW_VOLUNTEERS')
+
+        logger.info("PARAM: external_url: " + self.external_url)
+        logger.info("PARAM: invitation_token: " + self.invitation_token)
+        logger.info("PARAM: allow_modifications: " + str(self.allow_modifications))
+        logger.info("PARAM: allow_volunteers: " + str(self.allow_volunteers))
+        
