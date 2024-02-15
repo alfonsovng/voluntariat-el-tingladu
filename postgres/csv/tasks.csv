@@ -1,17 +1,17 @@
 nom,descripció,contrasenya,no voluntaris
 BARRES,Voluntariat de barres,"",FALSE
-SUBCAPS DE BARRES,Supcaps de barres,puput,FALSE
-ENTRADES,Voluntariat d'entrades,oca,FALSE
-MARXANDATGE,Voluntariat de marxandatge,corb,FALSE
-CUINA,Voluntariat de cuina,perdiu,FALSE
-GLOBUS,Voluntariat de Globus,pardal,FALSE
-PHOTOCALL,Voluntariat del photocall,corriol,FALSE
-TRESORERIA,Voluntariat de tresoreria,falciot,FALSE
+SUBCAPS DE BARRES,Supcaps de barres,puigmal,FALSE
+ENTRADES,Voluntariat d'entrades,pedraforca,FALSE
+MARXANDATGE,Voluntariat de marxandatge,montserrat,FALSE
+CUINA,Voluntariat de cuina,comanegra,FALSE
+GLOBUS,Voluntariat de Globus,taga,FALSE
+PHOTOCALL,Voluntariat del photocall,puigsacalm,FALSE
+TRESORERIA,Voluntariat de tresoreria,montseny,FALSE
 MUNTATGE,Voluntariat de muntatge,"",FALSE
 SUPORT,Gent de suport del centre obert,"",TRUE
-ORGANITZACIÓ,Voluntariat d'organització,aligot,FALSE
-COMUNICACIÓ,Voluntariat de comunicació,martinet,FALSE
-ELÈCTRICS,Voluntariat elèctrics,cucut,FALSE
+ORGANITZACIÓ,Voluntariat d'organització,bastiments,FALSE
+COMUNICACIÓ,Voluntariat de comunicació,carlit,FALSE
+ELÈCTRICS,Voluntariat elèctrics,balandrau,FALSE
 SO,Persones professionals del So,"",TRUE
 SEGURETAT,Persones professionals de Seguretat,"",TRUE
 PUNT LILA I FOOD TRUCK,Persones professionals del Punt Lila i les Food Trucks,"",TRUE

@@ -1,7 +1,8 @@
 from flask import Blueprint, redirect, render_template, url_for, request
-from flask_login import current_user, login_required
+from flask_login import current_user
 from .helper import flash_error, flash_info, load_volunteer, flash_warning, trim, get_shifts_meals_and_tickets
-from . import db, task_manager, params_manager, rewards_manager, hashid_manager
+from .helper import require_login, require_view, is_read_only
+from . import db, task_manager, rewards_manager, hashid_manager
 from .forms_volunteer import ProfileForm, ChangePasswordForm, ShiftsForm, ShiftsFormWithPassword, DietForm, MealsForm, TicketsForm
 from .plugin_gmail import TaskConfirmPasswordChangeEmail
 from .models import Task, Shift, UserShift, UserDiet, UserMeal, Meal, UserRewards, UserTicket
@@ -16,18 +17,18 @@ volunteer_bp = Blueprint(
 )
 
 @volunteer_bp.route('/p')
-@login_required
+@require_login()
 def redirect_to_dashboard():
     return redirect(url_for('volunteer_bp.dashboard'))
 
 @volunteer_bp.route('/dashboard')
-@login_required
+@require_login()
 def dashboard():
     (shifts, meals, tickets) = get_shifts_meals_and_tickets(current_user.id)
     return render_template('volunteer-dashboard.html',shifts=shifts,meals=meals,tickets=tickets,user=current_user)
 
 @volunteer_bp.route("/p/<volunteer_hashid>", methods=["GET"])
-@login_required
+@require_login()
 def volunteer(volunteer_hashid):
     if not current_user.is_admin or volunteer_hashid == current_user.hashid:
         return redirect(url_for('volunteer_bp.dashboard'))
@@ -35,7 +36,7 @@ def volunteer(volunteer_hashid):
     return redirect(url_for('admin_bp.profile', volunteer_hashid = volunteer_hashid))
 
 @volunteer_bp.route('/p/<volunteer_hashid>/profile', methods=["GET", "POST"])
-@login_required
+@require_login()
 def profile(volunteer_hashid):
     # you can't change personal data of another person
     volunteer = load_volunteer(current_user,volunteer_hashid,allow_all_admins=False)
@@ -56,7 +57,7 @@ def profile(volunteer_hashid):
     return render_template('volunteer-profile.html',form=form,volunteer=volunteer,user=current_user)
 
 @volunteer_bp.route('/p/<volunteer_hashid>/password', methods=["GET", "POST"])
-@login_required
+@require_login()
 def password(volunteer_hashid):
     # you can't change personal data of another person
     volunteer = load_volunteer(current_user,volunteer_hashid,allow_all_admins=False)
@@ -89,7 +90,7 @@ def password(volunteer_hashid):
 
 @volunteer_bp.route('/admin/p/<volunteer_hashid>/tasks', methods=["GET", "POST"])
 @volunteer_bp.route('/p/<volunteer_hashid>/tasks', methods=["GET", "POST"])
-@login_required
+@require_view()
 def tasks(volunteer_hashid):
     volunteer = load_volunteer(current_user,volunteer_hashid)
     if volunteer is None:
@@ -133,7 +134,7 @@ def tasks(volunteer_hashid):
 
 @volunteer_bp.route('/admin/p/<volunteer_hashid>/tasks/<task_hashid>', methods=["GET", "POST"])
 @volunteer_bp.route('/p/<volunteer_hashid>/tasks/<task_hashid>', methods=["GET", "POST"])
-@login_required
+@require_view()
 def task(volunteer_hashid, task_hashid):
     volunteer = load_volunteer(current_user,volunteer_hashid)
     if volunteer is None:
@@ -162,7 +163,7 @@ def task(volunteer_hashid, task_hashid):
 
 @volunteer_bp.route('/admin/p/<volunteer_hashid>/tasks/<task_hashid>/shifts', methods=["GET", "POST"])
 @volunteer_bp.route('/p/<volunteer_hashid>/tasks/<task_hashid>/shifts', methods=["GET", "POST"])
-@login_required
+@require_view()
 def shifts(volunteer_hashid, task_hashid):
     day = request.args.get("day")
     if day is None:
@@ -183,7 +184,7 @@ def shifts(volunteer_hashid, task_hashid):
         flash_error("wrong_address")
         return redirect(url_for('main_bp.init'))
     
-    read_only = __is_read_only(current_user)
+    read_only = is_read_only()
 
     # els admins no necessiten password
     if task.password and not current_user.is_admin and not read_only:
@@ -276,7 +277,7 @@ def __update_shifts(volunteer, task_id, day, current_user_is_admin, form):
         else:
             flash_warning("not_all_shifts")
 
-    # su sols té tasques de muntatge i no és admin, tot fora
+    # si sols té tasques de muntatge i no és admin, tot fora
     if not current_user_is_admin:
         db.session.commit()
         # FIXME: Dependencia xunga amb la tasca de MUNTATGE
@@ -317,14 +318,14 @@ def __select_shifts_and_selected(volunteer_id, task_id, day):
 
 @volunteer_bp.route('/admin/p/<volunteer_hashid>/meals', methods=["GET", "POST"])
 @volunteer_bp.route('/p/<volunteer_hashid>/meals', methods=["GET", "POST"])
-@login_required
+@require_view()
 def meals(volunteer_hashid):
     volunteer = load_volunteer(current_user,volunteer_hashid)
     if volunteer is None:
         flash_error("wrong_address")
         return redirect(url_for('main_bp.init'))
 
-    read_only = __is_read_only(current_user)
+    read_only = is_read_only()
     if read_only:
         flash_info("read_only")
     elif not volunteer.has_shifts:
@@ -393,14 +394,14 @@ def __create_meals_form(meals, user_meals):
 
 @volunteer_bp.route('/admin/p/<volunteer_hashid>/rewards', methods=["GET", "POST"])
 @volunteer_bp.route('/p/<volunteer_hashid>/rewards', methods=["GET", "POST"])
-@login_required
+@require_view()
 def rewards(volunteer_hashid):
     volunteer = load_volunteer(current_user,volunteer_hashid)
     if volunteer is None:
         flash_error("wrong_address")
         return redirect(url_for('main_bp.init'))
 
-    read_only = __is_read_only(current_user)
+    read_only = is_read_only()
     if not volunteer.has_shifts:
         flash_warning("first_tasks_and_shifts")
         read_only = True
@@ -435,7 +436,7 @@ def rewards(volunteer_hashid):
 
         # si no hi ha opcions, no mostro el botó de submit
         any_options = False
-        for (id, options) in tickets:
+        for (_, options) in tickets:
             if len(options) > 1:
                 any_options = True
                 break
@@ -450,6 +451,3 @@ def rewards(volunteer_hashid):
             total_cash = total_cash,
             volunteer = volunteer, user = current_user
         )
-
-def __is_read_only(current_user):
-    return not params_manager.allow_modifications and not current_user.is_admin

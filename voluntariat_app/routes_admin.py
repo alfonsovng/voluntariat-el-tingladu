@@ -1,8 +1,9 @@
 from flask import Blueprint, redirect, render_template, url_for, request, Response, abort, stream_with_context
-from flask_login import current_user, login_required
+from flask_login import current_user
 from .forms_message import EmailForm
 from .forms_admin import AddWorkerForm, AddSomeWorkersForm, WorkerForm, AssignationsForm
 from .helper import flash_error, flash_info, load_volunteer, logger, get_timestamp, get_shifts_meals_and_tickets, labels, get_shifts
+from .helper import require_admin, require_superadmin
 from .models import User, Task, Shift, UserShift, Meal, UserMeal, UserDiet, UserRewards, Ticket, UserTicket, UserRole
 from . import db, hashid_manager, excel_manager, task_manager, params_manager, rewards_manager
 from .plugin_gmail import TaskMessageEmail, TaskDefinitiveShiftsEmail
@@ -16,12 +17,8 @@ admin_bp = Blueprint(
 )
 
 @admin_bp.route('/admin')
-@login_required
+@require_admin()
 def dashboard():
-    if not current_user.is_admin:
-        flash_error("must_be_admin")
-        return redirect(url_for('volunteer_bp.dashboard'))
-
     invitation_url = params_manager.external_url + "/invitation/" + params_manager.invitation_token
     allow_modifications = params_manager.allow_modifications
 
@@ -31,12 +28,8 @@ def dashboard():
 
 @admin_bp.route('/admin/p')
 @admin_bp.route('/admin/people')
-@login_required
+@require_admin()
 def people():
-    if not current_user.is_admin:
-        flash_error("must_be_admin")
-        return redirect(url_for('volunteer_bp.dashboard'))
-
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
         file_name = hashid_manager.create_unique_file_name(
@@ -66,12 +59,8 @@ def people():
         return render_template('admin-people.html', volunteers=volunteers,user=current_user)
 
 @admin_bp.route("/admin/p/<volunteer_hashid>", methods=["GET"])
-@login_required
+@require_admin()
 def profile(volunteer_hashid):
-    if not current_user.is_admin:
-        flash_error("must_be_admin")
-        return redirect(url_for('volunteer_bp.dashboard'))
-
     volunteer = load_volunteer(current_user,volunteer_hashid)
     if volunteer is None:
         flash_error("wrong_address")
@@ -84,12 +73,8 @@ def profile(volunteer_hashid):
     return render_template('admin-volunteer.html',shifts=shifts,meals=meals,tickets=tickets,volunteer=volunteer,user=current_user)
 
 @admin_bp.route("/admin/worker", methods=["GET", "POST"])
-@login_required
+@require_admin()
 def add_worker():
-    if not current_user.is_admin:
-        flash_error("must_be_admin")
-        return redirect(url_for('volunteer_bp.dashboard'))
-
     form = AddWorkerForm()
     form.shifts.choices = get_list_shifts()
 
@@ -108,12 +93,8 @@ def add_worker():
     return render_template('admin-add-worker.html',form=form,user=current_user)
 
 @admin_bp.route("/admin/workers", methods=["GET", "POST"])
-@login_required
+@require_admin()
 def add_some_workers():
-    if not current_user.is_admin:
-        flash_error("must_be_admin")
-        return redirect(url_for('volunteer_bp.dashboard'))
-
     form = AddSomeWorkersForm()
     form.shifts.choices = get_list_shifts()
 
@@ -191,12 +172,8 @@ def get_list_shifts():
     return no_shifts + db_shifts
 
 @admin_bp.route("/admin/worker/<worker_hashid>", methods=["GET", "POST"])
-@login_required
+@require_admin()
 def worker(worker_hashid):
-    if not current_user.is_admin:
-        flash_error("must_be_admin")
-        return redirect(url_for('volunteer_bp.dashboard'))
-
     worker = load_volunteer(current_user,worker_hashid)
     if worker is None:
         flash_error("wrong_address")
@@ -217,12 +194,8 @@ def worker(worker_hashid):
     return render_template('admin-worker.html',shifts=shifts,meals=meals,tickets=tickets,form=form,worker=worker,user=current_user)
 
 @admin_bp.route('/admin/p/<volunteer_hashid>/message', methods=["GET", "POST"])
-@login_required
+@require_admin()
 def message(volunteer_hashid):
-    if not current_user.is_admin:
-        flash_error("must_be_admin")
-        return redirect(url_for('volunteer_bp.dashboard'))
-
     volunteer = load_volunteer(current_user,volunteer_hashid)
     if volunteer is None:
         flash_error("wrong_address")
@@ -244,23 +217,15 @@ def message(volunteer_hashid):
     return render_template('admin-message.html',form=form,volunteer=volunteer,user=current_user)
 
 @admin_bp.route('/admin/tasks')
-@login_required
+@require_admin()
 def tasks():
-    if not current_user.is_admin:
-        flash_error("must_be_admin")
-        return redirect(url_for('volunteer_bp.dashboard'))
-
     tasks = Task.query.order_by(Task.id.asc()).all()
 
     return render_template('admin-tasks.html',tasks=tasks,user=current_user)
 
 @admin_bp.route('/admin/tasks/<int:task_id>')
-@login_required
+@require_admin()
 def shifts(task_id):
-    if not current_user.is_admin:
-        flash_error("must_be_admin")
-        return redirect(url_for('volunteer_bp.dashboard'))
-
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
         select = """select t.name as tasca, s.day as dia, s.description as descripció,
@@ -312,12 +277,8 @@ def shifts(task_id):
     return render_template('admin-shifts.html',task=task,shifts_and_occupied=shifts_and_occupied,user=current_user)
 
 @admin_bp.route('/admin/tasks/<int:task_id>/<int:shift_id>', methods=["GET", "POST"])
-@login_required
+@require_admin()
 def shift_detail(task_id, shift_id):
-    if not current_user.is_admin:
-        flash_error("must_be_admin")
-        return redirect(url_for('volunteer_bp.dashboard'))
-
     task_and_shift = db.session.query(Task, Shift).join(Shift).filter(Shift.task_id == task_id, Shift.id == shift_id).first()
     if task_and_shift is None:
         flash_error("wrong_address")
@@ -387,33 +348,25 @@ def shift_detail(task_id, shift_id):
         form=form,user=current_user
     )
 
-# @admin_bp.route('/admin/tasks/<int:task_id>/email')
-# @login_required
-# def shifts_email(task_id):
-#     if not current_user.is_admin:
-#         flash_error("must_be_admin")
-#         return redirect(url_for('volunteer_bp.dashboard'))
-    
-#     users = db.session.query(User).join(UserShift).join(Shift).filter(
-#         Shift.task_id == task_id
-#     ).all()
+@admin_bp.route('/admin/tasks/<int:task_id>/email')
+@require_superadmin()
+def shifts_email(task_id):
+    users = db.session.query(User).join(UserShift).join(Shift).filter(
+        Shift.task_id == task_id
+    ).all()
 
-#     for u in users:
-#         shifts = get_shifts(u.id)
-#         task = TaskDefinitiveShiftsEmail(user = u, shifts = shifts)
-#         task_manager.add_task(task)
+    for u in users:
+        shifts = get_shifts(u.id)
+        task = TaskDefinitiveShiftsEmail(user = u, shifts = shifts)
+        task_manager.add_task(task)
 
-#     flash_info("message_sent")
+    flash_info("message_sent")
 
-#     return redirect(url_for('admin_bp.shifts', task_id = task_id))
+    return redirect(url_for('admin_bp.shifts', task_id = task_id))
 
 @admin_bp.route('/admin/meals')
-@login_required
+@require_admin()
 def meals():
-    if not current_user.is_admin:
-        flash_error("must_be_admin")
-        return redirect(url_for('volunteer_bp.dashboard'))
-
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
         select = """select m.day as dia, m.name as àpat,
@@ -461,12 +414,8 @@ def meals():
     return render_template('admin-meals.html',meals_and_quantity=meals_and_quantity,user=current_user)
 
 @admin_bp.route('/admin/meals/<int:meal_id>')
-@login_required
+@require_admin()
 def meal_detail(meal_id):
-    if not current_user.is_admin:
-        flash_error("must_be_admin")
-        return redirect(url_for('volunteer_bp.dashboard'))
-
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
         select = """select m.day as dia, m.name as àpat,
@@ -515,12 +464,8 @@ def meal_detail(meal_id):
     )
 
 @admin_bp.route('/admin/tickets')
-@login_required
+@require_admin()
 def tickets():
-    if not current_user.is_admin:
-        flash_error("must_be_admin")
-        return redirect(url_for('volunteer_bp.dashboard'))
-
     day = request.args.get("day")
     if day is None:
         day = ""
@@ -576,12 +521,8 @@ def tickets():
     return render_template('admin-tickets.html',day=day,tickets_and_quantity=tickets_and_quantity,user=current_user)
 
 @admin_bp.route('/admin/tickets/<int:ticket_id>')
-@login_required
+@require_admin()
 def tickets_detail(ticket_id):
-    if not current_user.is_admin:
-        flash_error("must_be_admin")
-        return redirect(url_for('volunteer_bp.dashboard'))
-
     excel = request.args.get('excel', default=False, type=bool)
     if excel:
         select = """select t.day as dia, t.name as entrada,
@@ -621,12 +562,8 @@ def tickets_detail(ticket_id):
     )
 
 @admin_bp.route('/admin/rewards')
-@login_required
+@require_admin()
 def rewards():
-    if not current_user.is_admin:
-        flash_error("must_be_admin")
-        return redirect(url_for('volunteer_bp.dashboard'))
-    
     day = request.args.get("day")
     if day is None:
         day = ""
@@ -687,23 +624,16 @@ def rewards():
     return render_template('admin-cash.html',day=day,users_with_cash=users_with_cash,user=current_user)
 
 @admin_bp.route('/admin/update-all-rewards')
-@login_required
+@require_superadmin()
 def update_all_rewards():
-    if not current_user.is_admin:
-        flash_error("must_be_admin")
-        return redirect(url_for('volunteer_bp.dashboard'))
     rewards_manager.update_all_rewards()
     db.session.commit()
     flash_info("data_saved")
     return redirect(url_for('admin_bp.dashboard'))
 
 @admin_bp.route('/admin/excel_tickets_and_rewards')
-@login_required
+@require_admin()
 def excel_tickets_and_rewards():
-    if not current_user.is_admin:
-        flash_error("must_be_admin")
-        return redirect(url_for('volunteer_bp.dashboard'))
-      
     day = request.args.get("day")
     if day is None:
         day = ""
@@ -777,9 +707,9 @@ def generate_excel(file_name, select, params={}):
     return redirect(url_for('admin_bp.download_excel',file_name=file_name))
 
 @admin_bp.route('/admin/excel/<file_name>')
-@login_required
+@require_admin()
 def download_excel(file_name):
-    if not current_user.is_admin or not file_name.endswith(".xlsx"):
+    if not file_name.endswith(".xlsx"):
         abort(404) 
 
     return Response(

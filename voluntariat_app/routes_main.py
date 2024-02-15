@@ -1,8 +1,8 @@
 from flask import Blueprint, redirect, render_template, url_for
-from flask_login import current_user, login_required, logout_user
+from flask_login import current_user
 from . import task_manager
 from .forms_message import IncidenceForm
-from .helper import flash_info, labels
+from .helper import flash_info, labels, require_login
 from .plugin_gmail import TaskIncidenceEmail
 
 # Blueprint Configuration
@@ -18,7 +18,7 @@ def init():
         return redirect(url_for("auth_bp.login"))
 
 @main_bp.route('/incidence', methods=["GET", "POST"])
-@login_required
+@require_login()
 def incidence():
     form = IncidenceForm()
     form.type.choices = labels.get("incidences_types").split(',')
@@ -45,9 +45,3 @@ def contact():
         return redirect(url_for("main_bp.incidence"))
     else:
         return render_template('unregistered-contact.html')
-
-@main_bp.route("/logout")
-@login_required
-def logout():
-    logout_user()
-    return redirect(url_for("auth_bp.login"))

@@ -161,11 +161,27 @@ __superadmin_action_need = ActionNeed('superadmin')
 __admin_action_need = ActionNeed('admin')
 __edit_action_need = ActionNeed('edit')
 __view_action_need = ActionNeed('view')
+__login_action_need = ActionNeed('login')
 
-require_superadmin = Permission(__superadmin_action_need)
-require_admin = Permission(__admin_action_need)
-require_edit = Permission(__edit_action_need)
-require_view = Permission(__view_action_need)
+__require_superadmin = Permission(__superadmin_action_need)
+def require_superadmin():
+    return __require_superadmin.require(http_exception=403)
+
+__require_admin = Permission(__admin_action_need)
+def require_admin():
+    return __require_admin.require(http_exception=403)
+
+__require_edit = Permission(__edit_action_need)
+def is_read_only():
+    return not __require_edit.can()
+
+__require_view = Permission(__view_action_need)
+def require_view():
+    return __require_view.require(http_exception=405)
+
+__require_login = Permission(__login_action_need)
+def require_login():
+    return __require_login.require(http_exception=401)
 
 @identity_loaded.connect
 def on_identity_loaded(sender, identity):
@@ -181,19 +197,25 @@ def on_identity_loaded(sender, identity):
             identity.provides.add(__admin_action_need)
             identity.provides.add(__edit_action_need)
             identity.provides.add(__view_action_need)
+            identity.provides.add(__login_action_need)
         elif current_user.role == UserRole.admin:
             identity.provides.add(__admin_action_need)
             identity.provides.add(__edit_action_need)
             identity.provides.add(__view_action_need)
+            identity.provides.add(__login_action_need)
         elif current_user.role == UserRole.partner:
+            identity.provides.add(__view_action_need)
+            identity.provides.add(__login_action_need)
             if (params_manager.allow_modifications):
                 identity.provides.add(__edit_action_need)
-            identity.provides.add(__view_action_need)
         elif current_user.role == UserRole.volunteer:
+            identity.provides.add(__login_action_need)
             if(params_manager.allow_volunteers):
                 if (params_manager.allow_modifications):
                     identity.provides.add(__edit_action_need)
                 identity.provides.add(__view_action_need)
+            else:
+                logger.warn(f"Volunteers are not allowed: {current_user.email}")
 
 def notify_identity_changed():
     from flask import current_app
