@@ -5,6 +5,7 @@ from .forms_auth import LoginForm, SignUpForm, ForgottenPasswordForm, ResetPassw
 from .models import User, UserRole, UserDiet, UserRewards
 from .plugin_gmail import TaskSignUpEmail, TaskResetPasswordEmail, TaskConfirmPasswordChangeEmail
 from .helper import flash_info, flash_warning, flash_error, logger, notify_identity_changed
+from sqlalchemy import or_
 
 # Blueprint Configuration
 auth_bp = Blueprint(
@@ -32,46 +33,53 @@ def signup(invitation_token):
     # Validate sign up attempt
     if form.validate_on_submit():
         lowercase_email = form.email.data.lower()
+        lowercase_dni = form.dni.data.lower()
 
-        existing_user = User.query.filter_by(email=lowercase_email).first()
-        if existing_user is None:
-
-            logger.info(f"Nou voluntari: {lowercase_email}")
-
-            user = User(
-                name=form.name.data,
-                surname=form.surname.data,
-                email=lowercase_email,
-                dni=form.dni.data,
-                phone=form.phone.data,
-                electrician = form.electrician.data,
-                role=UserRole.volunteer
-            )
-            # set a random password because it can't be null
-            user.set_password(hashid_manager.create_password())
-            db.session.add(user)
-            db.session.commit()  # Create new user
-
-            # create token with the user id
-            token = hashid_manager.create_token(user.id)
-            user.change_password_token = token
-            db.session.add(user)
-            
-            # guardo la informació de la seva dieta i les seves recompenses
-            db.session.add(UserDiet(user_id = user.id))
-            db.session.add(UserRewards(user_id = user.id))
-
-            db.session.commit() # guardem token, dieta i recompenses
-           
-            # send email to end signup
-            email_task = TaskSignUpEmail(name=form.name.data,email=lowercase_email,token=token)
-            task_manager.add_task(email_task)
-
-            flash_info("sign_up_successful")
+        existing_user = User.query.filter(or_(User.email == lowercase_email, User.dni == lowercase_dni)).first()
+        if existing_user:
+            # user exists
+            flash_warning("sign_up_error")
             return redirect(url_for("auth_bp.login"))
+        
+        role = UserRole.volunteer # TODO partner si coincideix el dni amb el de la llista de socis
 
-        # user exists
-        flash_warning("sign_up_error")
+        if (role == UserRole.volunteer and not params_manager.allow_volunteers):
+            flash_warning("no_partner")
+            return redirect(url_for("main_bp.contact"))
+
+        logger.info(f"Nou voluntari: {lowercase_email}")
+
+        user = User(
+            name=form.name.data,
+            surname=form.surname.data,
+            email=lowercase_email,
+            dni=lowercase_dni,
+            phone=form.phone.data,
+            electrician = form.electrician.data,
+            role = role
+        )
+        # set a random password because it can't be null
+        user.set_password(hashid_manager.create_password())
+        db.session.add(user)
+        db.session.commit()  # Create new user
+
+        # create token with the user id
+        token = hashid_manager.create_token(user.id)
+        user.change_password_token = token
+        db.session.add(user)
+        
+        # guardo la informació de la seva dieta i les seves recompenses
+        db.session.add(UserDiet(user_id = user.id))
+        db.session.add(UserRewards(user_id = user.id))
+
+        db.session.commit() # guardem token, dieta i recompenses
+        
+        # send email to end signup
+        email_task = TaskSignUpEmail(name=form.name.data,email=lowercase_email,token=token)
+        task_manager.add_task(email_task)
+
+        flash_info("sign_up_successful")
+        return redirect(url_for("auth_bp.login"))
         
     return render_template('unregistered-sign-up.html', form = form)
 
