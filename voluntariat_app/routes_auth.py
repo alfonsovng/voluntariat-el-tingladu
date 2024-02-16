@@ -2,7 +2,7 @@ from flask import Blueprint, redirect, render_template, request, url_for
 from flask_login import current_user, login_user, logout_user, login_required
 from . import login_manager, db, hashid_manager, task_manager, params_manager
 from .forms_auth import LoginForm, SignUpForm, ForgottenPasswordForm, ResetPasswordForm
-from .models import User, UserRole, UserDiet, UserRewards
+from .models import User, UserRole, UserDiet, UserRewards, PartnerDNI
 from .plugin_gmail import TaskSignUpEmail, TaskResetPasswordEmail, TaskConfirmPasswordChangeEmail
 from .helper import flash_info, flash_warning, flash_error, logger, notify_identity_changed
 from sqlalchemy import or_
@@ -33,15 +33,19 @@ def signup(invitation_token):
     # Validate sign up attempt
     if form.validate_on_submit():
         lowercase_email = form.email.data.lower()
-        lowercase_dni = form.dni.data.lower()
+        uppercase_dni = form.dni.data.upper()
 
-        existing_user = User.query.filter(or_(User.email == lowercase_email, User.dni == lowercase_dni)).first()
+        existing_user = User.query.filter(or_(User.email == lowercase_email, User.dni == uppercase_dni)).first()
         if existing_user:
             # user exists
             flash_warning("sign_up_error")
             return redirect(url_for("auth_bp.login"))
         
-        role = UserRole.volunteer # TODO partner si coincideix el dni amb el de la llista de socis
+        role = UserRole.volunteer
+        partner_dni = PartnerDNI.query.filter_by(dni=uppercase_dni).first()
+        if partner_dni:
+            # és un DNI de soci
+            role = UserRole.partner
 
         if (role == UserRole.volunteer and not params_manager.allow_volunteers):
             flash_warning("no_partner")
@@ -53,7 +57,7 @@ def signup(invitation_token):
             name=form.name.data,
             surname=form.surname.data,
             email=lowercase_email,
-            dni=lowercase_dni,
+            dni=uppercase_dni,
             phone=form.phone.data,
             electrician = form.electrician.data,
             role = role

@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 15.3 (Debian 15.3-1.pgdg120+1)
--- Dumped by pg_dump version 15.3 (Debian 15.3-1.pgdg120+1)
+-- Dumped from database version 16.1 (Debian 16.1-1.pgdg120+1)
+-- Dumped by pg_dump version 16.1 (Debian 16.1-1.pgdg120+1)
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -76,7 +76,7 @@ CREATE SEQUENCE public.meals_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.meals_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.meals_id_seq OWNER TO postgres;
 
 --
 -- Name: meals_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -84,6 +84,17 @@ ALTER TABLE public.meals_id_seq OWNER TO postgres;
 
 ALTER SEQUENCE public.meals_id_seq OWNED BY public.meals.id;
 
+
+--
+-- Name: partner_dnis; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public.partner_dnis (
+    dni character varying NOT NULL
+);
+
+
+ALTER TABLE public.partner_dnis OWNER TO postgres;
 
 --
 -- Name: shifts; Type: TABLE; Schema: public; Owner: postgres
@@ -115,7 +126,7 @@ CREATE SEQUENCE public.shifts_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.shifts_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.shifts_id_seq OWNER TO postgres;
 
 --
 -- Name: shifts_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -152,7 +163,7 @@ CREATE SEQUENCE public.tasks_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.tasks_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.tasks_id_seq OWNER TO postgres;
 
 --
 -- Name: tasks_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -188,7 +199,7 @@ CREATE SEQUENCE public.tickets_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.tickets_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.tickets_id_seq OWNER TO postgres;
 
 --
 -- Name: tickets_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -276,7 +287,7 @@ CREATE TABLE public.users (
     name character varying NOT NULL,
     surname character varying NOT NULL,
     email character varying NOT NULL,
-    dni character varying NOT NULL UNIQUE,
+    dni character varying NOT NULL,
     password character varying NOT NULL,
     phone character varying DEFAULT ''::character varying NOT NULL,
     purchased_ticket1 character varying DEFAULT ''::character varying NOT NULL,
@@ -304,7 +315,7 @@ CREATE SEQUENCE public.users_id_seq
     CACHE 1;
 
 
-ALTER TABLE public.users_id_seq OWNER TO postgres;
+ALTER SEQUENCE public.users_id_seq OWNER TO postgres;
 
 --
 -- Name: users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
@@ -362,6 +373,14 @@ ALTER TABLE ONLY public.meals
 
 ALTER TABLE ONLY public.meals
     ADD CONSTRAINT meals_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: partner_dnis partner_dnis_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.partner_dnis
+    ADD CONSTRAINT partner_dnis_pkey PRIMARY KEY (dni);
 
 
 --
@@ -445,6 +464,14 @@ ALTER TABLE ONLY public.user_tickets
 
 
 --
+-- Name: users users_dni_key; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public.users
+    ADD CONSTRAINT users_dni_key UNIQUE (dni);
+
+
+--
 -- Name: users users_email_key; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -458,6 +485,27 @@ ALTER TABLE ONLY public.users
 
 ALTER TABLE ONLY public.users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: meals_day_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX meals_day_idx ON public.meals USING btree (day);
+
+
+--
+-- Name: shifts_day_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX shifts_day_idx ON public.shifts USING btree (day);
+
+
+--
+-- Name: tickets_day_idx; Type: INDEX; Schema: public; Owner: postgres
+--
+
+CREATE INDEX tickets_day_idx ON public.tickets USING btree (day);
 
 
 --
