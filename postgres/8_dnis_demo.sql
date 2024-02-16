@@ -1,0 +1,1 @@
+\copy partner_dnis(dni) from '/docker-entrypoint-initdb.d/csv/dnis_demo.csv' delimiter ',' csv header;

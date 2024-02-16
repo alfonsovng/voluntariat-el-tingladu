@@ -134,3 +134,7 @@ class UserRewards(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
     description = db.Column(ARRAY(db.String), nullable=False, server_default='{}')
     cash_by_day = db.Column(MutableDict.as_mutable(HSTORE), nullable=False, server_default='')
+
+class PartnerDNI(db.Model):
+    __tablename__ = "partner_dnis"
+    dni = db.Column(db.String, primary_key=True)
