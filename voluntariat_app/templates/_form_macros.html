@@ -64,10 +64,13 @@
 </div>
 {% endmacro %}
 
-{% macro textarea(field, name, rows=4, read_only=False) %}
+{% macro textarea(field, name, description=None, rows=4, read_only=False) %}
 <div class="form-group">
   {{ field.label(name) }}
   {{ field(class='form-control', disabled=read_only, rows=rows) }}
+  {% if description %}
+  <label class="small font-italic d-block text-right" for="{{field.name}}">{{description|safe}}</label>
+  {% endif %}
   {% for error in field.errors %}
     <p class="form-error">{{ error }}</p>
   {% endfor %}

@@ -59,7 +59,6 @@ def signup(invitation_token):
             email=lowercase_email,
             dni=uppercase_dni,
             phone=form.phone.data,
-            electrician = form.electrician.data,
             role = role
         )
         # set a random password because it can't be null

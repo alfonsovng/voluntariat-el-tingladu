@@ -14,12 +14,11 @@
       {{ text(form.email, "Email", placeholder="el@teu.email") }}
       {{ text(form.phone, "Mòbil", placeholder="opcional, per tal millorar la comunicació") }}
       {{ checkbox(form.adult, "Soc major d'edat", description="Has de confirmar que ets major d'edat per poder col·laborar amb El Tingladu") }}
-      {{ checkbox(form.electrician, "Tens coneixements d'electricitat?", description="En alguns torns pot arribar a ser necessari fer alguna tasca que requereixi coneixements d'electricitat") }}
       {{ checkbox(form.store_email,  "Accepto rebre emails d'El Tingladu i que el meu email sigui emmagatzemat per a futurs esdeveniments", description = "Necessari per col·laborar com a voluntariat amb els esdeveniments organitzats per El Tingladu. Tota la resta de dades personals (nom, cognoms i telèfon) s'esborren en acabar aquest esdeveniment") }}
       {{ text(form.dni, "DNI", placeholder="DNI obligatori per validar el contracte de voluntariat") }}
       <p><a target="_blank" href="/static/pdf/ACORD_VOLUNTARIAT_CANPISTRAUS_REVISAT_23.pdf">Acord de col·laboració voluntària amb El Tingladu</a></p>
       {{ checkbox(form.contract, "Accepto l'acord de col·laboració voluntària amb El Tingladu", description = "És necessari el teu DNI perquè tingui validesa el contracte de Voluntariat") }}
-      <p><a target="_blank" href="/static/pdf/LOPD-i-RGPD-Voluntaris-El-Tingladu-APP_v1.pdf">Informació relativa a la protecció de les dades personals</a></p>
+      <p><a target="_blank" href="/static/pdf/LOPD-i-RGPD-Voluntaris-El-Tingladu-APP_2024.pdf">Informació relativa a la protecció de les dades personals</a></p>
       {{ checkbox(form.data_protection, "En enviar aquest formulari, reconec que he llegit i comprès la informació relativa a la protecció de les dades personals i autoritzo el tractament de les meves dades personals per a la finalitat indicada, de conformitat amb la Llei Orgànica 3/2018, de 5 de desembre, de Protecció de Dades Personals i garantia dels drets digitals (LOPDGDD) que compleix la normativa europea de protecció de dades personals continguda al Reglament (UE) 2016/679 del Parlament Europeu i del Consell, de 27 d'abril de 2016, relatiu a la protecció de les persones físiques pel que fa al tractament de dades personals i a la lliure circulació d'aquestes dades (RGPD)") }}
       {{ form.submit(value = "Registra't", class='btn btn-lg btn-success') }}
     </form>
