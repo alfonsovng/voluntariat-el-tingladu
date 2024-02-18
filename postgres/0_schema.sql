@@ -294,6 +294,8 @@ CREATE TABLE public.users (
     purchased_ticket2 character varying DEFAULT ''::character varying NOT NULL,
     purchased_ticket3 character varying DEFAULT ''::character varying NOT NULL,
     electrician boolean DEFAULT false NOT NULL,
+    comments character varying DEFAULT ''::character varying NOT NULL,
+    first_login boolean DEFAULT true NOT NULL,
     role public.users_role NOT NULL,
     change_password_token character varying,
     last_shift_change_at timestamp with time zone

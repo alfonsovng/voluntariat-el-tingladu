@@ -19,7 +19,6 @@ class SignUpForm(FlaskForm):
     adult = BooleanField(
         validators=[DataRequired()]
     )
-    electrician = BooleanField()
     store_email = BooleanField(
         validators=[DataRequired()]
     )
