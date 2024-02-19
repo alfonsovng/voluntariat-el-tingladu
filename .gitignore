@@ -1,0 +1,7 @@
+.venv
+.env
+.env.development
+.env.production
+__pycache__
+.metals
+.vscode
