@@ -139,7 +139,7 @@ class LabelsManager:
         full_path = os.path.realpath(__file__)
         current_directory = os.path.dirname(full_path)
 
-        self.config.read(current_directory + "/labels/texts.ini")
+        self.config.read(current_directory + "/labels/texts.ini", encoding="utf-8")
         self.section = "CA" # TODO: fer multilanguage
 
     def get(self, key):
