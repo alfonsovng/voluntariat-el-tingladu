@@ -1,6 +1,6 @@
 blinker==1.7.0
 click==8.1.7
-dnspython==2.6.0
+dnspython==2.6.1
 email-validator==2.1.0.post1
 et-xmlfile==1.1.0
 Flask==3.0.2
