@@ -1,7 +1,7 @@
 from flask import Blueprint, redirect, render_template, url_for, request, Response, abort, stream_with_context
 from flask_login import current_user
 from .forms_message import EmailForm
-from .forms_admin import AddWorkerForm, AddSomeWorkersForm, WorkerForm, AssignationsForm
+from .forms_admin import AddWorkerForm, AddSomeWorkersForm, WorkerForm, AssignationsForm, TaskPasswordForm, ShiftSlotsForm
 from .helper import flash_error, flash_info, load_volunteer, logger, get_timestamp, get_shifts_meals_and_tickets, labels, get_shifts
 from .helper import require_admin, require_superadmin
 from .models import User, Task, Shift, UserShift, Meal, UserMeal, UserDiet, UserRewards, Ticket, UserTicket, UserRole
@@ -44,6 +44,7 @@ def people():
             phone as mòbil, role as rol, 
             case when shifts.n > 0 then 'X' else '' end as "amb torns",
             case when electrician then 'X' else '' end as electricitat,
+            comments as amistats,
             purchased_ticket1 as "entrada adquirida 1",
             purchased_ticket2 as "entrada adquirida 2",
             purchased_ticket3 as "entrada adquirida 3"
@@ -216,14 +217,27 @@ def message(volunteer_hashid):
 
     return render_template('admin-message.html',form=form,volunteer=volunteer,user=current_user)
 
-@admin_bp.route('/admin/tasks')
+@admin_bp.route('/admin/tasks', methods=["GET", "POST"])
 @require_admin()
 def tasks():
     tasks = Task.query.order_by(Task.id.asc()).all()
+    
+    form = TaskPasswordForm()
+    if form.validate_on_submit():
+        for task in tasks:
+            new_password = request.form.get(f"password-{task.id}", default=task.password, type=str)
+            if new_password != task.password:
+                task.password = new_password
+                db.session.add(task)
 
-    return render_template('admin-tasks.html',tasks=tasks,user=current_user)
+        db.session.commit()
 
-@admin_bp.route('/admin/tasks/<int:task_id>')
+        flash_info("data_saved")
+        redirect(request.full_path) # redirecció a mi mateix
+
+    return render_template('admin-tasks.html',form=form,tasks=tasks,user=current_user)
+
+@admin_bp.route('/admin/tasks/<int:task_id>', methods=["GET", "POST"])
 @require_admin()
 def shifts(task_id):
     excel = request.args.get('excel', default=False, type=bool)
@@ -231,7 +245,7 @@ def shifts(task_id):
         select = """select t.name as tasca, s.day as dia, s.description as descripció,
             u.surname as cognoms, u.name as nom, 
             case when u.role='worker' then '' else u.email end as email, 
-            u.phone as mòbil, us.comments as "obs torn" 
+            u.phone as mòbil, us.comments as "obs torn", u.comments as amistats
             , case when us.shift_assignations[1] then s.assignations[1] else '' end as assignació
             , case when us.shift_assignations[2] then s.assignations[2] else '' end as assignació
             , case when us.shift_assignations[3] then s.assignations[3] else '' end as assignació
@@ -253,6 +267,18 @@ def shifts(task_id):
             params={"TASK_ID": task_id}
         )
     else:
+        form = ShiftSlotsForm()
+        if form.validate_on_submit():
+            shifts = Shift.query.filter_by(task_id = task_id).all()
+            for shift in shifts:
+                shift.slots = request.form.get(f"slots-{shift.id}", default=shift.slots, type=int)
+                db.session.add(shift)
+            
+            db.session.commit()
+
+            flash_info("data_saved")
+            redirect(request.full_path) # redirecció a mi mateix
+
         task = Task.query.filter_by(id = task_id).first()
         if task is None:
             flash_error("wrong_address")
@@ -274,7 +300,7 @@ def shifts(task_id):
             Shift.id.asc()
         )
 
-    return render_template('admin-shifts.html',task=task,shifts_and_occupied=shifts_and_occupied,user=current_user)
+    return render_template('admin-shifts.html',form=form,task=task,shifts_and_occupied=shifts_and_occupied,user=current_user)
 
 @admin_bp.route('/admin/tasks/<int:task_id>/<int:shift_id>', methods=["GET", "POST"])
 @require_admin()
@@ -296,7 +322,7 @@ def shift_detail(task_id, shift_id):
         select = f"""select t.name as tasca, s.day as dia, s.description as descripció,
             u.surname as cognoms, u.name as nom, 
             case when u.role='worker' then '' else u.email end as email, 
-            u.phone as mòbil, us.comments as "obs torn"
+            u.phone as mòbil, u.comments as amistats, us.comments as "obs torn"
             {assignations_select.getvalue()}
             from users as u 
             join user_shifts as us on u.id = us.user_id

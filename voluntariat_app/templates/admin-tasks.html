@@ -11,32 +11,39 @@
     <div class="col-sm-12">
         <h2>Administració</h2>
         <h2><small class="text-muted">{% block title %}Tasques{% endblock %}</small></h2>
-        <div class="table-responsive">
-            <table class="table table-light table-striped table-hover table-bordered table-sm">
-                <thead>
-                    <tr>
-                        <th>NOM</th>
-                        <th>DESCRIPCIÓ</th>
-                        <th>CONTRASENYA</th>
-                        <th>SOLS PROFESSIONALS</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for t in tasks %}
-                    <tr>
-                        <td><a href='/admin/tasks/{{t.id}}'>{{t.name}}</a></td>
-                        <td><a href='/admin/tasks/{{t.id}}'>{{t.description}}</a></td>
-                        <td><a href='/admin/tasks/{{t.id}}'>{{t.password}}</a></td>
-                        <td><a href='/admin/tasks/{{t.id}}'>{{"X" if t.only_workers}}</a></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <br />
-        <div class="btn-group">
-            <a class="btn btn-secondary" href="/admin"> &#x3c;&#x3c; Torna enrere</a>
-        </div>
+        <form role="form" method='POST'>
+            {{ form.csrf_token }}
+            <div class="table-responsive">
+                <table class="table table-light table-striped table-hover table-bordered table-sm">
+                    <thead>
+                        <tr>
+                            <th>NOM</th>
+                            <th>DESCRIPCIÓ</th>
+                            <th>CONTRASENYA</th>
+                            <th>SOLS PROFESSIONALS</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for t in tasks %}
+                        <tr>
+                            <td><a href='/admin/tasks/{{t.id}}'>{{t.name}}</a></td>
+                            <td><a href='/admin/tasks/{{t.id}}'>{{t.description}}</a></td>
+                            <td> {% if t.only_workers %} - {% else %} 
+                                <input type='text' name='password-{{t.id}}' value='{{t.password}}' placeholder="/sense contrasenya/"/>
+                                {% endif %}
+                            </td>
+                            <td><a href='/admin/tasks/{{t.id}}'>{{"X" if t.only_workers}}</a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <br />
+            <div class="btn-group">
+                <a class="btn btn-secondary" href="/admin"> &#x3c;&#x3c; Torna enrere</a>
+                {{ form.submit(value="Guarda el canvi de contrasenyes", class='btn btn-success') }}
+            </div>
+        </form>
     </div>
 </div>  
 {% endblock %}
