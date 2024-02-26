@@ -11,42 +11,48 @@
     <div class="col-sm-12">
         <h2>Administració</h2>
         <h2><small class="text-muted">{% block title %}Torns{% endblock %}</small></h2>
-        <div class="table-responsive">
-            <table class="table table-light table-striped table-hover table-bordered table-sm">
-                <thead>
-                    <tr>
-                        <th colspan="6">
-                            {{task.name}}: {{task.description}}
-                        </th>
-                    </tr>
-                    <tr>
-                        <th>DIA</th>
-                        <th>DESCRIPCIÓ</th>
-                        <th>LLOCS OCUPATS</th>
-                        <th>LLOCS TOTALS</th>
-                        <th>RECOMPENSA</th>
-                        <th>EXCEL</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for s,n in shifts_and_occupied %}
-                    <tr>
-                        <td><a href='/admin/tasks/{{s.task_id}}/{{s.id}}'>{{s.day}}</a></td>
-                        <td><a href='/admin/tasks/{{s.task_id}}/{{s.id}}'>{{s.description}}</a></td>
-                        <td><a href='/admin/tasks/{{s.task_id}}/{{s.id}}'>{{0 if n is none else n}}</a></td>
-                        <td><a href='/admin/tasks/{{s.task_id}}/{{s.id}}'>{{s.slots if s.slots > 0}}</a></td>
-                        <td><a href='/admin/tasks/{{s.task_id}}/{{s.id}}'>{{s.reward|string() + " €" if s.reward > 0}}</a></td>
-                        <td><a href='/admin/tasks/{{s.task_id}}/{{s.id}}?excel=1'><img src="/static/img/excel-icon.png" alt="Excel"/></a></td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <br />
-        <div class="btn-group">
-            <a class="btn btn-secondary" href="/admin/tasks"> &#x3c;&#x3c; Torna enrere</a>
-            <a class="btn btn-primary" href="?excel=1">Descarrega en format Excel</a>
-        </div>
+        <form role="form" method='POST'>
+            {{ form.csrf_token }}
+            <div class="table-responsive">
+                <table class="table table-light table-striped table-hover table-bordered table-sm">
+                    <thead>
+                        <tr>
+                            <th colspan="6">
+                                {{task.name}}: {{task.description}}
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>DIA</th>
+                            <th>DESCRIPCIÓ</th>
+                            <th>LLOCS OCUPATS</th>
+                            <th>LLOCS TOTALS</th>
+                            <th>RECOMPENSA</th>
+                            <th>EXCEL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for s,n in shifts_and_occupied %}
+                        <tr>
+                            <td><a href='/admin/tasks/{{s.task_id}}/{{s.id}}'>{{s.day}}</a></td>
+                            <td><a href='/admin/tasks/{{s.task_id}}/{{s.id}}'>{{s.description}}</a></td>
+                            <td><a href='/admin/tasks/{{s.task_id}}/{{s.id}}'>{{0 if n is none else n}}</a></td>
+                            <td>
+                                <input type='number' min='0' name='slots-{{s.id}}' value='{{s.slots if s.slots > 0}}' placeholder="/0 = sense límit/"/>
+                            </td>
+                            <td><a href='/admin/tasks/{{s.task_id}}/{{s.id}}'>{{s.reward|string() + " €" if s.reward > 0}}</a></td>
+                            <td><a href='/admin/tasks/{{s.task_id}}/{{s.id}}?excel=1'><img src="/static/img/excel-icon.png" alt="Excel"/></a></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <br />
+            <div class="btn-group">
+                <a class="btn btn-secondary" href="/admin/tasks"> &#x3c;&#x3c; Torna enrere</a>
+                {{ form.submit(value="Guarda el canvi de llocs totals", class='btn btn-success') }}
+                <a class="btn btn-primary" href="?excel=1">Descarrega en format Excel</a>
+            </div>
+        </form>
     </div>
 </div>  
 {% endblock %}

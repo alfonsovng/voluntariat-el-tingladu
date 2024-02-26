@@ -24,3 +24,9 @@ class WorkerForm(FlaskForm):
 
 class AssignationsForm(FlaskForm):
     submit = SubmitField()
+
+class TaskPasswordForm(FlaskForm):
+    submit = SubmitField()
+
+class ShiftSlotsForm(FlaskForm):
+    submit = SubmitField()

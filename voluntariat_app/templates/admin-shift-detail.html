@@ -18,12 +18,12 @@
                 <table class="table table-light table-striped table-hover table-bordered table-sm">
                     <thead>
                         <tr>
-                            <th colspan="{{ 5 + n_assignations}}">
+                            <th colspan="{{ 6 + n_assignations}}">
                                 {{task.name}}: {{task.description}}
                             </th>
                         </tr>
                         <tr>
-                            <th colspan="5">
+                            <th colspan="6">
                                 {{shift.description}} {{"[" + shift.reward|string() + " €]" if shift.reward > 0}}
                             </th>
                             {% for name in shift.assignations %}
@@ -35,6 +35,7 @@
                             <th>NOM</th>
                             <th>EMAIL</th>
                             <th>MÒBIL</th>
+                            <th>AMISTATS</th>
                             <th>OBS TORN</th>
                             {% for n in range(n_assignations) %}
                             <th id="checkbox-{{n}}" class="text-secondary text-center">-</th>
@@ -62,6 +63,11 @@
                                 <td>
                                     <a href="/admin/p/{{ u.hashid }}/tasks/{{task.hashid}}?back={{request.path}}">
                                         {{u.phone}}
+                                    </a> 
+                                </td>
+                                <td>
+                                    <a href="/admin/p/{{ u.hashid }}/tasks/{{task.hashid}}?back={{request.path}}">
+                                        {{u.comments}}
                                     </a> 
                                 </td>
                                 <td>
