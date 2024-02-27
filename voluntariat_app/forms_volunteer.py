@@ -10,7 +10,6 @@ class ProfileForm(FlaskForm):
     purchased_ticket1 = StringField(filters = [trim])
     purchased_ticket2 = StringField(filters = [trim])
     purchased_ticket3 = StringField(filters = [trim])
-    purchased_ticket4 = StringField(filters = [trim])
     electrician = BooleanField()
     comments = TextAreaField(filters = [trim])
     submit = SubmitField()
@@ -22,7 +21,6 @@ class ConfirmationForm(FlaskForm):
     purchased_ticket1 = StringField(filters = [trim])
     purchased_ticket2 = StringField(filters = [trim])
     purchased_ticket3 = StringField(filters = [trim])
-    purchased_ticket4 = StringField(filters = [trim])
     electrician = BooleanField()
     comments = TextAreaField(filters = [trim])
     adult = BooleanField(
