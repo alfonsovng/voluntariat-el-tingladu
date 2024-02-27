@@ -61,6 +61,7 @@
                         <td>
                             <p class="text-profile"><span class="font-weight-bolder">DNI</span>: {{volunteer.dni}}</p>
                             <p class="text-profile"><span class="font-weight-bolder">ELECTRICITAT</span>: {{'X' if volunteer.electrician}}</p>
+                            <p class="text-profile"><span class="font-weight-bolder">AMISTATS PER COMPATIR TORN</span>: {{volunteer.comments}}</p>
                         </td>
                     </tr>
                     <tr>
@@ -134,12 +135,6 @@
                             {% if volunteer.purchased_ticket3 %}
                             <a href="#" data-toggle="tooltip" title="Fes click per copiar-ho" onclick="return copy_to_clipboard(this)">
                                 {{volunteer.purchased_ticket3}}
-                            </a>
-                            <br />
-                            {% endif %}
-                            {% if volunteer.purchased_ticket4 %}
-                            <a href="#" data-toggle="tooltip" title="Fes click per copiar-ho" onclick="return copy_to_clipboard(this)">
-                                {{volunteer.purchased_ticket4}}
                             </a>
                             <br />
                             {% endif %}
