@@ -36,7 +36,6 @@ class User(UserMixin, db.Model):
     purchased_ticket3 = db.Column(db.String, nullable=False, server_default='')  #'' es un possible valor
     electrician = db.Column(db.Boolean, nullable=False, default=False, server_default=text("FALSE"))
     comments = db.Column(db.String, nullable=False, server_default='')
-    first_login = db.Column(db.Boolean, nullable=False, default=True, server_default=text("TRUE"))
     role = db.Column(db.Enum(UserRole, name='users_role'), nullable=False)
     change_password_token = db.Column(db.String)
     last_shift_change_at = db.Column(db.DateTime(timezone=True))

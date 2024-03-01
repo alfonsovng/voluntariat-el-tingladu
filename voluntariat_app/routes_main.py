@@ -13,11 +13,7 @@ main_bp = Blueprint(
 @main_bp.route("/", methods=["GET"])
 def init():
     if current_user.is_authenticated:
-        if current_user.first_login:
-            flash_info("review_profile")
-            return redirect(url_for('volunteer_bp.confirmation'))
-        else:
-            return redirect(url_for('volunteer_bp.dashboard'))
+        return redirect(url_for('volunteer_bp.dashboard'))    
     else:
         return redirect(url_for("auth_bp.login"))
 

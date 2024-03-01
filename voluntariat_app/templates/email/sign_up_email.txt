@@ -1,4 +1,4 @@
-Hola {{name}},
+Hola,
 
 Per tal de finalitzar el registre, accedeix a l'adreça següent:
 
