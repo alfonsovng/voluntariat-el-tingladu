@@ -51,6 +51,9 @@
                 <a class="btn btn-secondary" href="/admin/tasks"> &#x3c;&#x3c; Torna enrere</a>
                 {{ form.submit(value="Guarda el canvi de llocs totals", class='btn btn-success') }}
                 <a class="btn btn-primary" href="?excel=1">Descarrega en format Excel</a>
+                {% if user.is_superadmin %}
+                <a class="btn btn-danger" href="/admin/tasks/{{task.id}}/email">Envia emails de confirmació</a>
+                {% endif %}
             </div>
         </form>
     </div>

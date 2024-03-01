@@ -99,10 +99,16 @@
                         </td>
                     </tr>
                     <tr>
-                        <th>Modificacions bloquejades</th>
+                        <th>Paràmetres actuals</th>
                     </tr>
                     <tr>
                         <td>
+                            {% if allow_volunteers %}                          
+                            Les persones no sòcies <span class="badge badge-success">poden accedir a l'aplicatiu</span>.
+                            {% else %}
+                            Les persones no sòcies <span class="badge badge-danger">no poden accedir a l'aplicatiu</span>.
+                            {% endif %}
+                            <br />
                             {% if allow_modifications %}                          
                             Les persones voluntàries <span class="badge badge-success">poden modificar les dades</span> de tasques, torns, àpats, etc.
                             {% else %}
@@ -110,17 +116,19 @@
                             {% endif %}
                         </td>
                     </tr>
-                    <!-- <tr>
+                    {% if user.is_superadmin %}
+                    <tr>
                         <th>Actualitza tiquets de consum i àpats</th>
                     </tr>
                     <tr>
                         <td>
                             <p>Aquesta tasca pot trigar una estona i es convenient que ningú estigui modificant les dades mentre es fa.</p>
-                            <a class="btn btn-warning" href="/admin/update-all-rewards">
+                            <a class="btn btn-danger" href="/admin/update-all-rewards">
                                 Actualitza totes les recompenses
                             </a>
                         </td>
-                    </tr> -->
+                    </tr>
+                    {% endif %}
                 </tbody>
             </table>
         </div>
