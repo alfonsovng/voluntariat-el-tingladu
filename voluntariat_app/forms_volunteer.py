@@ -14,26 +14,6 @@ class ProfileForm(FlaskForm):
     comments = TextAreaField(filters = [trim])
     submit = SubmitField()
 
-class ConfirmationForm(FlaskForm):
-    name = StringField(filters = [trim], validators=[DataRequired()])
-    surname = StringField(filters = [trim], validators=[DataRequired()])
-    phone = StringField(filters = [trim])
-    purchased_ticket1 = StringField(filters = [trim])
-    purchased_ticket2 = StringField(filters = [trim])
-    purchased_ticket3 = StringField(filters = [trim])
-    electrician = BooleanField()
-    comments = TextAreaField(filters = [trim])
-    adult = BooleanField(
-        validators=[DataRequired()]
-    )
-    contract = BooleanField(
-        validators=[DataRequired()]
-    )
-    data_protection = BooleanField(
-        validators=[DataRequired()]
-    )
-    submit = SubmitField()
-
 class ChangePasswordForm(FlaskForm):
     old_password = PasswordField(
         validators=[

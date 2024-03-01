@@ -3,7 +3,7 @@ from flask_login import current_user
 from .helper import flash_error, flash_info, load_volunteer, flash_warning, trim, get_shifts_meals_and_tickets
 from .helper import require_login, require_view, is_read_only
 from . import db, task_manager, rewards_manager, hashid_manager
-from .forms_volunteer import ProfileForm, ChangePasswordForm, ShiftsForm, ShiftsFormWithPassword, DietForm, MealsForm, TicketsForm, ConfirmationForm
+from .forms_volunteer import ProfileForm, ChangePasswordForm, ShiftsForm, ShiftsFormWithPassword, DietForm, MealsForm, TicketsForm
 from .plugin_gmail import TaskConfirmPasswordChangeEmail
 from .models import Task, Shift, UserShift, UserDiet, UserMeal, Meal, UserRewards, UserTicket
 from sqlalchemy import text
@@ -47,10 +47,6 @@ def profile(volunteer_hashid):
         flash_error("wrong_address")
         return redirect(url_for('main_bp.init'))
 
-    if volunteer.first_login:
-        flash_info("review_profile")
-        return redirect(url_for('volunteer_bp.confirmation'))
-
     form = ProfileForm(obj = volunteer)
     if form.validate_on_submit():
         form.populate_obj(volunteer)
@@ -60,19 +56,6 @@ def profile(volunteer_hashid):
 
     return render_template('volunteer-profile.html',form=form,volunteer=volunteer,user=current_user)
     
-@volunteer_bp.route('/p/confirmation', methods=["GET", "POST"])
-@require_login()
-def confirmation():
-    form = ConfirmationForm(obj = current_user)
-    if form.validate_on_submit():
-        form.populate_obj(current_user)
-        current_user.first_login = False
-        db.session.commit()
-        flash_info("data_saved")
-        return redirect(url_for('volunteer_bp.dashboard'))
-
-    return render_template('volunteer-confirmation.html',form=form,volunteer=current_user,user=current_user)
-
 @volunteer_bp.route('/p/<volunteer_hashid>/password', methods=["GET", "POST"])
 @require_login()
 def password(volunteer_hashid):

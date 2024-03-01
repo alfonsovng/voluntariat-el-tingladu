@@ -61,13 +61,12 @@ class TaskEmail(Task):
 
 
 class TaskSignUpEmail(TaskEmail):
-    def __init__(self, name, email, token):
+    def __init__(self, email, token):
         from . import params_manager
 
         subject = labels.get("sign_up_subject")
-        url = params_manager.external_url + url_for("auth_bp.reset", token = token)
+        url = params_manager.external_url + url_for("auth_bp.register", token = token)
         content = render_template("email/sign_up_email.txt", 
-            name = name,
             url = url,
             app_url = params_manager.external_url
         )

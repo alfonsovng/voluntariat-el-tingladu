@@ -1,7 +1,7 @@
 from flask import Blueprint, redirect, render_template, request, url_for
 from flask_login import current_user, login_user, logout_user, login_required
 from . import login_manager, db, hashid_manager, task_manager, params_manager
-from .forms_auth import LoginForm, SignUpForm, ForgottenPasswordForm, ResetPasswordForm
+from .forms_auth import LoginForm, SignUpForm, ForgottenPasswordForm, ResetPasswordForm, RegisterForm
 from .models import User, UserRole, UserDiet, UserRewards, PartnerDNI
 from .plugin_gmail import TaskSignUpEmail, TaskResetPasswordEmail, TaskConfirmPasswordChangeEmail
 from .helper import flash_info, flash_warning, flash_error, logger, notify_identity_changed
@@ -54,11 +54,11 @@ def signup(invitation_token):
         logger.info(f"Nou voluntari: {lowercase_email}")
 
         user = User(
-            name=form.name.data,
-            surname=form.surname.data,
+            name="",
+            surname="",
             email=lowercase_email,
             dni=uppercase_dni,
-            phone=form.phone.data,
+            phone="",
             role = role
         )
         # set a random password because it can't be null
@@ -78,7 +78,7 @@ def signup(invitation_token):
         db.session.commit() # guardem token, dieta i recompenses
         
         # send email to end signup
-        email_task = TaskSignUpEmail(name=form.name.data,email=lowercase_email,token=token)
+        email_task = TaskSignUpEmail(email=lowercase_email,token=token)
         task_manager.add_task(email_task)
 
         flash_info("sign_up_successful")
@@ -116,6 +116,45 @@ def forgotten_password():
         
     return render_template('unregistered-forgotten-password.html', form = form)
 
+@auth_bp.route("/register/<token>", methods=["GET", "POST"])
+def register(token):
+    # Logout user if it's login
+    if current_user.is_authenticated:
+        logout_user()
+
+    existing_user = User.query.filter_by(change_password_token=token).first()
+    if existing_user is not None:
+        form = RegisterForm()
+
+        if form.validate_on_submit():
+
+            # Comprovo que l'email coincideix, si no, no deixo continuar
+            if(form.email_confirmation.data.lower() != existing_user.email):
+                flash_error("wrong_email_confirmation")
+                return redirect(url_for("auth_bp.register", token=token))
+
+            logger.info(f"Completant registre: {existing_user.email}")
+
+            # afegeixo les dades del formulari a l'usuari
+            form.populate_obj(existing_user)
+
+            existing_user.change_password_token = None
+            existing_user.set_password(form.password.data)
+
+            db.session.commit() # set password an remove token
+
+            # send email to confirm change
+            email_task = TaskConfirmPasswordChangeEmail(name=existing_user.name,email=existing_user.email)
+            task_manager.add_task(email_task)
+
+            flash_info("change_password_successful")
+            return redirect(url_for("auth_bp.login"))
+        
+        return render_template('unregistered-register.html', form = form)
+    
+    flash_error("wrong_token")
+    return redirect(url_for("auth_bp.login"))
+
 @auth_bp.route("/reset/<token>", methods=["GET", "POST"])
 def reset(token):
     # Logout user if it's login
@@ -124,6 +163,11 @@ def reset(token):
 
     existing_user = User.query.filter_by(change_password_token=token).first()
     if existing_user is not None:
+
+        if(len(existing_user.name) == 0 or len(existing_user.surname) == 0):
+            # és un usuari que no ha completat el registre
+            return redirect(url_for("auth_bp.register", token=token))
+
         form = ResetPasswordForm()
         if form.validate_on_submit():
             
@@ -138,9 +182,9 @@ def reset(token):
             flash_info("change_password_successful")
             return redirect(url_for("auth_bp.login"))
         
-        return render_template('unregistered-change-password.html', token = token, form = form)
+        return render_template('unregistered-change-password.html', form = form)
     
-    flash_error("change_password_error")
+    flash_error("wrong_token")
     return redirect(url_for("auth_bp.login"))
 
 @auth_bp.route("/login", methods=["GET", "POST"])
