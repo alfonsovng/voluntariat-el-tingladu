@@ -59,6 +59,10 @@ class User(UserMixin, db.Model):
         return self.role == UserRole.admin or self.role == UserRole.superadmin
 
     @hybrid_property
+    def is_superadmin(self):
+        return self.role == UserRole.superadmin
+
+    @hybrid_property
     def is_worker(self):
         return self.role == UserRole.worker
 

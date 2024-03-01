@@ -21,9 +21,12 @@ admin_bp = Blueprint(
 def dashboard():
     invitation_url = params_manager.external_url + "/invitation/" + params_manager.invitation_token
     allow_modifications = params_manager.allow_modifications
+    allow_volunteers = params_manager.allow_volunteers
 
     return render_template('admin-dashboard.html',
-        invitation_url=invitation_url,allow_modifications=allow_modifications,
+        invitation_url=invitation_url,
+        allow_modifications=allow_modifications,
+        allow_volunteers=allow_volunteers,
         user=current_user)
 
 @admin_bp.route('/admin/p')
