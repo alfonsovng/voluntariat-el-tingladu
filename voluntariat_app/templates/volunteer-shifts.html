@@ -22,6 +22,13 @@
       {{ volunteer.full_name }}
       {% endif %}
     </small></h2>
+    {% if volunteer.informative_meeting != "" %}
+      <p class="text-right font-italic">
+        Reunió informativa a la que t'has apuntat: <b class="text-task">{{ volunteer.informative_meeting }}</b>
+        <br />
+        Pots modificar aquesta informació al <a href="/p/{{ volunteer.hashid }}/profile#informative-meeting">teu perfil</a>
+      </p>
+    {% endif %}
     <form role="form" method='POST'>
       {{ form.csrf_token }}
       <div class="list-group">
@@ -57,7 +64,10 @@
                 {% endif %}
               </h5>
               <div class="form-group hidden-texarea">
-                <div class="text-right font-italic" ><label for="user-comments-{{shift.id}}">Observacions sobre aquest torn</label></div>
+                <div class="text-right font-italic" >
+                  <label for="user-comments-{{shift.id}}">
+                    Indica, si escau, amb quines persones properes t'agradaria compartir torn o altres observacions
+                  </label></div>
                 <textarea class="form-control" id="user-comments-{{shift.id}}" 
                   name="user-comments-{{shift.id}}" rows="2" {{'disabled' if read_only}}>{{ comments if comments is not none }}</textarea>
 
@@ -78,7 +88,7 @@
         </div>
         {% endfor %}
       </div>
-      <br/>
+      <br />
       {% if form.password %}
         <div class="form-group">
           {{ form.password.label("Contrasenya per apuntar-se a aquesta tasca") }}

@@ -21,6 +21,13 @@
       {{ volunteer.full_name }}
       {% endif %}
     </small></h2>
+    {% if volunteer.informative_meeting != "" %}
+      <p class="text-right font-italic">
+        Reunió informativa a la que t'has apuntat: <b class="text-task">{{ volunteer.informative_meeting }}</b>
+        <br />
+        Pots modificar aquesta informació al <a href="/p/{{ volunteer.hashid }}/profile#informative-meeting">teu perfil</a>
+      </p>
+    {% endif %}
     <div class="list-group">
       {% for t,n in tasks_and_number_of_shifts %}
         <a href="{{'/admin' if admin}}/p/{{ volunteer.hashid }}/tasks/{{t.hashid}}" 

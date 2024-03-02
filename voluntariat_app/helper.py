@@ -91,6 +91,10 @@ def get_shifts(user_id):
     from . import db
     from sqlalchemy import text
 
+    # reunió informativa també com a torn
+    reunio_informativa = [s for s in db.session.execute(text(f"""select 'Reunió informativa: ' || informative_meeting from users 
+        where id = {user_id} and informative_meeting!=''""")).scalars()]
+
     shifts = [s for s in db.session.execute(text(f"""select t.name || ': ' || s.description || case when d.assignations is NULL then '' else ' [' || d.assignations || ']' end
         from tasks as t 
         join shifts as s on t.id = s.task_id 
@@ -105,7 +109,7 @@ def get_shifts(user_id):
         ) as d on d.shift_id = s.id
         where us.user_id = {user_id}""")).scalars()]
     
-    return shifts
+    return reunio_informativa + shifts
 
 #
 # Elimina els espais en blanc, controlant que no sigui None

@@ -1,6 +1,6 @@
 {% extends '_registered.html' %}
 
-{% from "_form_macros.html" import text, textarea, checkbox with context %}
+{% from "_form_macros.html" import text, textarea, checkbox, select with context %}
 
 {% block content %}
 <div class="row justify-content-md-center">
@@ -13,7 +13,11 @@
         {{ text(form.surname, "Cognoms") }}
         {{ text(form.phone, "Mòbil", placeholder="opcional, per tal millorar la comunicació") }}
         {{ checkbox(form.electrician, "Tens coneixements d'electricitat?", description="En alguns torns pot arribar a ser necessari fer alguna tasca que requereixi coneixements d'electricitat")}}
-        {{ textarea(form.comments, "Amb quines persones properes t'agradaria compartir torn?", description="En el cas dels torns de barres, pots indicar amb quines persones vols compartir el torn i farem el possible per a seguir les teves indicacions", rows=4) }}
+        {% if volunteer.informative_meeting != "" %}
+          <div id="informative-meeting" class="form-group">
+            {{ select(form.informative_meeting, "Reunió informativa a la què assistiràs", description="Enguany hi ha un nou format d'acreditació i és molt important la teva assistència") }}
+          </div>
+        {% endif %}        
         <div class="form-group">
           <label>Email</label>
           <input class="form-control" value="{{volunteer.email}}" readonly disabled>
