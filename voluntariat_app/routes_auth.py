@@ -125,6 +125,7 @@ def register(token):
     existing_user = User.query.filter_by(change_password_token=token).first()
     if existing_user is not None:
         form = RegisterForm()
+        form.set_email_confirmation(existing_user.email)
 
         if form.validate_on_submit():
 

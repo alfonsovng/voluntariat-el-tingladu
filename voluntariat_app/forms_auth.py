@@ -1,7 +1,8 @@
 from flask_wtf import FlaskForm
-from wtforms import PasswordField, StringField, SubmitField, BooleanField, TextAreaField
-from wtforms.validators import DataRequired, Email, EqualTo, Length
+from wtforms import PasswordField, StringField, SubmitField, BooleanField
+from wtforms.validators import DataRequired, Email, EqualTo, Length, Regexp
 from .helper import trim
+import re
 
 class SignUpForm(FlaskForm):
     email = StringField(
@@ -35,7 +36,6 @@ class RegisterForm(FlaskForm):
     purchased_ticket2 = StringField(filters = [trim])
     purchased_ticket3 = StringField(filters = [trim])
     electrician = BooleanField()
-    comments = TextAreaField(filters = [trim])
 
     contract = BooleanField(
         validators=[DataRequired()]
@@ -44,7 +44,10 @@ class RegisterForm(FlaskForm):
         validators=[DataRequired()]
     )
 
-    email_confirmation = StringField(validators=[DataRequired()], filters = [trim])
+    email_confirmation = StringField(filters = [trim])
+
+    def set_email_confirmation(self, email):
+        self.email_confirmation.validators = [Regexp(email, flags=re.IGNORECASE)]
     
     password = PasswordField(
         validators=[

@@ -1,15 +1,16 @@
 from flask import Blueprint, redirect, render_template, url_for, request
 from flask_login import current_user
 from .helper import flash_error, flash_info, load_volunteer, flash_warning, trim, get_shifts_meals_and_tickets
-from .helper import require_login, require_view, is_read_only
+from .helper import require_login, require_view, is_read_only, labels
 from . import db, task_manager, rewards_manager, hashid_manager
-from .forms_volunteer import ProfileForm, ChangePasswordForm, ShiftsForm, ShiftsFormWithPassword, DietForm, MealsForm, TicketsForm
+from .forms_volunteer import ProfileForm, ChangePasswordForm, ShiftsForm, ShiftsFormWithPassword, DietForm, MealsForm, TicketsForm, ProfileFormWithInformativeMeeting
 from .plugin_gmail import TaskConfirmPasswordChangeEmail
 from .models import Task, Shift, UserShift, UserDiet, UserMeal, Meal, UserRewards, UserTicket
 from sqlalchemy import text
 from sqlalchemy.dialects.postgresql import ARRAY
 from urllib.request import pathname2url
 from collections import OrderedDict
+import random
 
 # Blueprint Configuration
 volunteer_bp = Blueprint(
@@ -47,7 +48,12 @@ def profile(volunteer_hashid):
         flash_error("wrong_address")
         return redirect(url_for('main_bp.init'))
 
-    form = ProfileForm(obj = volunteer)
+    if volunteer.informative_meeting != "":
+        form = ProfileFormWithInformativeMeeting(obj = volunteer)
+        form.informative_meeting.choices = labels.get("information_meeting_types").split(',')
+    else:
+        form = ProfileForm(obj = volunteer)
+
     if form.validate_on_submit():
         form.populate_obj(volunteer)
         db.session.commit()
@@ -288,6 +294,23 @@ def __update_shifts(volunteer, task_id, day, current_user_is_admin, form):
         if no_muntatge == 0:
             # esborro les possibles tasques de muntatge que té
             db.session.execute(text(f"""delete from user_shifts where user_id = {volunteer.id}"""))
+
+    # FIXME: Si fa tasques de barra, ha d'anar a la reunió informativa
+    tasques_barra = db.session.execute(text(f"""select count(*) from user_shifts as us 
+            join shifts as s on us.shift_id = s.id
+            join tasks as t on s.task_id = t.id
+            where us.user_id = {volunteer.id} and t.name = 'BARRES'""")).scalar()
+    if tasques_barra > 0:
+        if volunteer.informative_meeting == "":
+            # li assignem una reunió informativa a l'atzar
+            options = labels.get("information_meeting_types").split(',')
+            options.pop() # el darrer element és "no puc anar" i no el triem
+            # el guardo al perfil
+            volunteer.informative_meeting = random.choice(options)
+            flash_info("informative_meeting_assigned")
+    else:
+        # no té tasques de barra, per tant no cal que vagi a la reunió informativa
+        volunteer.informative_meeting = ""
 
     # actualitzo tickets, àpats i acreditacions
     rewards_manager.update_rewards(

@@ -47,7 +47,7 @@ def people():
             phone as mòbil, role as rol, 
             case when shifts.n > 0 then 'X' else '' end as "amb torns",
             case when electrician then 'X' else '' end as electricitat,
-            comments as amistats,
+            informative_meeting as "reunió informativa",
             purchased_ticket1 as "entrada adquirida 1",
             purchased_ticket2 as "entrada adquirida 2",
             purchased_ticket3 as "entrada adquirida 3"
@@ -248,7 +248,7 @@ def shifts(task_id):
         select = """select t.name as tasca, s.day as dia, s.description as descripció,
             u.surname as cognoms, u.name as nom, 
             case when u.role='worker' then '' else u.email end as email, 
-            u.phone as mòbil, us.comments as "obs torn", u.comments as amistats
+            u.phone as mòbil, us.comments as "obs torn"
             , case when us.shift_assignations[1] then s.assignations[1] else '' end as assignació
             , case when us.shift_assignations[2] then s.assignations[2] else '' end as assignació
             , case when us.shift_assignations[3] then s.assignations[3] else '' end as assignació
@@ -325,7 +325,7 @@ def shift_detail(task_id, shift_id):
         select = f"""select t.name as tasca, s.day as dia, s.description as descripció,
             u.surname as cognoms, u.name as nom, 
             case when u.role='worker' then '' else u.email end as email, 
-            u.phone as mòbil, u.comments as amistats, us.comments as "obs torn"
+            u.phone as mòbil, us.comments as "obs torn"
             {assignations_select.getvalue()}
             from users as u 
             join user_shifts as us on u.id = us.user_id
