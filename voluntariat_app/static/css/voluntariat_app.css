@@ -7,13 +7,6 @@ body {
     height: 2em;
 }
 
-#informative-meeting {
-    background-color: #ffdd00;
-    padding: 0.5em;
-    border-radius: 0.5em;
-    font-weight: bold;
-}
-
 /* color de fons corporatiu de les capçaleres de les taules */
 th {
     background-color: #ffdd00;

@@ -12,12 +12,7 @@
         {{ text(form.name, "Nom") }}
         {{ text(form.surname, "Cognoms") }}
         {{ text(form.phone, "Mòbil", placeholder="opcional, per tal millorar la comunicació") }}
-        {{ checkbox(form.electrician, "Tens coneixements d'electricitat?", description="En alguns torns pot arribar a ser necessari fer alguna tasca que requereixi coneixements d'electricitat")}}
-        {% if volunteer.informative_meeting != "" %}
-          <div id="informative-meeting" class="form-group">
-            {{ select(form.informative_meeting, "Reunió informativa a la què assistiràs", description="Enguany hi ha un nou format d'acreditació i és molt important la teva assistència") }}
-          </div>
-        {% endif %}        
+        {{ checkbox(form.electrician, "Tens coneixements d'electricitat?", description="En alguns torns pot arribar a ser necessari fer alguna tasca que requereixi coneixements d'electricitat")}}   
         <div class="form-group">
           <label>Email</label>
           <input class="form-control" value="{{volunteer.email}}" readonly disabled>

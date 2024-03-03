@@ -22,12 +22,23 @@
       {{ volunteer.full_name }}
       {% endif %}
     </small></h2>
-    {% if volunteer.informative_meeting != "" %}
-      <p class="text-right font-italic">
-        Reunió informativa a la que t'has apuntat: <b class="text-task">{{ volunteer.informative_meeting }}</b>
-        <br />
-        Pots modificar aquesta informació al <a href="/p/{{ volunteer.hashid }}/profile#informative-meeting">teu perfil</a>
-      </p>
+    {% if informative_meeting_form %}
+      <div class="list-group">
+        <span class="list-group-item list-group-item-info">
+          <h4>REUNIÓ INFORMATIVA BARRES</h4> 
+          <p>Enguany hi ha un nou format d'acreditació i és molt important la teva assistència</p>
+          <form class="form-inline" role="form" method='POST' action="/p/{{ volunteer.hashid }}/change-informative-meeting">
+            {{ informative_meeting_form.csrf_token }}
+            <div class="input-group input-group-sm">
+              {{ informative_meeting_form.informative_meeting(class='form-control') }}
+              <div class="input-group-append">
+                {{ informative_meeting_form.submit(value="Canvia", class='btn btn-success') }}
+              </div>
+            </div>
+          </form>
+        </span>
+      </div>
+      <br />
     {% endif %}
     <div class="list-group">
       <div class="list-group-item list-group-item-dark">
