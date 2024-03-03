@@ -3,7 +3,7 @@ from flask_login import current_user
 from .helper import flash_error, flash_info, load_volunteer, flash_warning, trim, get_shifts_meals_and_tickets
 from .helper import require_login, require_view, is_read_only, labels
 from . import db, task_manager, rewards_manager, hashid_manager
-from .forms_volunteer import ProfileForm, ChangePasswordForm, ShiftsForm, ShiftsFormWithPassword, DietForm, MealsForm, TicketsForm, ProfileFormWithInformativeMeeting
+from .forms_volunteer import ProfileForm, ChangePasswordForm, ShiftsForm, ShiftsFormWithPassword, DietForm, MealsForm, TicketsForm, InformativeMeetingForm
 from .plugin_gmail import TaskConfirmPasswordChangeEmail
 from .models import Task, Shift, UserShift, UserDiet, UserMeal, Meal, UserRewards, UserTicket
 from sqlalchemy import text
@@ -48,11 +48,7 @@ def profile(volunteer_hashid):
         flash_error("wrong_address")
         return redirect(url_for('main_bp.init'))
 
-    if volunteer.informative_meeting != "":
-        form = ProfileFormWithInformativeMeeting(obj = volunteer)
-        form.informative_meeting.choices = labels.get("information_meeting_types").split(',')
-    else:
-        form = ProfileForm(obj = volunteer)
+    form = ProfileForm(obj = volunteer)
 
     if form.validate_on_submit():
         form.populate_obj(volunteer)
@@ -135,8 +131,34 @@ def tasks(volunteer_hashid):
         # FIXME!!!!
         if not volunteer.has_shifts:
             tasks_and_number_of_shifts = [(t,n) for (t,n) in tasks_and_number_of_shifts if t.name != 'MUNTATGE']
-                
-    return render_template('volunteer-tasks.html',tasks_and_number_of_shifts=tasks_and_number_of_shifts,volunteer=volunteer,user=current_user)
+
+    # si té tasques de barra, ha d'anar a la reunió informativa
+    informative_meeting_form = __get_informative_meeting_form(volunteer)
+
+    return render_template('volunteer-tasks.html',informative_meeting_form=informative_meeting_form,tasks_and_number_of_shifts=tasks_and_number_of_shifts,volunteer=volunteer,user=current_user)
+
+def __get_informative_meeting_form(volunteer):
+    if volunteer.informative_meeting != "":
+        form = InformativeMeetingForm(obj = volunteer)
+        form.informative_meeting.choices = labels.get("information_meeting_types").split(',')
+        form.informative_meeting.default = volunteer.informative_meeting
+        return form
+    return None
+
+@volunteer_bp.route('/p/<volunteer_hashid>/change-informative-meeting', methods=["POST"])
+@require_view()
+def change_informative_meeting(volunteer_hashid):
+    volunteer = load_volunteer(current_user,volunteer_hashid)
+    if volunteer is None:
+        flash_error("wrong_address")
+        return redirect(url_for('main_bp.init'))
+
+    volunteer.informative_meeting = request.form.get("informative_meeting")
+    db.session.add(volunteer)
+    db.session.commit()
+    flash_info("data_saved")
+
+    return redirect(request.referrer or url_for('volunteer_bp.tasks',volunteer_hashid=volunteer_hashid))
 
 @volunteer_bp.route('/admin/p/<volunteer_hashid>/tasks/<task_hashid>', methods=["GET", "POST"])
 @volunteer_bp.route('/p/<volunteer_hashid>/tasks/<task_hashid>', methods=["GET", "POST"])
@@ -164,8 +186,11 @@ def task(volunteer_hashid, task_hashid):
 
     if len(days_and_number_of_shifts) == 1:
         return redirect(request.path + "/shifts?day=" + pathname2url(days_and_number_of_shifts[0][0]))
+    
+    # si té tasques de barra, ha d'anar a la reunió informativa
+    informative_meeting_form = __get_informative_meeting_form(volunteer)
 
-    return render_template('volunteer-task.html',task=task, days_and_number_of_shifts=days_and_number_of_shifts,volunteer=volunteer,user=current_user)
+    return render_template('volunteer-task.html',informative_meeting_form=informative_meeting_form, task=task, days_and_number_of_shifts=days_and_number_of_shifts,volunteer=volunteer,user=current_user)
 
 @volunteer_bp.route('/admin/p/<volunteer_hashid>/tasks/<task_hashid>/shifts', methods=["GET", "POST"])
 @volunteer_bp.route('/p/<volunteer_hashid>/tasks/<task_hashid>/shifts', methods=["GET", "POST"])
@@ -224,7 +249,11 @@ def shifts(volunteer_hashid, task_hashid):
         if read_only:
             flash_info("read_only")
         
+        # si té tasques de barra, ha d'anar a la reunió informativa
+        informative_meeting_form = __get_informative_meeting_form(volunteer)
+
         return render_template('volunteer-shifts.html',
+            informative_meeting_form=informative_meeting_form,
             form=form,
             read_only=read_only,
             day = day,
@@ -283,9 +312,11 @@ def __update_shifts(volunteer, task_id, day, current_user_is_admin, form):
         else:
             flash_warning("not_all_shifts")
 
+    # salvo els canvis per a poder comprovar si pot fer tasques de muntatge o ha d'anar a la reunió informativa
+    db.session.commit()
+
     # si sols té tasques de muntatge i no és admin, tot fora
     if not current_user_is_admin:
-        db.session.commit()
         # FIXME: Dependencia xunga amb la tasca de MUNTATGE
         no_muntatge = db.session.execute(text(f"""select count(*) from user_shifts as us 
             join shifts as s on us.shift_id = s.id

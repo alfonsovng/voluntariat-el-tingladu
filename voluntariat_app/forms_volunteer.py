@@ -13,17 +13,6 @@ class ProfileForm(FlaskForm):
     electrician = BooleanField()
     submit = SubmitField()
 
-class ProfileFormWithInformativeMeeting(FlaskForm):
-    name = StringField(filters = [trim], validators=[DataRequired()])
-    surname = StringField(filters = [trim], validators=[DataRequired()])
-    phone = StringField(filters = [trim])
-    purchased_ticket1 = StringField(filters = [trim])
-    purchased_ticket2 = StringField(filters = [trim])
-    purchased_ticket3 = StringField(filters = [trim])
-    electrician = BooleanField()
-    informative_meeting = SelectField(choices=[])
-    submit = SubmitField()
-
 class ChangePasswordForm(FlaskForm):
     old_password = PasswordField(
         validators=[
@@ -65,4 +54,8 @@ class MealsForm(FlaskForm):
     submit = SubmitField()
 
 class TicketsForm(FlaskForm):
+    submit = SubmitField()
+
+class InformativeMeetingForm(FlaskForm):
+    informative_meeting = SelectField(choices=[])
     submit = SubmitField()

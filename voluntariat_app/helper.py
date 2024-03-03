@@ -95,10 +95,10 @@ def get_shifts(user_id):
     label_informative_meeting = labels.get("informative_meeting")
 
     shifts = [s for s in db.session.execute(text(f"""
-        select '{label_informative_meeting}: ' || informative_meeting from users 
+        select -1, '{label_informative_meeting}: ' || informative_meeting from users 
         where id = {user_id} and informative_meeting!=''                                         
         union                                                    
-        select t.name || ': ' || s.description || case when d.assignations is NULL then '' else ' [' || d.assignations || ']' end
+        select t.id, t.name || ': ' || s.description || case when d.assignations is NULL then '' else ' [' || d.assignations || ']' end
         from tasks as t 
         join shifts as s on t.id = s.task_id 
         join user_shifts as us on us.shift_id = s.id
@@ -110,7 +110,8 @@ def get_shifts(user_id):
             ) as a
             where a.assignation group by a.shift_id
         ) as d on d.shift_id = s.id
-        where us.user_id = {user_id}""")).scalars()]
+        where us.user_id = {user_id}
+        order by 1""")).scalars()]
     
     return shifts
 
