@@ -32,9 +32,6 @@ class RegisterForm(FlaskForm):
     name = StringField(validators=[DataRequired()], filters = [trim])
     surname = StringField(validators=[DataRequired()], filters = [trim])
     phone = StringField(filters = [trim])
-    purchased_ticket1 = StringField(filters = [trim])
-    purchased_ticket2 = StringField(filters = [trim])
-    purchased_ticket3 = StringField(filters = [trim])
     electrician = BooleanField()
 
     contract = BooleanField(
