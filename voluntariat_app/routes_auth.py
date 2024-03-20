@@ -5,7 +5,7 @@ from .forms_auth import LoginForm, SignUpForm, ForgottenPasswordForm, ResetPassw
 from .models import User, UserRole, UserDiet, UserRewards, PartnerDNI
 from .plugin_gmail import TaskSignUpEmail, TaskResetPasswordEmail, TaskConfirmPasswordChangeEmail
 from .helper import flash_info, flash_warning, flash_error, logger, notify_identity_changed
-from sqlalchemy import or_
+from sqlalchemy import or_, func
 
 # Blueprint Configuration
 auth_bp = Blueprint(
@@ -32,17 +32,17 @@ def signup(invitation_token):
     form = SignUpForm()
     # Validate sign up attempt
     if form.validate_on_submit():
-        lowercase_email = form.email.data.lower()
+        email = form.email.data
         uppercase_dni = form.dni.data.upper()
 
-        existing_user = User.query.filter(or_(User.email == lowercase_email, User.dni == uppercase_dni)).first()
+        existing_user = User.query.filter(or_(func.upper(User.email) == email.upper(), User.dni == uppercase_dni)).first()
         if existing_user:
             # user exists
             flash_warning("sign_up_error")
             return redirect(url_for("auth_bp.login"))
         
         role = UserRole.volunteer
-        partner_dni = PartnerDNI.query.filter_by(dni=uppercase_dni).first()
+        partner_dni = PartnerDNI.query.filter(PartnerDNI.dni == uppercase_dni).first()
         if partner_dni:
             # és un DNI de soci
             role = UserRole.partner
@@ -51,12 +51,12 @@ def signup(invitation_token):
             flash_warning("no_partner")
             return redirect(url_for("main_bp.contact"))
 
-        logger.info(f"Nou voluntari: {lowercase_email}")
+        logger.info(f"Nou voluntari: {email}")
 
         user = User(
             name="",
             surname="",
-            email=lowercase_email,
+            email=email,
             dni=uppercase_dni,
             phone="",
             role = role
@@ -78,7 +78,7 @@ def signup(invitation_token):
         db.session.commit() # guardem token, dieta i recompenses
         
         # send email to end signup
-        email_task = TaskSignUpEmail(email=lowercase_email,token=token)
+        email_task = TaskSignUpEmail(email=email,token=token)
         task_manager.add_task(email_task)
 
         flash_info("sign_up_successful")
@@ -95,9 +95,9 @@ def forgotten_password():
     form = ForgottenPasswordForm()
     # Validate sign up attempt
     if form.validate_on_submit():
-        lowercase_email = form.email.data.lower()
+        email = form.email.data
 
-        existing_user = User.query.filter_by(email=lowercase_email).first()
+        existing_user = User.query.filter(func.upper(User.email) == email.upper()).first()
         if existing_user is not None:
 
             token = hashid_manager.create_token(existing_user.id)
@@ -105,7 +105,7 @@ def forgotten_password():
             db.session.commit()  # add token
            
             # send email to reset password
-            email_task = TaskResetPasswordEmail(name=existing_user.name,email=lowercase_email,token=token)
+            email_task = TaskResetPasswordEmail(name=existing_user.name,email=email,token=token)
             task_manager.add_task(email_task)
 
             flash_info("reset_password_successful")
@@ -122,7 +122,7 @@ def register(token):
     if current_user.is_authenticated:
         logout_user()
 
-    existing_user = User.query.filter_by(change_password_token=token).first()
+    existing_user = User.query.filter(User.change_password_token == token).first()
     if existing_user is not None:
         form = RegisterForm()
         form.set_email_confirmation(existing_user.email)
@@ -130,7 +130,7 @@ def register(token):
         if form.validate_on_submit():
 
             # Comprovo que l'email coincideix, si no, no deixo continuar
-            if(form.email_confirmation.data.lower() != existing_user.email):
+            if(form.email_confirmation.data.upper() != existing_user.email.upper()):
                 flash_error("wrong_email_confirmation")
                 return redirect(url_for("auth_bp.register", token=token))
 
@@ -162,7 +162,7 @@ def reset(token):
     if current_user.is_authenticated:
         logout_user()
 
-    existing_user = User.query.filter_by(change_password_token=token).first()
+    existing_user = User.query.filter(User.change_password_token == token).first()
     if existing_user is not None:
 
         if(len(existing_user.name) == 0 or len(existing_user.surname) == 0):
@@ -197,12 +197,12 @@ def login():
     form = LoginForm()
     # Validate login attempt
     if form.validate_on_submit():
-        lowercase_email = form.email.data.lower()
+        email = form.email.data.lower()
 
-        existing_user = User.query.filter_by(email=lowercase_email).first()
+        existing_user = User.query.filter(func.upper(User.email) == email.upper()).first()
         if existing_user and existing_user.check_password(password=form.password.data):
             
-            logger.info(f"Login: {lowercase_email}")
+            logger.info(f"Login: {email}")
 
             existing_user.change_password_token = None
             db.session.commit() # remove any existing token
