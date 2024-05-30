@@ -13,7 +13,14 @@ class SignUpForm(FlaskForm):
         ],
         filters = [trim]
     )
-    dni = StringField(validators=[DataRequired()], filters = [trim])
+    dni = StringField(
+        validators=[
+            Length(min=8, max=15),
+            Regexp('[0-9A-Za-z]+$'),
+            DataRequired()
+        ], 
+        filters = [trim]
+    )
     adult = BooleanField(
         validators=[DataRequired()]
     )
