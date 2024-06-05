@@ -217,6 +217,9 @@ def login():
 
         flash_error("login_error")
         return redirect(url_for("auth_bp.login"))
+    
+    if not params_manager.allow_volunteers:
+        flash_info("no_partner")
 
     return render_template('unregistered-login.html', form = form)
 
