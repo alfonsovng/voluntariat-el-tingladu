@@ -27,7 +27,7 @@ services:
       - postgres
 
   nginx:
-    image: nginx:1.25.5-alpine
+    image: nginx:1.26.1-alpine
     ports:
       - 0.0.0.0:80:80
       - 0.0.0.0:443:443
