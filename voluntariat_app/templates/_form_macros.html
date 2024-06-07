@@ -42,12 +42,12 @@
 <div class="form-group">
   {{ field.label(name) }}
   {{ field(class='form-control', placeholder=placeholder) }}
-  {% if description %}
-  <label class="small font-italic d-block text-right" for="{{field.name}}">{{description|safe}}</label>
-  {% endif %}
   {% for error in field.errors %}
     <p class="form-error">{{ error }}</p>
   {% endfor %}
+  {% if description %}
+  <label class="small font-italic d-block text-right" for="{{field.name}}">{{description|safe}}</label>
+  {% endif %}
 </div>
 {% endmacro %}
 
@@ -55,12 +55,12 @@
 <div class="form-group">
   {{ field.label(name) }}
   {{ field(class='form-control') }}
+  {% for error in field.errors %}
+  <p class="form-error">{{ error }}</p>
+  {% endfor %}
   {% if description %}
   <label class="small font-italic d-block text-right" for="{{field.name}}">{{description|safe}}</label>
   {% endif %}
-  {% for error in field.errors %}
-    <p class="form-error">{{ error }}</p>
-  {% endfor %}
 </div>
 {% endmacro %}
 
@@ -68,11 +68,11 @@
 <div class="form-group">
   {{ field.label(name) }}
   {{ field(class='form-control', disabled=read_only, rows=rows) }}
+  {% for error in field.errors %}
+  <p class="form-error">{{ error }}</p>
+  {% endfor %}
   {% if description %}
   <label class="small font-italic d-block text-right" for="{{field.name}}">{{description|safe}}</label>
   {% endif %}
-  {% for error in field.errors %}
-    <p class="form-error">{{ error }}</p>
-  {% endfor %}
 </div>
 {% endmacro %}

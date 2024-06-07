@@ -153,10 +153,13 @@ def change_informative_meeting(volunteer_hashid):
         flash_error("wrong_address")
         return redirect(url_for('main_bp.init'))
 
-    volunteer.informative_meeting = request.form.get("informative_meeting")
-    db.session.add(volunteer)
-    db.session.commit()
-    flash_info("data_saved")
+    if is_read_only():
+        flash_info("read_only")
+    else:
+        volunteer.informative_meeting = request.form.get("informative_meeting")
+        db.session.add(volunteer)
+        db.session.commit()
+        flash_info("data_saved")
 
     return redirect(request.referrer or url_for('volunteer_bp.tasks',volunteer_hashid=volunteer_hashid))
 

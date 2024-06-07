@@ -213,6 +213,10 @@ def login():
             notify_identity_changed()
             
             next_page = request.args.get("next")
+
+            if not params_manager.allow_modifications:
+                flash_warning("read_only")
+
             return redirect(next_page or url_for("main_bp.init"))
 
         flash_error("login_error")
