@@ -37,6 +37,7 @@ class User(UserMixin, db.Model):
     electrician = db.Column(db.Boolean, nullable=False, default=False, server_default=text("FALSE"))
     informative_meeting = db.Column(db.String, nullable=False, server_default='')
     role = db.Column(db.Enum(UserRole, name='users_role'), nullable=False)
+    confirmed = db.Column(db.Boolean, nullable=False, default=True, server_default=text("TRUE"))
     change_password_token = db.Column(db.String)
     last_shift_change_at = db.Column(db.DateTime(timezone=True))
     # aliased pq quan fem join de user amb user_shifts no doni problemes

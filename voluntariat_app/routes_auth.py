@@ -35,11 +35,21 @@ def signup(invitation_token):
         email = form.email.data
         uppercase_dni = form.dni.data.upper()
 
-        existing_user = User.query.filter(or_(func.upper(User.email) == email.upper(), User.dni == uppercase_dni)).first()
-        if existing_user:
-            # user exists
+        if User.query.filter(func.upper(User.email) == email.upper()).first():
+            # user amb el mateix email existeix
             flash_warning("sign_up_error")
             return redirect(url_for("auth_bp.login"))
+        
+        existing_user_with_dni = User.query.filter(User.dni == uppercase_dni).first()
+        if existing_user_with_dni:
+            # dos casos, que ja estigui confirmat o no
+            if existing_user_with_dni.confirmed:
+                flash_warning("sign_up_error")
+                return redirect(url_for("auth_bp.login"))
+            else:
+                # remove unconfirmed user with the same DNI
+                db.session.delete(existing_user_with_dni) 
+                db.session.commit()    
         
         role = UserRole.volunteer
         partner_dni = PartnerDNI.query.filter(PartnerDNI.dni == uppercase_dni).first()
@@ -54,12 +64,13 @@ def signup(invitation_token):
         logger.info(f"Nou voluntari: {email}")
 
         user = User(
-            name="",
-            surname="",
-            email=email,
-            dni=uppercase_dni,
-            phone="",
-            role = role
+            name = "",
+            surname = "",
+            email = email,
+            dni = uppercase_dni,
+            phone = "",
+            role = role,
+            confirmed = False
         )
         # set a random password because it can't be null
         user.set_password(hashid_manager.create_password())
@@ -71,11 +82,7 @@ def signup(invitation_token):
         user.change_password_token = token
         db.session.add(user)
         
-        # guardo la informació de la seva dieta i les seves recompenses
-        db.session.add(UserDiet(user_id = user.id))
-        db.session.add(UserRewards(user_id = user.id))
-
-        db.session.commit() # guardem token, dieta i recompenses
+        db.session.commit() # guardem token
         
         # send email to end signup
         email_task = TaskSignUpEmail(email=email,token=token)
@@ -139,10 +146,15 @@ def register(token):
             # afegeixo les dades del formulari a l'usuari
             form.populate_obj(existing_user)
 
+            existing_user.confirmed = True
             existing_user.change_password_token = None
             existing_user.set_password(form.password.data)
 
-            db.session.commit() # set password an remove token
+            # guardo la informació de la seva dieta i les seves recompenses
+            db.session.add(UserDiet(user_id = existing_user.id))
+            db.session.add(UserRewards(user_id = existing_user.id))
+
+            db.session.commit() # set password, remove token, dietes i recompenses
 
             # send email to confirm change
             email_task = TaskConfirmPasswordChangeEmail(name=existing_user.name,email=existing_user.email)
@@ -165,7 +177,7 @@ def reset(token):
     existing_user = User.query.filter(User.change_password_token == token).first()
     if existing_user is not None:
 
-        if(len(existing_user.name) == 0 or len(existing_user.surname) == 0):
+        if(existing_user.confirmed == False):
             # és un usuari que no ha completat el registre
             return redirect(url_for("auth_bp.register", token=token))
 
@@ -200,8 +212,8 @@ def login():
         email = form.email.data.lower()
 
         existing_user = User.query.filter(func.upper(User.email) == email.upper()).first()
-        if existing_user and existing_user.check_password(password=form.password.data):
-            
+        if existing_user and existing_user.check_password(password=form.password.data) and existing_user.confirmed:
+
             logger.info(f"Login: {email}")
 
             existing_user.change_password_token = None
