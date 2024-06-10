@@ -24,6 +24,10 @@
           <p class="text-right"><a href="/incidence">Per canviar el DNI fes una incidència</a></p>
         </div>
         <div class="form-group">
+          <label>Rol</label>
+          <input class="form-control" value="{{volunteer.role}}" readonly disabled>
+        </div>
+        <div class="form-group">
           <label>Contrasenya</label>
           <input class="form-control" placeholder="la teva contrasenya" readonly disabled>
           <p class="text-right"><a href="/p/{{ volunteer.hashid }}/password">Per canviar la teva contrasenya fes click aquí</a></p>

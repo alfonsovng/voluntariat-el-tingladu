@@ -35,7 +35,6 @@
                             <th>NOM</th>
                             <th>EMAIL</th>
                             <th>MÒBIL</th>
-                            <th>AMISTATS</th>
                             <th>OBS TORN</th>
                             {% for n in range(n_assignations) %}
                             <th id="checkbox-{{n}}" class="text-secondary text-center">-</th>
@@ -63,11 +62,6 @@
                                 <td>
                                     <a href="/admin/p/{{ u.hashid }}/tasks/{{task.hashid}}?back={{request.path}}">
                                         {{u.phone}}
-                                    </a> 
-                                </td>
-                                <td>
-                                    <a href="/admin/p/{{ u.hashid }}/tasks/{{task.hashid}}?back={{request.path}}">
-                                        {{u.comments}}
                                     </a> 
                                 </td>
                                 <td>
