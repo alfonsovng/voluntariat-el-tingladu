@@ -54,11 +54,12 @@ def people():
             from users 
             left join (select user_id, count(*) as n from user_shifts group by user_id) as shifts
             on shifts.user_id = users.id
+            where users.confirmed
             order by cognoms asc, nom asc, users.email asc
         """
         return generate_excel(file_name = file_name, select = select)
     else:
-        volunteers = User.query.order_by(User.surname.asc(), User.name.asc()).all()
+        volunteers = User.query.filter(User.confirmed).order_by(User.surname.asc(), User.name.asc(), User.id).all()
 
         return render_template('admin-people.html', volunteers=volunteers,user=current_user)
 
