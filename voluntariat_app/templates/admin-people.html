@@ -38,10 +38,37 @@
             </table>
         </div>
         
+        {% if not_confirmed %}
+        <a class="btn btn-primary" href="?excel=1">Descarrega en format Excel</a>
+        <br /><br />
+        <h2><small class="text-muted">Persones voluntàries pendents de completar el registre</small></h2>
+        <div class="table-responsive">
+            <table class="table table-light table-striped table-hover table-bordered table-sm">
+                <thead>
+                    <tr>
+                        <th>EMAIL</th>
+                        <th>DNI</th>
+                        <th>ROL</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for v in not_confirmed %}
+                    <tr>
+                        <td><a href="mailto:{{v.email}}">{{v.email if not v.is_worker}}</a></td>
+                        <td>{{v.dni}}</td>
+                        <td>{{v.role.name}}</td>
+                    </tr>   
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <a class="btn btn-secondary" href="/admin"> &#x3c;&#x3c; Torna enrere</a>
+        {% else %}
         <div class="btn-group">
             <a class="btn btn-secondary" href="/admin"> &#x3c;&#x3c; Torna enrere</a>
             <a class="btn btn-primary" href="?excel=1">Descarrega en format Excel</a>
         </div>
+        {% endif %}
     </div>
 </div>  
 {% endblock %}

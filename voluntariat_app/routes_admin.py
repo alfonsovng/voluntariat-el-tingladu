@@ -60,8 +60,8 @@ def people():
         return generate_excel(file_name = file_name, select = select)
     else:
         volunteers = User.query.filter(User.confirmed).order_by(User.surname.asc(), User.name.asc(), User.id).all()
-
-        return render_template('admin-people.html', volunteers=volunteers,user=current_user)
+        not_confirmed = User.query.filter(User.confirmed == False).order_by(User.email.asc(), User.dni.asc(), User.id).all()
+        return render_template('admin-people.html', volunteers=volunteers,not_confirmed=not_confirmed,user=current_user)
 
 @admin_bp.route("/admin/p/<volunteer_hashid>", methods=["GET"])
 @require_admin()
@@ -85,6 +85,7 @@ def add_worker():
 
     if form.validate_on_submit():
         worker = __insert_worker(
+            0,
             admin_id = current_user.id,
             name = form.name.data,
             surname = form.surname.data,
@@ -110,6 +111,7 @@ def add_some_workers():
 
         for i in range(1,n+1):
             __insert_worker(
+                i,
                 admin_id = current_user.id,
                 name = "",
                 surname = f"{prefix} {i:02d}",
@@ -122,17 +124,18 @@ def add_some_workers():
 
     return render_template('admin-add-some-workers.html',form=form,user=current_user)
 
-def __insert_worker(admin_id, surname, name, phone, shift_id):
+def __insert_worker(n, admin_id, surname, name, phone, shift_id):
+    worker_token = f"{hashid_manager.create_token(admin_id)}#{n}#{admin_id}"
     worker = User(
         name = name,
         surname = surname,
         phone = phone,
-        email = hashid_manager.create_token(admin_id) + "@worker",
-        dni = f"{get_timestamp()}#{admin_id}",
+        email = worker_token + "@worker",
+        dni = worker_token,
         role = UserRole.worker
     )
     # random password pq no pot ser buit
-    worker.set_password(hashid_manager.create_password())
+    worker.set_password(worker_token + hashid_manager.create_password())
 
     logger.info(f"Nou treballador: {worker.full_name}")
 
