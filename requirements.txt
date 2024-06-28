@@ -15,11 +15,11 @@ idna==3.7
 itsdangerous==2.2.0
 Jinja2==3.1.4
 MarkupSafe==2.1.5
-openpyxl==3.1.4
+openpyxl==3.1.5
 packaging==24.1
 psycopg2-binary==2.9.9
 python-dotenv==1.0.1
-SQLAlchemy==2.0.30
+SQLAlchemy==2.0.31
 typing_extensions==4.12.2
 Werkzeug==3.0.3
 WTForms==3.1.2
