@@ -2,7 +2,7 @@ from flask import Blueprint, redirect, render_template, url_for, request, Respon
 from flask_login import current_user
 from .forms_message import EmailForm
 from .forms_admin import AddWorkerForm, AddSomeWorkersForm, WorkerForm, AssignationsForm, TaskPasswordForm, ShiftSlotsForm
-from .helper import flash_error, flash_info, load_volunteer, logger, get_timestamp, get_shifts_meals_and_tickets, labels, get_shifts
+from .helper import flash_error, flash_info, load_volunteer, logger, get_shifts_meals_and_tickets, labels, get_shifts
 from .helper import require_admin, require_superadmin
 from .models import User, Task, Shift, UserShift, Meal, UserMeal, UserDiet, UserRewards, Ticket, UserTicket, UserRole
 from . import db, hashid_manager, excel_manager, task_manager, params_manager, rewards_manager

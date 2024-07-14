@@ -5,7 +5,7 @@ from .forms_auth import LoginForm, SignUpForm, ForgottenPasswordForm, ResetPassw
 from .models import User, UserRole, UserDiet, UserRewards, PartnerDNI
 from .plugin_gmail import TaskSignUpEmail, TaskResetPasswordEmail, TaskConfirmPasswordChangeEmail
 from .helper import flash_info, flash_warning, flash_error, logger, notify_identity_changed
-from sqlalchemy import or_, func
+from sqlalchemy import func
 
 # Blueprint Configuration
 auth_bp = Blueprint(

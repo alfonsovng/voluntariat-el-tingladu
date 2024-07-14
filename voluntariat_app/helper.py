@@ -98,7 +98,7 @@ def get_shifts(user_id):
         select -1, '{label_informative_meeting}: ' || informative_meeting from users 
         where id = {user_id} and informative_meeting!=''                                         
         union                                                    
-        select t.id, t.name || ': ' || s.description || case when d.assignations is NULL then '' else ' [' || d.assignations || ']' end
+        select s.id, t.name || ': ' || s.description || case when d.assignations is NULL then '' else ' [' || d.assignations || ']' end
         from tasks as t 
         join shifts as s on t.id = s.task_id 
         join user_shifts as us on us.shift_id = s.id
