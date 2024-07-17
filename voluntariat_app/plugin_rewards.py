@@ -670,14 +670,17 @@ class RewardsManager:
         from .models import UserTicket, UserRewards
         from . import db
 
+        rewards = UserRewards.query.filter_by(user_id = user_id).first()
+        if not rewards:
+            return
+
         current_tickets = [id[0] for id in db.session.query(UserTicket.ticket_id).filter(UserTicket.user_id == user_id).all()]
 
         (cash_by_day, cash_lines) = self.rewards_instance.calculate_cash(
             current_tickets = current_tickets,
             current_shifts = self.__get_current_shifts(user_id)
         )
-
-        rewards = UserRewards.query.filter_by(user_id = user_id).first()
+       
         rewards.description = cash_lines
         cash_total = 0
         for (k,v) in cash_by_day.items():
