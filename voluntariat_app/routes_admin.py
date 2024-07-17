@@ -684,14 +684,15 @@ def excel_tickets_and_rewards():
         u.phone as mòbil,
         tr.entrades as entrades,
         tr.cash as "tickets consum",
-        case when tr.sopar then 'X' else '' end as "sopar"
+        case when tr.sopar then 'X' else '' end as "sopar",
+        case when b.description is NULL then '' else b.description end as barres
         from users as u 
         join (
             select entrades, cash, sopar,
                 case when t.user_id is NULL then r.user_id else t.user_id end as user_id,
                 case when t.extended_day is NULL then r.day else t.extended_day end as day
             from (
-                select ut.user_id as user_id, {day_aggregation} as extended_day, array_to_string(array_agg(t.name),' + ') as entrades
+                select ut.user_id as user_id, {day_aggregation} as extended_day, array_to_string(array_agg(t.name order by t.id),' + ') as entrades
                 from tickets as t
                 join user_tickets as ut on t.id = ut.ticket_id
                 group by user_id, extended_day
@@ -713,9 +714,15 @@ def excel_tickets_and_rewards():
             ) as r on r.user_id = t.user_id and r.day = t.extended_day
             where cash > 0 or entrades <> '' or sopar
         ) as tr on tr.user_id = u.id
+        left join (
+            select ush.user_id, sh.day, array_to_string(array_agg(sh.description order by sh.id),' + ') as description from shifts as sh join user_shifts as ush on sh.id = ush.shift_id
+            where sh.task_id = 1
+            group by ush.user_id, sh.day
+        ) as b on b.user_id = u.id and b.day = tr.day
         {day_filter}
         order by cognoms asc, nom asc, u.email asc, tr.day asc;
     """
+    # FIXME! sh.task_id = 1 és la tasca de barres!!!
 
     file_name = hashid_manager.create_unique_file_name(
         user_id = current_user.id,
