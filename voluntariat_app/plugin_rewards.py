@@ -522,8 +522,13 @@ class Rewards16Edition(RewardsImpl):
                             zero_assignations = False
                         
                     if zero_assignations:
-                        add_cash_detail(t.id, s.day, f"{t.name} - {s.description}: {s.reward} € [{labels.get('reward_assignation_pending')}]", 0)
+                        if s.direct_reward:
+                            # tant se val, recompensa directa
+                            add_cash_detail(t.id, s.day, f"{t.name} - {s.description}: {s.reward} €", s.reward)
+                        else:
+                            add_cash_detail(t.id, s.day, f"{t.name} - {s.description}: {s.reward} € [{labels.get('reward_assignation_pending')}]", 0)
                 else:
+                    # no hi ha opcions, es recomensa directa
                     add_cash_detail(t.id, s.day, f"{t.name} - {s.description}: {s.reward} €", s.reward)
 
         if cash_to_assign > 0:

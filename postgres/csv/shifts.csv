@@ -1,83 +1,82 @@
-tasca,dia,descripcio,persones,recompensa,Observacions
-BARRES,25-07 DIJOUS,Dijous 25/07 de 17:45 a 19:45,6,10,"{BARRA 1, BARRA 2, BARRA 3}"
-BARRES,25-07 DIJOUS,Dijous 25/07 de 19:30 a 22:30,21,15,"{BARRA 1, BARRA 2, BARRA 3}"
-BARRES,25-07 DIJOUS,Dijous 25/07 de 22:15 a 01:15,21,15,"{BARRA 1, BARRA 2, BARRA 3}"
-BARRES,25-07 DIJOUS,Dijous 25/07 de 01:15 a 03:15,13,10,"{BARRA 1, BARRA 2}"
-BARRES,26-07 DIVENDRES,Divendres 26/07 de 17:45 a 19:45,6,10,"{BARRA 1, BARRA 2, BARRA 3}"
-BARRES,26-07 DIVENDRES,Divendres 26/07 de 19:30 a 22:30,21,15,"{BARRA 1, BARRA 2, BARRA 3}"
-BARRES,26-07 DIVENDRES,Divendres 26/07 de 22:15 a 01:15,21,15,"{BARRA 1, BARRA 2, BARRA 3}"
-BARRES,26-07 DIVENDRES,Divendres 26/07 de 01:15 a 04:15,18,15,"{BARRA 1, BARRA 2}"
-BARRES,27-07 DISSABTE,Dissabte 27/07 de 17:45 a 19:45,6,10,"{BARRA 1, BARRA 2, BARRA 3}"
-BARRES,27-07 DISSABTE,Dissabte 27/07 de 19:30 a 22:30,21,15,"{BARRA 1, BARRA 2, BARRA 3}"
-BARRES,27-07 DISSABTE,Dissabte 27/07 de 22:15 a 01:15,21,15,"{BARRA 1, BARRA 2, BARRA 3}"
-BARRES,27-07 DISSABTE,Dissabte 27/07 de 01:15 a 04:15,18,15,"{BARRA 1, BARRA 2}"
-SUBCAPS DE BARRES,25-07 DIJOUS,Dijous: BARRA 1 - 1r torn (18:30 a 23:30),3,25,{}
-SUBCAPS DE BARRES,25-07 DIJOUS,Dijous: BARRA 1 - 2n torn (23:00 a 03:30),3,25,{}
-SUBCAPS DE BARRES,25-07 DIJOUS,Dijous: BARRA 2 - 1r torn (18:15 a 23:15),3,25,{}
-SUBCAPS DE BARRES,25-07 DIJOUS,Dijous: BARRA 2 - 2n torn (23:15 a 04:15),3,25,{}
-SUBCAPS DE BARRES,25-07 DIJOUS,Dijous: BARRA 3 - Torn únic (20:00 a 01:00),2,25,{}
-SUBCAPS DE BARRES,26-07 DIVENDRES,Divendres: BARRA 1 - 1r torn (18:15 a 23:15),3,25,{}
-SUBCAPS DE BARRES,26-07 DIVENDRES,Divendres: BARRA 1 - 2n torn (23:15 a 04:15),3,25,{}
-SUBCAPS DE BARRES,26-07 DIVENDRES,Divendres: BARRA 2 - 1r torn (18:15 a 23:15),3,25,{}
-SUBCAPS DE BARRES,26-07 DIVENDRES,Divendres: BARRA 2 - 2n torn (23:15 a 04:15),3,25,{}
-SUBCAPS DE BARRES,26-07 DIVENDRES,Divendres: BARRA 3 - Torn únic (20:00 a 01:00),2,25,{}
-SUBCAPS DE BARRES,27-07 DISSABTE,Dissabte: BARRA 1 - 1r torn (18:15 a 23:15),3,25,{}
-SUBCAPS DE BARRES,27-07 DISSABTE,Dissabte: BARRA 1 - 2n torn (23:15 a 04:15),3,25,{}
-SUBCAPS DE BARRES,27-07 DISSABTE,Dissabte: BARRA 2 - 1r torn (18:15 a 23:15),3,25,{}
-SUBCAPS DE BARRES,27-07 DISSABTE,Dissabte: BARRA 2 - 2n torn (23:15 a 04:15),3,25,{}
-SUBCAPS DE BARRES,27-07 DISSABTE,Dissabte: BARRA 3 - Torn únic (20:00 a 01:00),2,25,{}
-ENTRADES,25-07 DIJOUS,"Dijous 25/07 de 17:30 a 20:30",6,20,{}
-ENTRADES,25-07 DIJOUS,"Dijous 25/07 de 19:30 a 22:30",8,20,{}
-ENTRADES,25-07 DIJOUS,"Dijous 25/07 de 21:30 a 00:30",6,20,{}
-ENTRADES,26-07 DIVENDRES,"Divendres 26/07 de 17:30 a 20:30",6,20,{}
-ENTRADES,26-07 DIVENDRES,"Divendres 26/07 de 19:30 a 22:30",8,20,{}
-ENTRADES,26-07 DIVENDRES,"Divendres 26/07 de 21:30 a 00:30",6,20,{}
-ENTRADES,27-07 DISSABTE,"Dissabte 27/07 de 17:30 a 20:30",6,20,{}
-ENTRADES,27-07 DISSABTE,"Dissabte 27/07 de 19:30 a 22:30",8,20,{}
-ENTRADES,27-07 DISSABTE,"Dissabte 27/07 de 21:30 a 00:30",6,20,{}
-MARXANDATGE,25-07 DIJOUS,Dissabte 27/07 de 18:00 a 21:00,2,15,{}
-MARXANDATGE,25-07 DIJOUS,Dissabte 27/07 de 21:00 a 00:00,2,15,{}
-MARXANDATGE,26-07 DIVENDRES,Divendres 26/07 de 18:00 a 21:00,2,15,{}
-MARXANDATGE,26-07 DIVENDRES,Divendres 26/07 de 21:00 a 00:00,2,15,{}
-MARXANDATGE,27-07 DISSABTE,Dissabte 27/07 de 18:00 a 21:00,2,15,{}
-MARXANDATGE,27-07 DISSABTE,Dissabte 27/07 de 21:00 a 00:00,2,15,{}
-CUINA,25-07 DIJOUS,Tasques de cuina en dijous,8,0,{}
-CUINA,26-07 DIVENDRES,Tasques de cuina en divendres,8,0,{}
-CUINA,27-07 DISSABTE,Tasques de cuina en dissabte,8,0,{}
-GLOBUS,25-07 DIJOUS,Tasques d'el·laboració del Globus en dijous,8,30,{}
-GLOBUS,26-07 DIVENDRES,Tasques d'el·laboració del Globus en divendres,8,30,{}
-GLOBUS,27-07 DISSABTE,Tasques d'el·laboració del Globus en dissabte,8,30,{}
-PHOTOCALL,25-07 DIJOUS,Tasques de photocall en dijous,2,15,{}
-PHOTOCALL,26-07 DIVENDRES,Tasques de photocall en divendres,2,15,{}
-PHOTOCALL,27-07 DISSABTE,Tasques de photocall en dissabte,2,15,{}
-TRESORERIA,25-07 DIJOUS,Tasques de tresoreria en dijous,6,0,{}
-TRESORERIA,26-07 DIVENDRES,Tasques de tresoreria en divendres,6,0,{}
-TRESORERIA,27-07 DISSABTE,Tasques de tresoreria en dissabte,6,0,{}
-MUNTATGE,"",Dilluns 22/07 de 17:00 a 20:00,10,10,{ASSISTÈNCIA CONFIRMADA}
-MUNTATGE,"",Dimarts 23/07 de 17:00 a 20:00,10,10,{ASSISTÈNCIA CONFIRMADA}
-MUNTATGE,"",Dimecres 24/07 de 17:00 a 20:00,10,10,{ASSISTÈNCIA CONFIRMADA}
-MUNTATGE,"",Dijous 25/07 de 10:00 a 13:00,5,10,{ASSISTÈNCIA CONFIRMADA}
-SUPORT,"",Tasques de suport per part de gent del centre obert,10,45,{}
-ORGANITZACIÓ,"",Tasques d'organització,30,0,{}
-COMUNICACIÓ,25-07 DIJOUS,Tasques de comunicació en dijous,5,0,{}
-COMUNICACIÓ,26-07 DIVENDRES,Tasques de comunicació en divendres,5,0,{}
-COMUNICACIÓ,27-07 DISSABTE,Tasques de comunicació en dissabte,5,0,{}
-ELÈCTRICS,"",Els torns s'assignaran posteriorment,6,15,"{22-07 DILLUNS,23-07 DIMARTS,24-07 DIMECRES}"
-SO,"",Professionals del so,20,0,{}
-SEGURETAT,"",Professionals de la seguretat,30,0,{}
-PUNT LILA I FOOD TRUCK,"",Professionals del Punt Lila i les Food Trucks,0,0,{}
-INVITACIÓ ENTRADES,25-07 DIJOUS,Entrada de dijous,0,0,{}
-INVITACIÓ ENTRADES,26-07 DIVENDRES,Entrada de divendres,0,0,{}
-INVITACIÓ ENTRADES,27-07 DISSABTE,Entrada de dissabte,0,0,{}
-INVITACIÓ SOPAR,25-07 DIJOUS,Sopar de dijous,0,0,{}
-INVITACIÓ SOPAR,26-07 DIVENDRES,Sopar de divendres,0,0,{}
-INVITACIÓ SOPAR,27-07 DISSABTE,Sopar de dissabte,0,0,{}
-INVITACIÓ TICKETS,"",Tickets de 5€,0,5,{}
-INVITACIÓ TICKETS,"",Tickets de 5€,0,5,{}
-INVITACIÓ TICKETS,"",Tickets de 5€,0,5,{}
-INVITACIÓ TICKETS,"",Tickets de 5€,0,5,{}
-INVITACIÓ TICKETS,"",Tickets de 5€,0,5,{}
-INVITACIÓ TICKETS,"",Tickets de 5€,0,5,{}
-INVITACIÓ TICKETS,"",Tickets de 5€,0,5,{}
-INVITACIÓ TICKETS,"",Tickets de 5€,0,5,{}
-INVITACIÓ TICKETS,"",Tickets de 5€,0,5,{}
+tasca,dia,descripcio,persones,recompensa,assignacions,recompensa_directa
+BARRES,25-07 DIJOUS,Dijous 25/07 de 17:45 a 19:45,6,10,"{BARRA 1, BARRA 2, BARRA 3}",TRUE
+BARRES,25-07 DIJOUS,Dijous 25/07 de 19:30 a 22:30,21,15,"{BARRA 1, BARRA 2, BARRA 3}",TRUE
+BARRES,25-07 DIJOUS,Dijous 25/07 de 22:15 a 01:15,21,15,"{BARRA 1, BARRA 2, BARRA 3}",TRUE
+BARRES,25-07 DIJOUS,Dijous 25/07 de 01:15 a 03:15,13,10,"{BARRA 1, BARRA 2}",TRUE
+BARRES,26-07 DIVENDRES,Divendres 26/07 de 17:45 a 19:45,6,10,"{BARRA 1, BARRA 2, BARRA 3}",TRUE
+BARRES,26-07 DIVENDRES,Divendres 26/07 de 19:30 a 22:30,21,15,"{BARRA 1, BARRA 2, BARRA 3}",TRUE
+BARRES,26-07 DIVENDRES,Divendres 26/07 de 22:15 a 01:15,21,15,"{BARRA 1, BARRA 2, BARRA 3}",TRUE
+BARRES,26-07 DIVENDRES,Divendres 26/07 de 01:15 a 04:15,18,15,"{BARRA 1, BARRA 2}",TRUE
+BARRES,27-07 DISSABTE,Dissabte 27/07 de 17:45 a 19:45,6,10,"{BARRA 1, BARRA 2, BARRA 3}",TRUE
+BARRES,27-07 DISSABTE,Dissabte 27/07 de 19:30 a 22:30,21,15,"{BARRA 1, BARRA 2, BARRA 3}",TRUE
+BARRES,27-07 DISSABTE,Dissabte 27/07 de 22:15 a 01:15,21,15,"{BARRA 1, BARRA 2, BARRA 3}",TRUE
+BARRES,27-07 DISSABTE,Dissabte 27/07 de 01:15 a 04:15,18,15,"{BARRA 1, BARRA 2}",TRUE
+SUBCAPS DE BARRES,25-07 DIJOUS,Dijous: BARRA 1 - 1r torn (18:30 a 23:30),3,25,{},TRUE
+SUBCAPS DE BARRES,25-07 DIJOUS,Dijous: BARRA 1 - 2n torn (23:00 a 03:30),3,25,{},TRUE
+SUBCAPS DE BARRES,25-07 DIJOUS,Dijous: BARRA 2 - 1r torn (18:15 a 23:15),3,25,{},TRUE
+SUBCAPS DE BARRES,25-07 DIJOUS,Dijous: BARRA 2 - 2n torn (23:15 a 04:15),3,25,{},TRUE
+SUBCAPS DE BARRES,25-07 DIJOUS,Dijous: BARRA 3 - Torn únic (20:00 a 01:00),2,25,{},TRUE
+SUBCAPS DE BARRES,26-07 DIVENDRES,Divendres: BARRA 1 - 1r torn (18:15 a 23:15),3,25,{},TRUE
+SUBCAPS DE BARRES,26-07 DIVENDRES,Divendres: BARRA 1 - 2n torn (23:15 a 04:15),3,25,{},TRUE
+SUBCAPS DE BARRES,26-07 DIVENDRES,Divendres: BARRA 2 - 1r torn (18:15 a 23:15),3,25,{},TRUE
+SUBCAPS DE BARRES,26-07 DIVENDRES,Divendres: BARRA 2 - 2n torn (23:15 a 04:15),3,25,{},TRUE
+SUBCAPS DE BARRES,26-07 DIVENDRES,Divendres: BARRA 3 - Torn únic (20:00 a 01:00),2,25,{},TRUE
+SUBCAPS DE BARRES,27-07 DISSABTE,Dissabte: BARRA 1 - 1r torn (18:15 a 23:15),3,25,{},TRUE
+SUBCAPS DE BARRES,27-07 DISSABTE,Dissabte: BARRA 1 - 2n torn (23:15 a 04:15),3,25,{},TRUE
+SUBCAPS DE BARRES,27-07 DISSABTE,Dissabte: BARRA 2 - 1r torn (18:15 a 23:15),3,25,{},TRUE
+SUBCAPS DE BARRES,27-07 DISSABTE,Dissabte: BARRA 2 - 2n torn (23:15 a 04:15),3,25,{},TRUE
+SUBCAPS DE BARRES,27-07 DISSABTE,Dissabte: BARRA 3 - Torn únic (20:00 a 01:00),2,25,{},TRUE
+ENTRADES,25-07 DIJOUS,"Dijous 25/07 de 17:30 a 20:30",6,20,{},TRUE
+ENTRADES,25-07 DIJOUS,"Dijous 25/07 de 19:30 a 22:30",8,20,{},TRUE
+ENTRADES,25-07 DIJOUS,"Dijous 25/07 de 21:30 a 00:30",6,20,{},TRUE
+ENTRADES,26-07 DIVENDRES,"Divendres 26/07 de 19:30 a 22:30",8,20,{},TRUE
+ENTRADES,26-07 DIVENDRES,"Divendres 26/07 de 21:30 a 00:30",6,20,{},TRUE
+ENTRADES,27-07 DISSABTE,"Dissabte 27/07 de 17:30 a 20:30",6,20,{},TRUE
+ENTRADES,27-07 DISSABTE,"Dissabte 27/07 de 19:30 a 22:30",8,20,{},TRUE
+ENTRADES,27-07 DISSABTE,"Dissabte 27/07 de 21:30 a 00:30",6,20,{},TRUE
+MARXANDATGE,25-07 DIJOUS,Dissabte 27/07 de 18:00 a 21:00,2,15,{},TRUE
+MARXANDATGE,25-07 DIJOUS,Dissabte 27/07 de 21:00 a 00:00,2,15,{},TRUE
+MARXANDATGE,26-07 DIVENDRES,Divendres 26/07 de 18:00 a 21:00,2,15,{},TRUE
+MARXANDATGE,26-07 DIVENDRES,Divendres 26/07 de 21:00 a 00:00,2,15,{},TRUE
+MARXANDATGE,27-07 DISSABTE,Dissabte 27/07 de 18:00 a 21:00,2,15,{},TRUE
+MARXANDATGE,27-07 DISSABTE,Dissabte 27/07 de 21:00 a 00:00,2,15,{},TRUE
+CUINA,25-07 DIJOUS,Tasques de cuina en dijous,8,0,{},TRUE
+CUINA,26-07 DIVENDRES,Tasques de cuina en divendres,8,0,{},TRUE
+CUINA,27-07 DISSABTE,Tasques de cuina en dissabte,8,0,{},TRUE
+GLOBUS,25-07 DIJOUS,Tasques d'el·laboració del Globus en dijous,8,30,{},TRUE
+GLOBUS,26-07 DIVENDRES,Tasques d'el·laboració del Globus en divendres,8,30,{},TRUE
+GLOBUS,27-07 DISSABTE,Tasques d'el·laboració del Globus en dissabte,8,30,{},TRUE
+PHOTOCALL,25-07 DIJOUS,Tasques de photocall en dijous,2,15,{},TRUE
+PHOTOCALL,26-07 DIVENDRES,Tasques de photocall en divendres,2,15,{},TRUE
+PHOTOCALL,27-07 DISSABTE,Tasques de photocall en dissabte,2,15,{},TRUE
+TRESORERIA,25-07 DIJOUS,Tasques de tresoreria en dijous,6,0,{},TRUE
+TRESORERIA,26-07 DIVENDRES,Tasques de tresoreria en divendres,6,0,{},TRUE
+TRESORERIA,27-07 DISSABTE,Tasques de tresoreria en dissabte,6,0,{},TRUE
+MUNTATGE,"",Dilluns 22/07 de 17:00 a 20:00,10,10,{ASSISTÈNCIA CONFIRMADA},FALSE
+MUNTATGE,"",Dimarts 23/07 de 17:00 a 20:00,10,10,{ASSISTÈNCIA CONFIRMADA},FALSE
+MUNTATGE,"",Dimecres 24/07 de 17:00 a 20:00,10,10,{ASSISTÈNCIA CONFIRMADA},FALSE
+MUNTATGE,"",Dijous 25/07 de 10:00 a 13:00,5,10,{ASSISTÈNCIA CONFIRMADA},FALSE
+SUPORT,"",Tasques de suport per part de gent del centre obert,10,45,{},TRUE
+ORGANITZACIÓ,"",Tasques d'organització,30,0,{},TRUE
+COMUNICACIÓ,25-07 DIJOUS,Tasques de comunicació en dijous,5,0,{},TRUE
+COMUNICACIÓ,26-07 DIVENDRES,Tasques de comunicació en divendres,5,0,{},TRUE
+COMUNICACIÓ,27-07 DISSABTE,Tasques de comunicació en dissabte,5,0,{},TRUE
+ELÈCTRICS,"",Els torns s'assignaran posteriorment,6,15,"{22-07 DILLUNS,23-07 DIMARTS,24-07 DIMECRES}",FALSE
+SO,"",Professionals del so,20,0,{},TRUE
+SEGURETAT,"",Professionals de la seguretat,30,0,{},TRUE
+PUNT LILA I FOOD TRUCK,"",Professionals del Punt Lila i les Food Trucks,0,0,{},TRUE
+INVITACIÓ ENTRADES,25-07 DIJOUS,Entrada de dijous,0,0,{},TRUE
+INVITACIÓ ENTRADES,26-07 DIVENDRES,Entrada de divendres,0,0,{},TRUE
+INVITACIÓ ENTRADES,27-07 DISSABTE,Entrada de dissabte,0,0,{},TRUE
+INVITACIÓ SOPAR,25-07 DIJOUS,Sopar de dijous,0,0,{},TRUE
+INVITACIÓ SOPAR,26-07 DIVENDRES,Sopar de divendres,0,0,{},TRUE
+INVITACIÓ SOPAR,27-07 DISSABTE,Sopar de dissabte,0,0,{},TRUE
+INVITACIÓ TICKETS,"",Tickets de 5€,0,5,{},TRUE
+INVITACIÓ TICKETS,"",Tickets de 5€,0,5,{},TRUE
+INVITACIÓ TICKETS,"",Tickets de 5€,0,5,{},TRUE
+INVITACIÓ TICKETS,"",Tickets de 5€,0,5,{},TRUE
+INVITACIÓ TICKETS,"",Tickets de 5€,0,5,{},TRUE
+INVITACIÓ TICKETS,"",Tickets de 5€,0,5,{},TRUE
+INVITACIÓ TICKETS,"",Tickets de 5€,0,5,{},TRUE
+INVITACIÓ TICKETS,"",Tickets de 5€,0,5,{},TRUE
+INVITACIÓ TICKETS,"",Tickets de 5€,0,5,{},TRUE

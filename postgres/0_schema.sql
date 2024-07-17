@@ -107,7 +107,8 @@ CREATE TABLE public.shifts (
     description character varying DEFAULT ''::character varying NOT NULL,
     slots integer DEFAULT 0 NOT NULL,
     assignations character varying[] DEFAULT '{}'::character varying[] NOT NULL,
-    reward integer DEFAULT 0 NOT NULL
+    reward integer DEFAULT 0 NOT NULL,
+    direct_reward boolean DEFAULT true NOT NULL
 );
 
 

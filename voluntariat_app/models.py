@@ -98,6 +98,7 @@ class Shift(db.Model):
     slots = db.Column(db.Integer, nullable=False, server_default=text("0")) # 0 significa sense límits
     assignations = db.Column(ARRAY(db.String), nullable=False, server_default='{}') # opcions que assigna l'admin
     reward = db.Column(db.Integer, nullable=False, server_default=text("0")) # recompensa en tiquets
+    direct_reward = db.Column(db.Boolean, nullable=False, default=True, server_default=text("TRUE")) # recompensa directa o no
 
 class UserDiet(db.Model):
     __tablename__ = "user_diets"
