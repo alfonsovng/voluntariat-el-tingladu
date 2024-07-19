@@ -2,7 +2,7 @@ import smtplib
 from flask import url_for, render_template
 from email.message import EmailMessage
 from email.utils import formataddr
-from .helper import logger, get_timestamp, labels
+from .helper import logger, get_frienly_timestamp, labels
 
 class GmailManager:
 
@@ -118,9 +118,9 @@ class TaskIncidenceEmail(TaskEmail):
     def __init__(self, incidence_user, incidence_type, incidence_description):
         from . import gmail_manager, params_manager
 
-        str_date_time = get_timestamp()
+        str_date_time = get_frienly_timestamp()
 
-        subject = f'{labels.get("incidence_subject")} {str_date_time}-{incidence_user.id}'
+        subject = f'{labels.get("incidence_subject")} {str_date_time} @{incidence_user.id}'
         content = render_template("email/incidence_email.txt",
             incidence_user = incidence_user,
             incidence_type = incidence_type,
@@ -157,7 +157,7 @@ class TaskProvisionalShiftsEmail(TaskEmail):
     def __init__(self, user, shifts):
         from . import params_manager
 
-        str_date_time = get_timestamp()
+        str_date_time = get_frienly_timestamp()
 
         body = "\n".join(shifts)
 
@@ -180,10 +180,12 @@ class TaskDefinitiveShiftsEmail(TaskEmail):
     def __init__(self, user, shifts):
         from . import params_manager
 
+        str_date_time = get_frienly_timestamp()
+
         body = "\n".join(shifts)
 
         email = user.email
-        subject = labels.get("definitive_shifts_subject")
+        subject = f'{labels.get("definitive_shifts_subject")} {str_date_time}'
         content = render_template("email/definitive_shifts_email.txt",
             name = user.name,
             body = body,

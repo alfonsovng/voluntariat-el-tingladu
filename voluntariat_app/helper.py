@@ -132,6 +132,10 @@ def get_timestamp():
     import time
     return datetime.fromtimestamp(time.time()).strftime("%Y%m%d%H%M%S")
 
+def get_frienly_timestamp():
+    from datetime import datetime
+    import time
+    return datetime.fromtimestamp(time.time()).strftime("%Y-%m-%d %H:%M:%S")
 
 #
 # Labels

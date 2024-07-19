@@ -65,23 +65,23 @@ class ShiftsEmail(Task):
                 (User.last_shift_change_at+timedelta(hours=2)) < func.now()
             ).order_by(User.id.asc()).limit(10).all()
 
-            for user_with_shifts in users:
+            for user_with_changes in users:
 
-                logger.info(f"Comprovant usuari {user_with_shifts}...")
+                logger.info(f"Comprovant usuari {user_with_changes}...")
 
                 with Session(db.engine) as session: # creo una sessió exclusiva
                     with session.begin():
                         result = session.execute(
                             update(User)
                                 .values(last_shift_change_at=None)
-                                .where(User.last_shift_change_at == user_with_shifts.last_shift_change_at)
-                                .where(User.id == user_with_shifts.id)
+                                .where(User.last_shift_change_at == user_with_changes.last_shift_change_at)
+                                .where(User.id == user_with_changes.id)
                         )
                         # m'asseguro que s'ha fet l'update, per a evitar molts emails en un entorn multithread
                         if result.rowcount == 1:
-                            # envio un email dels torns apuntats!
-                            logger.info(f"Email amb els torns a l'usuari {user_with_shifts}")
+                            shifts = helper.get_shifts(user_with_changes.id)
 
-                            shifts = helper.get_shifts(user_with_shifts.id)
-
-                            self.__task_queue.put_nowait(TaskProvisionalShiftsEmail(user_with_shifts, shifts))
+                            if len(shifts) > 0:
+                                # envio un email dels torns apuntats!
+                                logger.info(f"Email amb els torns a l'usuari {user_with_changes}")
+                                self.__task_queue.put_nowait(TaskProvisionalShiftsEmail(user_with_changes, shifts))

@@ -672,6 +672,7 @@ class RewardsManager:
 
         rewards = UserRewards.query.filter_by(user_id = user_id).first()
         if not rewards:
+            # usuari no validat, no cal fer res
             return
 
         current_tickets = [id[0] for id in db.session.query(UserTicket.ticket_id).filter(UserTicket.user_id == user_id).all()]

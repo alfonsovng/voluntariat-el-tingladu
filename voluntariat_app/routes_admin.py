@@ -390,8 +390,9 @@ def shifts_email(task_id):
 
     for u in users:
         shifts = get_shifts(u.id)
-        task = TaskDefinitiveShiftsEmail(user = u, shifts = shifts)
-        task_manager.add_task(task)
+        if len(shifts) > 0:
+            task = TaskDefinitiveShiftsEmail(user = u, shifts = shifts)
+            task_manager.add_task(task)
 
     flash_info("message_sent")
 
