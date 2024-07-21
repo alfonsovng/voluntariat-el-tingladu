@@ -601,7 +601,7 @@ class RewardsManager:
         from .models import UserShift, Shift, Task
         from . import db
 
-        return db.session.query(Task, Shift, UserShift).join(Shift, Task.id == Shift.task_id).join(UserShift).filter(UserShift.user_id == user_id).all()
+        return db.session.query(Task, Shift, UserShift).join(Shift, Task.id == Shift.task_id).join(UserShift).filter(UserShift.user_id == user_id).order_by(Shift.id.asc).all()
 
     def __update_tickets(self, user, current_shifts):
         from .models import UserTicket
