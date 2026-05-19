@@ -61,7 +61,7 @@ def signup(invitation_token):
             role = UserRole.partner
 
         if (role == UserRole.volunteer and not params_manager.allow_volunteers):
-            flash_warning("no_partner")
+            flash_warning("access_only_for_partners")
             return redirect(url_for("main_bp.contact"))
 
         logger.info(f"Nou voluntari: {email}")
@@ -228,6 +228,10 @@ def login():
 
         existing_user = User.query.filter(func.upper(User.email) == email.upper()).first()
         if existing_user and existing_user.check_password(password=form.password.data) and existing_user.confirmed:
+
+            if (existing_user.role == UserRole.volunteer and not params_manager.allow_volunteers):
+                flash_warning("access_only_for_partners")
+                return redirect(url_for("main_bp.contact"))
 
             logger.info(f"Login: {email}")
 
