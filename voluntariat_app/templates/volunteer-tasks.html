@@ -59,12 +59,24 @@
     {% endif %}
     <div class="list-group">
       {% for t,n in tasks_and_number_of_shifts %}
+        {% if t.password == '' or n > 0 %}
         <a href="{{'/admin' if admin}}/p/{{ volunteer.hashid }}/tasks/{{t.hashid}}" 
           class="list-group-item {% if n>0 %}list-group-item-success {% endif %}">
-          <h4>{{t.name}}{% if t.password != '' %} <span class="badge badge-warning">Accés restringit</span>{% endif %}</h4> 
+          <h4>{{t.name}}</h4> 
           <h4><small>{{t.description}}</small></h4>
           <h4><span class="badge badge-info">torns seleccionats: {{n}}</span></h4>
         </a>
+        {% endif %}
+      {% endfor %}
+      {% for t,n in tasks_and_number_of_shifts %}
+        {% if t.password != '' and n == 0 %}
+        <a href="{{'/admin' if admin}}/p/{{ volunteer.hashid }}/tasks/{{t.hashid}}" 
+          class="list-group-item {% if n>0 %}list-group-item-success {% endif %}">
+          <h4>{{t.name}} <span class="badge badge-warning">Accés restringit</span></h4> 
+          <h4><small>{{t.description}}</small></h4>
+          <h4><span class="badge badge-info">torns seleccionats: {{n}}</span></h4>
+        </a>
+        {% endif %}
       {% endfor %}
     </div>
     <br />
