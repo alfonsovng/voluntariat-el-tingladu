@@ -74,4 +74,6 @@ COMUNICACIÓ,24-07 DIVENDRES,Tasques de comunicació en divendres,5,0,{},TRUE
 COMUNICACIÓ,25-07 DISSABTE,Tasques de comunicació en dissabte,5,0,{},TRUE
 COL·LABORACIÓ,"",Persones col·laboradora,10,0,{},TRUE
 ORGANITZACIÓ,"",Tasques d'organització,30,0,{},TRUE
-PROFESSIONAL,"",Persones professionals,80,0,{},TRUE
+PROFESSIONAL,23-07 DIJOUS,Persones professionals en dijous,80,0,{},TRUE
+PROFESSIONAL,24-07 DIVENDRES,Persones professionals en divendres,80,0,{},TRUE
+PROFESSIONAL,25-07 DISSABTE,Persones professionals en dissabte,80,0,{},TRUE

@@ -92,7 +92,7 @@ class Rewards18Edition(RewardsImpl):
                 comunicacio_id: sopar_del_dia_que_ajuden,
                 collaboracio_id: tots_els_sopars,
                 organitzacio_id: tots_els_sopars,
-                professional_id: tots_els_sopars,
+                professional_id: sopar_del_dia_que_ajuden,
             }
 
             # entrades i acreditacions
