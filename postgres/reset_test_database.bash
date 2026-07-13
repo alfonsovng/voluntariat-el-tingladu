@@ -1,7 +1,7 @@
 #!/bin/bash
 
-PGPORT=5435
-PGDATABASE=testdb
+PGPORT=54330
+PGDATABASE=postgres
 PGUSER=postgres
 export PGPASSWORD=patata
 
